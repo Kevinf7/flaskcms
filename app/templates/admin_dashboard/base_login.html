@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="description" content="My website">
+        <title>{% block title %}{% endblock %}</title>
+        <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/mybulma.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/app.css') }}" type="text/css">
+    </head>
+    <body>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <article class="message is-{{ category }}">
+                        <div class="message-body">{{ message }}</div>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="container">
+            {% block app_content %}{% endblock %}
+        </div>
+    </body>
+</html>

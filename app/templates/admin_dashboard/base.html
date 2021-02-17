@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="description" content="My website">
+        <title>{% block title %}{% endblock %}</title>
+        <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/mybulma.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/app.css') }}" type="text/css">
+    </head>
+    <body>
+        <div class="columns is-gapless" style="height:100vh;">
+            <div class="column is-narrow has-background-info-light">
+                <div class="hero is-small is-primary">
+                    <div class="hero-body">
+                        <p class="title is-4">Flask CMS</p>
+                    </div>
+                </div>
+                <aside class="menu p-3">
+                    <p class="menu-label">
+                        CONTENT
+                    </p>
+                    <ul class="menu-list">
+                        <li><a><i class="fab fa-microblog"></i> Blog</a></li>
+                        <li><a><i class="fas fa-tag"></i> Tags</a></li>
+                        <li><a><i class="far fa-file-image"></i> Media</a></li>
+                        <li><a><i class="far fa-file-alt"></i> Page</a></li>
+                    </ul>
+                    <p class="menu-label">
+                        MESSAGES
+                    </p>
+                    <ul class="menu-list">
+                        <li><a><i class="far fa-id-badge"></i> Contact</a></li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="column">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <article class="message is-{{ category }}">
+                                <div class="message-body">{{ message }}</div>
+                            </article>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <nav class="level">
+                    <div class="level-left"> </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <div class="dropdown">
+                                <div class="dropdown-trigger">
+                                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Kevin Foong</span>
+                                        <span class="icon is-small">
+                                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <hr class="dropdown-divider">
+                                        <a href="{{ url_for('admin_dashboard.logout') }}" class="dropdown-item">
+                                            Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container is-fluid">
+                {% block app_content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='scripts/bulma_dropdown.js') }}"></script>
+    </body>
+</html>

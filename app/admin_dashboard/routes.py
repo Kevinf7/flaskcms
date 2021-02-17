@@ -1,0 +1,110 @@
+from flask import render_template, redirect, url_for, flash, request, session
+from flask_login import current_user, login_user, logout_user, login_required
+from app import db, login_manager
+from app.admin_dashboard import bp
+from app.admin_dashboard.forms import LoginForm, RegistrationForm, ResetPasswordForm, ForgotPasswordForm
+from app.admin_dashboard.email import send_password_reset_email
+from app.admin_dashboard.models import User
+from werkzeug.urls import url_parse
+
+# ADMIN DASHBOARD routes
+
+@bp.route('/')
+@bp.route('/index')
+@login_required
+def index():
+    return render_template('admin_dashboard/index.html')
+
+@bp.route('/login', methods=['GET','POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin_dashboard.index'))
+    next_page = request.args.get('next')
+    form=LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password','danger')
+            return redirect(url_for('admin_dashboard.login',next=next_page))
+
+        # username/password is valid. sets current_user to the user
+        login_user(user, remember=form.remember_me.data)
+        flash('You are now logged in.','success')
+
+        # in case url is absolute we will ignore, we only want a relative url
+        # netloc returns the www.website.com part
+        if not next_page:
+            return redirect(url_for('admin_dashboard.index'))
+        return redirect(url_for(next_page))
+
+    return render_template('admin_dashboard/login.html',form=form)
+
+
+@bp.route('/logout')
+@login_required
+def logout():
+    session.pop('edit_post',None)
+    logout_user()
+    flash('You are now logged out.','success')
+    return redirect(url_for('admin_dashboard.login'))
+
+
+@bp.route('/register', methods=['GET','POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin_dashboard.login'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(email=form.email.data, firstname=form.firstname.data, \
+                    lastname=form.lastname.data, )
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Registration successful!','success')
+        return redirect(url_for('admin_dashboard.login'))
+    return render_template('admin_dashboard/register.html', form=form)
+
+
+# User to enter email address to send forgot password link to
+@bp.route('/forgot_password',methods=['GET','POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin_dashboard.login'))
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            if send_password_reset_email(user):
+                flash('Check your email for instructions to reset your password','success')
+            else:
+                flash('Sorry system error','danger')
+        else:
+            flash('That email does not exist in our database','danger')
+            return redirect(url_for('admin_dashboard.forgot_password'))
+    return render_template('admin_dashboard/forgot_password.html',form=form)
+
+
+# Allow users to create new password
+@bp.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('admin_dashboard.login'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        flash('Token has expired or is no longer valid','danger')
+        return redirect(url_for('admin_dashboard.login'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset','success')
+        return redirect(url_for('admin_dashboard.login'))
+    return render_template('admin_dashboard/reset_password.html', form=form)
+
+
+# handler when you are trying to access a page but you are not logged in
+@login_manager.unauthorized_handler
+def unauthorized():
+    flash('You must be logged in to view this page.','danger')
+    return redirect(url_for('admin_dashboard.login',next=request.endpoint))
+
