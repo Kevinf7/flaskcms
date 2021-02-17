@@ -105,6 +105,6 @@ def reset_password(token):
 # handler when you are trying to access a page but you are not logged in
 @login_manager.unauthorized_handler
 def unauthorized():
-    flash('You must be logged in to view this page.','danger')
+    #flash('You must be logged in to view this page.','danger')
     return redirect(url_for('admin_dashboard.login',next=request.endpoint))
 

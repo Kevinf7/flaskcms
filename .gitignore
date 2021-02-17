@@ -2,4 +2,4 @@ env
 migrations
 .env
 __pycache__
-
+secret.txt
