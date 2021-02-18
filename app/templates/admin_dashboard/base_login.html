@@ -23,7 +23,16 @@
             {% endif %}
         {% endwith %}
         <div class="container">
-            {% block app_content %}{% endblock %}
+            <div class="columns is-justify-content-center mt-6">
+                <div class="column is-narrow">
+                  <div class="hero is-small is-primary">
+                    <div class="hero-body">
+                        <p class="title is-4">Flask CMS</p>
+                    </div>
+                  </div>
+                  {% block app_content %}{% endblock %}
+                </div>
+            </div>
         </div>
     </body>
 </html>

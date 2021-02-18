@@ -74,13 +74,9 @@ def forgot_password():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            if send_password_reset_email(user):
-                flash('Check your email for instructions to reset your password','success')
-            else:
+            if not send_password_reset_email(user):
                 flash('Sorry system error','danger')
-        else:
-            flash('That email does not exist in our database','danger')
-            return redirect(url_for('admin_dashboard.forgot_password'))
+        flash('Check your email for instructions to reset your password','success')
     return render_template('admin_dashboard/forgot_password.html',form=form)
 
 

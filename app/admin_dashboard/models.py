@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
     def get_reset_password_token(self, expires_in=current_app.config['FORGOT_PASSWORD_TOKEN_EXPIRE']):
         return jwt.encode(
             {'reset_password': self.id, 'exp': datetime.utcnow() + timedelta(seconds=expires_in)},
-            current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+            current_app.config['SECRET_KEY'], algorithm='HS256')
 
     # decodes token and returns user object
     @staticmethod

@@ -11,7 +11,7 @@ class LoginForm(FlaskForm, UserMixin):
     email = StringField('Email', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+    submit = SubmitField('Log In')
 
 
 class RegistrationForm(FlaskForm):
@@ -33,7 +33,7 @@ class RegistrationForm(FlaskForm):
 
 class ForgotPasswordForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Email()])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Send Email')
 
 
 class ResetPasswordForm(FlaskForm):
