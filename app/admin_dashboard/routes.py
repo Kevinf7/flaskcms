@@ -19,7 +19,6 @@ def index():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('admin_dashboard.index'))
-    next_page = request.args.get('next')
     form=LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -33,7 +32,8 @@ def login():
 
         # in case url is absolute we will ignore, we only want a relative url
         # netloc returns the www.website.com part
-        if not next_page:
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
             return redirect(url_for('admin_dashboard.index'))
         return redirect(url_for(next_page))
 

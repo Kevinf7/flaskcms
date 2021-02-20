@@ -27,7 +27,14 @@
                 <div class="column is-narrow">
                   <div class="hero is-small is-primary">
                     <div class="hero-body">
-                        <p class="title is-4">Flask CMS</p>
+                        <div class="columns is-vcentered">
+                            <div class="column is-narrow">
+                                <img src="{{ url_for('static', filename='images/crown.svg') }}" width="60"/>
+                            </div>
+                            <div class="column">
+                                <p class="title is-4">Flask CMS</p>
+                            </div>
+                        </div>
                     </div>
                   </div>
                   {% block app_content %}{% endblock %}

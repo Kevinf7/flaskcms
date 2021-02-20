@@ -1,0 +1,79 @@
+{% extends "admin_dashboard/base.html" %}
+{% block title %}Media{% endblock %}
+
+{% block app_content %}
+  {% for img in images.items %}
+  <div class="is-inline-block is-size-7" style="padding:10px;">
+    <img src="{{ url_for('static',filename='uploads/thumbnails/' ~ img.thumbnail) }}">
+    <p>
+      <span id="copyclip-{{ loop.index }}">../../static/uploads/{{ img.filename }}</span>
+      <a href="#" id="{{ loop.index }}" onClick="copyText(this.id);">
+        <i class="far fa-clipboard"></i>
+      </a>
+    </p>
+    <p>{{ img.file_width }}x{{ img.file_height }}</p>
+    <p>{{ img.file_size }} bytes</p>
+    <p>
+      Uploaded: {{ moment(img.create_date).format('DD/MM/YY') }}
+      <a href="{{ url_for('admin_image.del_image',id=img.id) }}"><i class="fas fa-trash-alt"></i></a>
+    </p>
+  </div>
+  {% endfor %}
+
+  {% if images.pages > 1 %}
+  <div class="section">
+    <div class="container">
+      <nav class="pagination" role="navigation" aria-label="pagination">
+        {% if images.has_prev%}
+          <a class="pagination-previous" href="{{ url_for('admin_image.manage_images', page=images.prev_num) }}">Previous</a>
+        {% else %}
+          <a class="pagination-previous" disabled>Previous</a>
+        {% endif %}
+        {% if images.has_next %}
+          <a class="pagination-next" href="{{ url_for('admin_image.manage_images',page=images.next_num) }}">Next Page</a>
+        {% else %}
+          <a class="pagination-next" disabled>Next Page</a>
+        {% endif %}
+        <ul class="pagination-list">
+        {% for page_num in images.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
+          {% if page_num %}
+            {% if page_num != images.page %}
+              <li>
+                <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_image.manage_images', page=page_num) }}">{{ page_num }}</a>
+              </li>
+            {% else %}
+              <li class="pagination-link is-current" aria-label="Page {{ page_num }}" aria-current="page">{{ page_num }}</li>
+            {% endif %}
+          {% else %}
+            <span class="pagination-ellipsis">&hellip;</span>
+          {% endif %}
+        {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Function to copy image gallery link to clipboard
+  function copyText(id) {
+      var txtid = "copyclip-" + id;
+      var copyText = document.getElementById(txtid);
+
+      // Create dummy textare
+      var temp = document.createElement("textarea");
+      document.body.appendChild(temp);
+      temp.value= copyText.innerHTML
+      temp.select();
+
+      try {
+          document.execCommand('copy');
+      } catch (err) {
+          console.log('Copy to clipboard was unsuccessful');
+      }
+  }
+</script>
+{% endblock %}

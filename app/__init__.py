@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_moment import Moment
+from flask_wtf.csrf import CSRFProtect
 from config import Config
 
 
@@ -11,6 +12,7 @@ db = SQLAlchemy()
 migrate = Migrate(compare_type=True)
 moment = Moment()
 login_manager = LoginManager()
+csrf = CSRFProtect()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,21 +23,28 @@ def create_app(config_class=Config):
         login_manager.init_app(app)
         migrate.init_app(app,db)
         moment.init_app(app)
+        csrf.init_app(app)
 
+        from app.admin_dashboard import bp as admin_dashboard_bp
+        app.register_blueprint(admin_dashboard_bp, url_prefix='/admin')
+        
         from app.admin_blog import bp as admin_blog_bp
         app.register_blueprint(admin_blog_bp, url_prefix='/admin')
 
         from app.admin_contact import bp as admin_contact_bp
         app.register_blueprint(admin_contact_bp, url_prefix='/admin')
 
-        from app.admin_dashboard import bp as admin_dashboard_bp
-        app.register_blueprint(admin_dashboard_bp, url_prefix='/admin')
+        from app.admin_page import bp as admin_page_bp
+        app.register_blueprint(admin_page_bp, url_prefix='/admin')
 
+        from app.admin_media import bp as admin_media_bp
+        app.register_blueprint(admin_media_bp, url_prefix='/admin')
+
+        from app.admin_errors import bp as errors_bp
+        app.register_blueprint(errors_bp)
+        
         from app.email import bp as email_bp
         app.register_blueprint(email_bp)
-
-        from app.errors import bp as errors_bp
-        app.register_blueprint(errors_bp)
 
         from app.main import bp as main_bp
         app.register_blueprint(main_bp)

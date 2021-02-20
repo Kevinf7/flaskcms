@@ -7,7 +7,9 @@
         <meta name="description" content="My website">
         <title>{% block title %}{% endblock %}</title>
         <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
-
+        <!-- Flask moment -->
+        {{ moment.include_jquery() }}
+        {{ moment.include_moment() }}
         <!-- CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='styles/mybulma.css') }}" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='styles/app.css') }}" type="text/css">
@@ -17,7 +19,10 @@
             <div class="column is-narrow has-background-info-light">
                 <div class="hero is-small is-primary">
                     <div class="hero-body">
-                        <p class="title is-4">Flask CMS</p>
+                        <div class="title is-4 has-text-centered">
+                            <img src="{{ url_for('static', filename='images/crown.svg') }}" width="60"/><br/>
+                            Flask CMS
+                        </div>
                     </div>
                 </div>
                 <aside class="menu p-3">
@@ -27,14 +32,14 @@
                     <ul class="menu-list">
                         <li><a><i class="fab fa-microblog"></i> Blog</a></li>
                         <li><a><i class="fas fa-tag"></i> Tags</a></li>
-                        <li><a><i class="far fa-file-image"></i> Media</a></li>
-                        <li><a><i class="far fa-file-alt"></i> Page</a></li>
+                        <li><a><i class="far fa-file-alt"></i> Pages</a></li>
+                        <li><a href="{{ url_for('admin_media.media') }}"><i class="far fa-file-image"></i> Media</a></li>
                     </ul>
                     <p class="menu-label">
                         MESSAGES
                     </p>
                     <ul class="menu-list">
-                        <li><a><i class="far fa-id-badge"></i> Contact</a></li>
+                        <li><a href="{{ url_for('admin_contact.contact') }}"><i class="far fa-id-badge"></i> Contact</a></li>
                     </ul>
                 </aside>
             </div>
@@ -55,7 +60,7 @@
                             <div class="dropdown">
                                 <div class="dropdown-trigger">
                                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                                        <span>Kevin Foong</span>
+                                        <span>{{ current_user.firstname }} {{ current_user.lastname }}</span>
                                         <span class="icon is-small">
                                             <i class="fas fa-angle-down" aria-hidden="true"></i>
                                         </span>
@@ -79,5 +84,12 @@
             </div>
         </div>
         <script src="{{ url_for('static', filename='scripts/bulma_dropdown.js') }}"></script>
+        <!--Vue dev version-->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <!--Vue prod version
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+        -->
+        {% block scripts %}
+        {% endblock %}
     </body>
 </html>
