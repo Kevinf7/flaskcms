@@ -22,6 +22,9 @@ def contact():
 def mark_read():
     if request.method == 'POST':
         id = request.form.getlist('chk')
+        if not id:
+            flash('Nothing to update','danger')
+            return redirect(url_for('admin_contact.contact'))
         for i in id:
             c = Contact.query.filter_by(id=i).first()
             c.user_read = 1-c.user_read
