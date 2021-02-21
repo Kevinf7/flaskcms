@@ -30,9 +30,10 @@
                         CONTENT
                     </p>
                     <ul class="menu-list">
-                        <li><a><i class="fab fa-microblog"></i> Blog</a></li>
-                        <li><a><i class="fas fa-tag"></i> Tags</a></li>
-                        <li><a><i class="far fa-file-alt"></i> Pages</a></li>
+                        <li><a href=""><i class="fab fa-microblog"></i> Blog</a></li>
+                        <li><a href=""><i class="far fa-comment"></i> Comments</a></li>
+                        <li><a href=""><i class="fas fa-tag"></i> Tags</a></li>
+                        <li><a href="{{ url_for('admin_page.page') }}"><i class="far fa-file-alt"></i> Pages</a></li>
                         <li><a href="{{ url_for('admin_media.media') }}"><i class="far fa-file-image"></i> Media</a></li>
                     </ul>
                     <p class="menu-label">

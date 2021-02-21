@@ -7,7 +7,7 @@ from app.admin_contact.models import Contact
 
 # ADMIN CONTACT routes 
 
-@bp.route('/contact',methods=['GET','POST'])
+@bp.route('/contact',methods=['GET'])
 @login_required
 def contact():
     page = request.args.get('page',1,type=int)

@@ -41,7 +41,9 @@ class Config(object):
     SEARCH_RESULTS_RETURN = 12
 
     # CONTACT specific
-    # admin number of messages
     MESSAGES_PER_PAGE = 10
+
+    # PAGE specific
+    PAGES_PER_PAGE = 10
 
 

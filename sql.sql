@@ -22,3 +22,13 @@ VALUES("Amy Burr", "amy.burr@abc.com", "What a great website. Well done!", false
 
 INSERT INTO contact(name,email,message,user_read,create_date)
 VALUES("Troy Trojan", "troy@aabb.com", "Please help", false, now());
+
+==
+
+Page
+
+insert into page (name, update_by, update_date, create_date)
+values ('Home', 'kevin_foong@yahoo.com', now(), now());
+
+insert into page (name, update_by, update_date, create_date)
+values ('Contact Us', 'kevin_foong@yahoo.com', now(), now());
