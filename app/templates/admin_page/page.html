@@ -2,64 +2,62 @@
 {% block title %}Page{% endblock %}
 
 {% block app_content %}
-<div id="app">
-    <table class="table is-narrow is-fullwidth">
-      <thead>
-        <tr>
-          <th>Page</th>
-          <th>Last updated</th>
-          <th>Updated by</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for msg in pages.items %}
-        <tr>
-          <td>{{ msg.name }}</td>
-          <td>{{ moment(msg.update_date).format('D MMM YYYY hh:mm') }}</td>
-          <td>{{ msg.update_by }}</td>
-          {% if msg.name == 'Contact Us' %}
-          <td class="has-text-right"><a href="{{ url_for('admin_page.page_contact') }}"><i class="far fa-edit"></i></a></td>
-          {% elif msg.name == 'Home' %}
-          <td class="has-text-right"><a href="{{ url_for('admin_page.page_home') }}"><i class="far fa-edit"></i></a></td>
-          {% endif %}
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+<table class="table is-narrow is-fullwidth">
+  <thead>
+    <tr>
+      <th>Page</th>
+      <th>Last updated</th>
+      <th>Updated by</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for msg in pages.items %}
+    <tr>
+      <td>{{ msg.name }}</td>
+      <td>{{ moment(msg.update_date).format('D MMM YYYY hh:mm') }}</td>
+      <td>{{ msg.update_by }}</td>
+      {% if msg.name == 'Contact Us' %}
+      <td class="has-text-right"><a href="{{ url_for('admin_page.page_contact') }}"><i class="far fa-edit"></i></a></td>
+      {% elif msg.name == 'Home' %}
+      <td class="has-text-right"><a href="{{ url_for('admin_page.page_home') }}"><i class="far fa-edit"></i></a></td>
+      {% endif %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
 
-    {% if pages.pages > 1 %}
-    <div class="section">
-      <div class="container">
-        <nav class="pagination" role="navigation" aria-label="pagination">
-          {% if pages.has_prev%}
-            <a class="pagination-previous" href="{{ url_for('admin_page.page', page=pages.prev_num) }}">Previous</a>
+{% if pages.pages > 1 %}
+<div class="section">
+  <div class="container">
+    <nav class="pagination" role="navigation" aria-label="pagination">
+      {% if pages.has_prev%}
+        <a class="pagination-previous" href="{{ url_for('admin_page.page', page=pages.prev_num) }}">Previous</a>
+      {% else %}
+        <a class="pagination-previous" disabled>Previous</a>
+      {% endif %}
+      {% if pages.has_next %}
+        <a class="pagination-next" href="{{ url_for('admin_page.page',page=pages.next_num) }}">Next Page</a>
+      {% else %}
+        <a class="pagination-next" disabled>Next Page</a>
+      {% endif %}
+      <ul class="pagination-list">
+      {% for page_num in pagess.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
+        {% if page_num %}
+          {% if page_num != page.page %}
+            <li>
+              <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_page.page', page=page_num) }}">{{ page_num }}</a>
+            </li>
           {% else %}
-            <a class="pagination-previous" disabled>Previous</a>
+            <li class="pagination-link is-current" aria-label="Page {{ page_num }}" aria-current="page">{{ page_num }}</li>
           {% endif %}
-          {% if pages.has_next %}
-            <a class="pagination-next" href="{{ url_for('admin_page.page',page=pages.next_num) }}">Next Page</a>
-          {% else %}
-            <a class="pagination-next" disabled>Next Page</a>
-          {% endif %}
-          <ul class="pagination-list">
-          {% for page_num in pagess.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
-            {% if page_num %}
-              {% if page_num != page.page %}
-                <li>
-                  <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_page.page', page=page_num) }}">{{ page_num }}</a>
-                </li>
-              {% else %}
-                <li class="pagination-link is-current" aria-label="Page {{ page_num }}" aria-current="page">{{ page_num }}</li>
-              {% endif %}
-            {% else %}
-              <span class="pagination-ellipsis">&hellip;</span>
-            {% endif %}
-          {% endfor %}
-          </ul>
-        </nav>
-      </div>
-    </div>
-    {% endif %}
+        {% else %}
+          <span class="pagination-ellipsis">&hellip;</span>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    </nav>
+  </div>
 </div>
+{% endif %}
 {% endblock %}

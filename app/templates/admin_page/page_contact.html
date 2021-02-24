@@ -1,0 +1,75 @@
+{% extends "admin_dashboard/base.html" %}
+{% block title %}Page Contact{% endblock %}
+
+{% block app_content %}
+<div class="section">
+  <form method="post" action="{{ url_for('admin_page.page_contact') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <div class="content">
+            <h5>Content</h5>
+          </div>
+        </div>
+      </div>
+      <div class="level-right">
+        <input type="submit" name="btn" value="Submit" class="button">
+      </div>
+    </div>
+    <textarea name="content" id="page">
+      {{ this_ver.content }}
+    </textarea>
+    <input type="hidden" name="id" value="{{ this_ver.id }}">
+  </form>
+</div>
+
+<div class="section pb-6">
+  <div class="content">
+    <p class="is-small has-text-weight-bold">Version History</p>
+    {% if all_ver %}
+    <table class="table is-narrow is-hoverable is-size-7">
+      <thead>
+        <tr>
+          <th>Last published</th>
+          <th>by</th>
+          <th>Content</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in all_ver %}
+          {% if v.id == this_ver.id %}
+          <tr class="has-background-success-light">
+          {% else %}
+          <tr>
+          {% endif %}
+            <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
+            <td>{{ v.update_by }}</td>
+            <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
+            {% if v.id == this_ver.id %}
+            <td>Current</td>
+            <td></td>
+            {% else %}
+            <td></td>
+            <td>
+              <form method="post" action="{{ url_for('admin_page.page_contact_curr') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="id" value="{{ v.id }}">
+                <input type="submit" name="btn" value="Make active" class="button is-small">
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {% include 'admin_page/_tinymce.html' %}
+{% endblock %}

@@ -1,11 +1,12 @@
 from flask import render_template, redirect, url_for, flash, request, make_response, jsonify, current_app
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import db
 from app.admin_page import bp
-from app.admin_page.models import Page, PageHome, PageContact
+from app.admin_page.models import Page, PageHome, PageHomeCurr, PageContact, PageContactCurr
 from app.admin_media.models import Images
 import os
 from PIL import Image
+from datetime import datetime
 
 # ADMIN PAGE routes 
 
@@ -72,13 +73,50 @@ def imageuploader():
 
 # Custom page routes
 
-@bp.route('/page_home',methods=['GET'])
+@bp.route('/page/page_home',methods=['GET'])
 @login_required
 def page_home():
     return redirect(url_for('admin_page.page'))
 
 
-@bp.route('/page_contact',methods=['GET'])
+@bp.route('/page/page_contact', methods=['GET', 'POST'])
 @login_required
 def page_contact():
-    return redirect(url_for('admin_page.page'))
+    if request.method == 'POST':
+        content = request.form.get('content')
+        page_contact_id = request.form.get('id')
+        pc = PageContact.query.filter_by(id=page_contact_id).first()
+        if pc:
+            pc.content = content
+            pc.update_date = datetime.now()
+            pc.update_by = current_user.email
+            db.session.add(pc)
+            db.session.commit()
+            flash('Successfully updated', 'success')
+        else:
+            flash('id error, not updated', 'danger')
+    this_ver = db.session.query(PageContact) \
+        .join(PageContactCurr).first()
+    all_ver = PageContact.query.order_by(PageContact.update_date.desc()).limit(5).all()
+    return render_template('admin_page/page_contact.html', this_ver=this_ver, all_ver=all_ver)
+
+
+@bp.route('/page/page_contact_curr', methods=['POST'])
+@login_required
+def page_contact_curr():
+    if request.method == 'POST':
+        page_contact_id = request.form.get('id')
+        pc = PageContact.query.filter_by(id=page_contact_id).first()
+        if pc:
+            pcc = PageContactCurr.query.first()
+            if pcc.page_contact_id == page_contact_id:
+                flash('page is already current, not updated', 'danger')
+            else:
+                pcc.page_contact_id = page_contact_id
+                db.session.add(pcc)
+                db.session.commit()
+                flash('Successfully updated', 'success')
+        else:
+            flash('id error, not updated', 'danger')
+
+    return redirect(url_for('admin_page.page_contact'))

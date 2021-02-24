@@ -32,3 +32,13 @@ values ('Home', 'kevin_foong@yahoo.com', now(), now());
 
 insert into page (name, update_by, update_date, create_date)
 values ('Contact Us', 'kevin_foong@yahoo.com', now(), now());
+
+INSERT into page_contact (content, page_id, update_by, update_date, create_date)
+VALUES ("Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 2, "kevin_foong@yahoo.com", now(), now());
+
+INSERT into page_contact (content, page_id, update_by, update_date, create_date)
+VALUES ("Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 2, "kevin_foong@yahoo.com", now(), now());
+
+INSERT into page_contact_curr (page_contact_id)
+VALUES (1);
+
