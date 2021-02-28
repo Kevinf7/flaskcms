@@ -27,18 +27,26 @@ VALUES("Troy Trojan", "troy@aabb.com", "Please help", false, now());
 
 Page
 
-insert into page (name, update_by, update_date, create_date)
-values ('Home', 'kevin_foong@yahoo.com', now(), now());
+insert into page (name, last_publish_by, last_publish_date, create_date)
+values ('home', 'kevin_foong@yahoo.com', now(), now());
 
-insert into page (name, update_by, update_date, create_date)
-values ('Contact Us', 'kevin_foong@yahoo.com', now(), now());
+insert into page (name, last_publish_by, last_publish_date, create_date)
+values ('contact', 'kevin_foong@yahoo.com', now(), now());
 
-INSERT into page_contact (content, page_id, update_by, update_date, create_date)
-VALUES ("Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 2, "kevin_foong@yahoo.com", now(), now());
+insert into page_status (name, create_date)
+values ('draft', now());
 
-INSERT into page_contact (content, page_id, update_by, update_date, create_date)
-VALUES ("Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 2, "kevin_foong@yahoo.com", now(), now());
+insert into page_status (name, create_date)
+values ('published', now());
 
-INSERT into page_contact_curr (page_contact_id)
-VALUES (1);
+insert into page_status (name, create_date)
+values ('archived', now());
+
+INSERT into page_contact (status_id, content, page_id, update_by, update_date, create_date)
+VALUES (2, "Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 2, "kevin_foong@yahoo.com", now(), now());
+
+INSERT into page_contact (status_id, content, page_id, update_by, update_date, create_date)
+VALUES (1, "Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 2, "kevin_foong@yahoo.com", now(), now());
+
+
 

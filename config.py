@@ -45,5 +45,7 @@ class Config(object):
 
     # PAGE specific
     PAGES_PER_PAGE = 10
+    UPLOAD_PATH_PAGE = basedir / 'app/static/uploads/page'
+    UPLOAD_PATH_THUMB_PAGE = basedir / 'app/static/uploads/page/thumbnails'
 
 

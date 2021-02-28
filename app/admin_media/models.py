@@ -16,3 +16,6 @@ class Images(db.Model):
 
     def getImage(image_id):
         return Images.query.filter_by(id=image_id).first()
+
+    def __repr__(self):
+        return '<Images {}>'.format(self.filename)
