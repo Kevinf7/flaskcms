@@ -43,10 +43,10 @@ insert into page_status (name, create_date)
 values ('archived', now());
 
 INSERT into page_contact (status_id, content, page_id, update_by, update_date, create_date)
-VALUES (2, "Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 2, "kevin_foong@yahoo.com", now(), now());
+VALUES (1, "Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 4, "kevin_foong@yahoo.com", now(), now());
 
 INSERT into page_contact (status_id, content, page_id, update_by, update_date, create_date)
-VALUES (1, "Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 2, "kevin_foong@yahoo.com", now(), now());
+VALUES (2, "Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 4, "kevin_foong@yahoo.com", now(), now());
 
 
 

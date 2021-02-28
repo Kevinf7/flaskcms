@@ -119,6 +119,8 @@ def page_contact():
                     for p in page_pub:
                         p.page_status = PageStatus.getStatus('archived')
                         db.session.add(p)
+                    content = request.form.get('content')
+                    page.content = content
                     page.page_status = PageStatus.getStatus('published')
                     page.update_by = current_user.email
                     page.update_date = datetime.utcnow()
