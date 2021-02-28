@@ -27,20 +27,59 @@
                 </div>
                 <aside class="menu p-5">
                     <p class="menu-label">
-                        CONTENT
+                        Blog
                     </p>
                     <ul class="menu-list">
-                        <li><a href=""><i class="fab fa-microblog"></i> Blog</a></li>
-                        <li><a href=""><i class="far fa-comment"></i> Comments</a></li>
-                        <li><a href=""><i class="fas fa-tag"></i> Tags</a></li>
-                        <li><a href="{{ url_for('admin_page.page') }}"><i class="far fa-file-alt"></i> Pages</a></li>
-                        <li><a href="{{ url_for('admin_media.media') }}"><i class="far fa-file-image"></i> Media</a></li>
+                        <li>
+                            <a href="">
+                                <span class="menu-spacing"><i class="fab fa-microblog"></i></span>
+                                Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="menu-spacing"><i class="far fa-comment"></i></span>
+                                Comments
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="menu-spacing"><i class="fas fa-tag"></i></span>
+                                Tags
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_media.media') }}">
+                                <span class="menu-spacing"><i class="far fa-file-image"></i></span>
+                                Media
+                            </a>
+                        </li>
+                        <p class="menu-label">
+                            Pages
+                        </p>
+                        <li>
+                            <a href="{{ url_for('admin_page.page') }}">
+                                <span class="menu-spacing"><i class="far fa-file-alt"></i></span>
+                                Pages
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_media.media') }}">
+                                <span class="menu-spacing"><i class="far fa-file-image"></i></span>
+                                Media
+                            </a>
+                        </li>
                     </ul>
                     <p class="menu-label">
-                        MESSAGES
+                        Contact Form
                     </p>
                     <ul class="menu-list">
-                        <li><a href="{{ url_for('admin_contact.contact') }}"><i class="far fa-id-badge"></i> Contact</a></li>
+                        <li>
+                            <a href="{{ url_for('admin_contact.contact') }}">
+                                <span class="menu-spacing"><i class="far fa-id-badge"></i></span>
+                                Messages
+                            </a>
+                        </li>
                     </ul>
                 </aside>
             </div>

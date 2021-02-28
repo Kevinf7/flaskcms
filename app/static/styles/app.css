@@ -13,3 +13,7 @@ html, body {
 body {
     background-color: #FFFFFF;
 }
+.menu-spacing {
+    display: inline-block;
+    width: 30px;
+}
