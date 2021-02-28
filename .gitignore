@@ -3,5 +3,4 @@ migrations
 .env
 __pycache__
 secret.txt
-static/uploads/
-static/uploads/page/
+app/static/uploads/
