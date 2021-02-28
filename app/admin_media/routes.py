@@ -10,7 +10,6 @@ from app.admin_media.models import Images
 
 @bp.route('/media',methods=['GET'])
 @login_required
-@csrf.exempt
 def media():
     msg = request.args.get('msg')
     style = request.args.get('style')
@@ -32,7 +31,6 @@ def media():
 
 @bp.route('/media/del_image',methods=['POST'])
 @login_required
-@csrf.exempt
 def del_image():
     id = request.get_json()['id']
     image = Images.getImage(id)

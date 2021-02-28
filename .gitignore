@@ -4,4 +4,4 @@ migrations
 __pycache__
 secret.txt
 static/uploads/
-
+static/uploads/page/

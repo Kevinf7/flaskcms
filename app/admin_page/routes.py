@@ -99,8 +99,8 @@ def page_contact():
                 else:
                     flash('This page is not a draft, not saved', 'danger')
             elif btn == 'Save as draft':
-                num_drafts = PageContact.query.filter_by(page_status=PageStatus.getStatus('draft')).count()
-                if num_drafts == 0:
+                draft = PageContact.query.filter_by(page_status=PageStatus.getStatus('draft')).first()
+                if not draft:
                     content = request.form.get('content')
                     new_draft = PageContact(content=content, page_id=Page.getPage('contact').id, \
                         page_status=PageStatus.getStatus('draft'), update_by=current_user.email, \
@@ -109,7 +109,14 @@ def page_contact():
                     db.session.commit()
                     flash('Successfully saved new draft', 'success')
                 else:
-                    flash('Draft already exists, not saved', 'danger')
+                    content = request.form.get('content')
+                    draft.content = content
+                    draft.update_by = current_user.email
+                    draft.update_date = datetime.utcnow()
+                    draft.create_date = datetime.utcnow()
+                    db.session.add(draft)
+                    db.session.commit()
+                    flash('Successfully saved as draft', 'success')
             elif btn == 'Publish':
                 if page.page_status == PageStatus.getStatus('published'):
                     flash('Page is already published', 'danger')
