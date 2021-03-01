@@ -33,7 +33,43 @@
   {% if all_ver %}
   <div class="section pb-6">
     <div class="content">
-      <p class="is-small has-text-weight-bold">Version History</p>
+
+      <nav class="level">
+        <div class="level-left"><p class="is-small has-text-weight-bold">Version History</p></div>
+        <div class="level-right">
+            <div class="level-item">
+              <div class="dropdown is-right" id="version-dropdown">
+                <div class="dropdown-trigger">
+                  <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu3">
+                    <span>Show</span>
+                    <span class="icon is-small">
+                      <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                  <div class="dropdown-content">
+                    <div class="app">
+                    <a href="#" @click.prevent="getVersion(5)" class="dropdown-item is-size-7">
+                      5
+                    </a>
+                    <a href="#" @click.prevent="getVersion(10)" class="dropdown-item is-size-7">
+                      10
+                    </a>
+                    <a href="#" @click.prevent="getVersion(20)" class="dropdown-item is-size-7">
+                      20
+                    </a>
+                    <a href="#" @click.prevent="getVersion(100)" class="dropdown-item is-size-7">
+                      100
+                    </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </nav>
+
       <table class="table is-narrow is-hoverable is-size-7">
         <thead>
           <tr>
@@ -88,20 +124,24 @@
 
 {% block scripts %}
 {% include 'admin_page/_tinymce.html' %}
-<!--
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var dropdown = document.querySelector('#version-dropdown');
+  dropdown.addEventListener('click', function(event) {
+     event.stopPropagation();
+     dropdown.classList.toggle('is-active');
+  });
+});
+</script>
 <script>
   new Vue({
     el: '#app',
     delimiters: ['[[', ']]'],
-    data: {
-      showModal: false
-    },
     methods: {
-      showConfirm(e) {
-        this.showModal = true
-        e.preventDefault()
+      getVersion(val) {
+        window.location.href="{{ url_for('admin_page.page_contact') }}?show="+val
       }
     }
   })
-</script>-->
+</script>
 {% endblock %}

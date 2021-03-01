@@ -4,7 +4,7 @@
 {% block app_content %}
 <div id="app">
           
-  <div :class="showModal ? 'is-active' : ''" class="modal">
+  <div :class="showDelModal ? 'is-active' : ''" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="card">
@@ -13,8 +13,12 @@
         </div>
         <footer class="card-footer">
           <div class="container p-4 has-text-centered">
-            <button class="button is-success" @click="deleteImg">Delete</button>
-            <button class="button" @click="cancelDelete">Cancel</button>
+            <form ref="delForm" method="post" action="{{ url_for('admin_media.del_image') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <input type="hidden" name="id" :value="id">
+              <button class="button is-success" @click.prevent="doDelete">Delete</button>
+              <button class="button" @click.prevent="doCancel">Cancel</button>
+            </form>
           </div>
         </footer>
       </div>
@@ -34,7 +38,7 @@
     <p>{{ img.file_size }} bytes</p>
     <p>
       Uploaded: {{ moment(img.create_date).format('DD/MM/YY') }}
-      <a href="#" @click.prevent="confirmDelete({{ img.id }})"><i class="fas fa-trash-alt"></i></a>
+      <a href="#" @click="showConfirm({{ img.id }})"><i class="fas fa-trash-alt"></i></a>
     </p>
   </div>
   {% endfor %}
@@ -102,47 +106,20 @@
     delimiters: ['[[', ']]'],
     data: {
       id: 0,
-      showModal: false
+      showDelModal: false
     },
     methods: {
-      confirmDelete(id) {
+      showConfirm(id) {
         this.id = id
-        this.showModal = true
+        this.showDelModal = true
       },
-      cancelDelete() {
+      doCancel() {
         this.id = 0
-        this.showModal = false
+        this.showDelModal = false
       },
-      deleteImg() {
-        this.showModal = false
-        fetch("{{ url_for('admin_media.del_image') }}", {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: JSON.stringify({
-            id: this.id
-          })
-        })
-        .then((response) => response.json())
-        .then((json) => {
-          this.id = 0
-          msg = json.msg.replace(/\s+/g, '%20')
-          if (json.code >= 400) {
-            url = "{{ url_for('admin_media.media') }}?msg="+msg+"&style=d"
-          } else {    
-            url = "{{ url_for('admin_media.media') }}?msg="+msg+"&style=s"
-          }
-          window.location.href = url
-        })
-        .catch((err) => {
-          this.id = 0
-          console.log('Error', err)
-          url = "{{ url_for('admin_media.media') }}?msg=Client%20error&style=d"
-          window.location.href = url
-        })
+      doDelete() {
+        this.showDelModal = false
+        this.$refs.delForm.requestSubmit()
       }
     }
   })
