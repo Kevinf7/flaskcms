@@ -112,10 +112,8 @@
                                             {{ current_user.firstname }} {{ current_user.lastname }}
                                         </a>
                                         <div class="navbar-dropdown">
-                                            <a class="navbar-item">
-                                                <a href="{{ url_for('admin_auth.logout') }}" class="dropdown-item">
-                                                    Logout
-                                                </a>
+                                            <a class="navbar-item" href="{{ url_for('admin_auth.logout') }}">
+                                                Logout
                                             </a>
                                         </div>
                                     </div>

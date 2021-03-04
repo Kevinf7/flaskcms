@@ -10,13 +10,6 @@ from werkzeug.urls import url_parse
 
 # ADMIN AUTH routes
 
-@bp.route('/')
-@bp.route('/index')
-@login_required
-def index():
-    return render_template('admin_main/index.html')
-
-
 @bp.route('/login', methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:

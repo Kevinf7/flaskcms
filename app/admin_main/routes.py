@@ -6,6 +6,13 @@ from app.admin_main import bp
 
 # ADMIN MAIN routes
 
+@bp.route('/')
+@bp.route('/index')
+@login_required
+def index():
+    return render_template('admin_main/index.html')
+    
+
 @bp.route('/about', methods=['GET'])
 @login_required
 def about():
