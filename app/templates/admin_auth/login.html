@@ -1,4 +1,4 @@
-{% extends "admin_main/base_login.html" %}
+{% extends "admin_auth/base_login.html" %}
 {% block title %}Login{% endblock %}
 
 {% block app_content %}
@@ -46,6 +46,6 @@
   </div>
 </form>
 <div class="container is-size-7" style="text-align: center;">
-    <a href="{{ url_for('admin_dashboard.forgot_password') }}">Forgot Password</a>
+    <a href="{{ url_for('admin_auth.forgot_password') }}">Forgot Password</a>
 </div>
 {% endblock %}
