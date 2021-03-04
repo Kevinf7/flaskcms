@@ -28,10 +28,10 @@ VALUES("Troy Trojan", "troy@aabb.com", "Please help", false, now());
 Page
 
 insert into page (name, user_id, last_publish_date, create_date)
-values ('home', 1, now(), now());
+values ('home', 2, now(), now());
 
 insert into page (name, user_id, last_publish_date, create_date)
-values ('contact', 1, now(), now());
+values ('contact', 2, now(), now());
 
 insert into page_status (name, create_date)
 values ('draft', now());
