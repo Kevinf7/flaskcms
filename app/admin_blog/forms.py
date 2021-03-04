@@ -20,10 +20,5 @@ class CommentFormAnon(FlaskForm):
     recaptcha = RecaptchaField()
 
 
-# Another form if user is logged in
-class CommentFormReg(FlaskForm):
-    comment = TextAreaField('Comment', validators=[InputRequired(), Length(max=1000)])
-    submit = SubmitField('Submit')
-    recaptcha = RecaptchaField()
 
 

@@ -25,14 +25,17 @@ def create_app(config_class=Config):
         moment.init_app(app)
         csrf.init_app(app)
 
-        from app.admin_dashboard import bp as admin_dashboard_bp
-        app.register_blueprint(admin_dashboard_bp, url_prefix='/admin')
+        from app.admin_auth import bp as admin_auth_bp
+        app.register_blueprint(admin_auth_bp, url_prefix='/admin')
+
+        from app.admin_main import bp as admin_main_bp
+        app.register_blueprint(admin_main_bp, url_prefix='/admin')
         
         from app.admin_blog import bp as admin_blog_bp
         app.register_blueprint(admin_blog_bp, url_prefix='/admin')
 
-        from app.admin_contact import bp as admin_contact_bp
-        app.register_blueprint(admin_contact_bp, url_prefix='/admin')
+        from app.admin_message import bp as admin_message_bp
+        app.register_blueprint(admin_message_bp, url_prefix='/admin')
 
         from app.admin_page import bp as admin_page_bp
         app.register_blueprint(admin_page_bp, url_prefix='/admin')

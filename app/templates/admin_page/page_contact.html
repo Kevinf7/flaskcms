@@ -1,12 +1,13 @@
-{% extends "admin_dashboard/base.html" %}
+{% extends "admin_main/base.html" %}
 {% block title %}Page Contact{% endblock %}
 
 {% block app_content %}
-<div id="app">
+<div id="this-block">
   <div class="section">
     <form method="post" action="{{ url_for('admin_page.page_contact') }}">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="id" value="{{ edit_ver.id }}">
+      <input type="hidden" name="limit" :value="numVer"/>
       <div class="level">
         <div class="level-left">
           <div class="level-item">
@@ -17,6 +18,7 @@
         </div>
         <div class="level-right">
           {% if edit_ver.page_status.name == 'draft' %}
+          <input type="submit" name="submit_btn" value="Delete" class="button mr-3">
           <input type="submit" name="submit_btn" value="Save" class="button is-warning mr-3">
           <input type="submit" name="submit_btn" value="Publish" class="button is-success">
           {% else %}
@@ -38,9 +40,10 @@
         <div class="level-left"><p class="is-small has-text-weight-bold">Version History</p></div>
         <div class="level-right">
             <div class="level-item">
-              <div class="dropdown is-right" id="version-dropdown">
+              <div class="dropdown is-right" id="version-dropdown" :class="versionToggle ? 'is-active' : ''">
                 <div class="dropdown-trigger">
-                  <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu3">
+                  <button class="button is-small" @click.prevent="versionToggle=!versionToggle" 
+                  aria-haspopup="true" aria-controls="dropdown-menu3">
                     <span>Show</span>
                     <span class="icon is-small">
                       <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -49,26 +52,29 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu3" role="menu">
                   <div class="dropdown-content">
-                    <div class="app">
-                    <a href="#" @click.prevent="getVersion(5)" class="dropdown-item is-size-7">
+                    <a href="#" @click.prevent="getVer(5)" class="dropdown-item is-size-7">
                       5
                     </a>
-                    <a href="#" @click.prevent="getVersion(10)" class="dropdown-item is-size-7">
+                    <a href="#" @click.prevent="getVer(10)" class="dropdown-item is-size-7">
                       10
                     </a>
-                    <a href="#" @click.prevent="getVersion(20)" class="dropdown-item is-size-7">
+                    <a href="#" @click.prevent="getVer(20)" class="dropdown-item is-size-7">
                       20
                     </a>
-                    <a href="#" @click.prevent="getVersion(100)" class="dropdown-item is-size-7">
+                    <a href="#" @click.prevent="getVer(100)" class="dropdown-item is-size-7">
                       100
                     </a>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
         </div>
       </nav>
+      <form ref="verForm" method="post" action="{{ url_for('admin_page.page_contact') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="limit" :value="numVer"/>
+        <input type="hidden" name="ver_only" value="yes"/>
+      </form>
 
       <table class="table is-narrow is-hoverable is-size-7">
         <thead>
@@ -85,7 +91,7 @@
             {% if v.page_status.name == 'published' %}
             <tr class="has-background-success-light">
               <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
-              <td>{{ v.update_by }}</td>
+              <td>{{ v.author.email }}</td>
               <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
               <td>Published</td>
             {% elif v.page_status.name == 'draft' %}
@@ -97,7 +103,7 @@
             {% else %}
             <tr>
               <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
-              <td>{{ v.update_by }}</td>
+              <td>{{ v.author.email }}</td>
               <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
               <td>Archived</td>
             {% endif %}
@@ -107,7 +113,8 @@
                 {% else %}
                 <form method="post" action="{{ url_for('admin_page.page_contact') }}">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                  <input type="hidden" name="id" value="{{ v.id }}">
+                  <input type="hidden" name="limit" :value="numVer"/>
+                  <input type="hidden" name="id" value="{{ v.id }}"/>
                   <input type="submit" name="submit_btn" value="Edit this version" class="button is-small">
                 </form>
                 {% endif %}
@@ -123,23 +130,23 @@
 {% endblock %}
 
 {% block scripts %}
-{% include 'admin_page/_tinymce.html' %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var dropdown = document.querySelector('#version-dropdown');
-  dropdown.addEventListener('click', function(event) {
-     event.stopPropagation();
-     dropdown.classList.toggle('is-active');
-  });
-});
-</script>
+{% include 'utils/_tinymce.html' %}
 <script>
   new Vue({
-    el: '#app',
+    el: '#this-block',
     delimiters: ['[[', ']]'],
+    data() {
+      return {
+        versionToggle: false,
+        numVer: {{ num_ver }}
+      }
+    },
     methods: {
-      getVersion(val) {
-        window.location.href="{{ url_for('admin_page.page_contact') }}?show="+val
+      getVer(val) {
+        this.numVer = val
+        this.$nextTick(() => {
+          this.$refs.verForm.submit()
+        });
       }
     }
   })

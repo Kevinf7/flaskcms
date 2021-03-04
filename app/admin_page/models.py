@@ -9,7 +9,7 @@ class Page(db.Model):
     __tablename__ = 'page'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
-    last_publish_by = db.Column(db.String(30), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     last_publish_date = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     page_home = db.relationship(
@@ -56,7 +56,7 @@ class PageHome(db.Model):
     section2 = db.Column(db.String(1000))
     status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
-    update_by = db.Column(db.String(30), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     update_date = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
@@ -71,7 +71,7 @@ class PageContact(db.Model):
     content = db.Column(db.String(1000))
     status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
-    update_by = db.Column(db.String(30), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     update_date = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)

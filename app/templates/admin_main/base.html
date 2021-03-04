@@ -31,7 +31,7 @@
                     </p>
                     <ul class="menu-list">
                         <li>
-                            <a href="">
+                            <a href="{{ url_for('admin_blog.blog') }}">
                                 <span class="menu-spacing"><i class="fab fa-microblog"></i></span>
                                 Blog
                             </a>
@@ -75,7 +75,7 @@
                     </p>
                     <ul class="menu-list">
                         <li>
-                            <a href="{{ url_for('admin_contact.contact') }}">
+                            <a href="{{ url_for('admin_message.message') }}">
                                 <span class="menu-spacing"><i class="far fa-id-badge"></i></span>
                                 Messages
                             </a>
@@ -83,7 +83,9 @@
                     </ul>
                     <hr style="border-top: 1px solid #DDDDDD;"/>
                     <ul class="menu-list">
-                        <li><div class="is-size-7">About Flask CMS</div></li>
+                        <li><div class="is-size-7 has-text-centered">
+                            <a href="{{ url_for('admin_main.about') }}">About Flask CMS</a>
+                        </div></li>
                     </ul>
                 </aside>
             </div>
@@ -97,42 +99,53 @@
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
-                <nav class="level">
-                    <div class="level-left"> </div>
-                    <div class="level-right">
-                        <div class="level-item">
-                            <div id="main-profile" class="dropdown">
-                                <div class="dropdown-trigger">
-                                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                                        <span>{{ current_user.firstname }} {{ current_user.lastname }}</span>
-                                        <span class="icon is-small">
-                                            <i class="fas fa-angle-down" aria-hidden="true"></i>
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                    <div class="dropdown-content">
-                                        <hr class="dropdown-divider">
-                                        <a href="{{ url_for('admin_dashboard.logout') }}" class="dropdown-item">
-                                            Logout
+                <div id="main-menu" class="mb-5">
+                    <nav class="level">
+                        <div class="level-left"> 
+
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
+                                    <div class="navbar-item has-dropdown" :class="profileToggle ? 'is-active' : ''">
+                                        <a class="navbar-link" @click.prevent="profileToggle=!profileToggle">
+                                            {{ current_user.firstname }} {{ current_user.lastname }}
                                         </a>
+                                        <div class="navbar-dropdown">
+                                            <a class="navbar-item">
+                                                <a href="{{ url_for('admin_auth.logout') }}" class="dropdown-item">
+                                                    Logout
+                                                </a>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                </nav>
                             </div>
                         </div>
-                    </div>
-                </nav>
+                    </nav>
+                </div>
+
                 <div class="container is-fluid">
                 {% block app_content %}{% endblock %}
                 </div>
             </div>
         </div>
-        <script src="{{ url_for('static', filename='scripts/bulma_dropdown.js') }}"></script>
         <!--Vue dev version-->
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
         <!--Vue prod version
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
         -->
+        <script>
+        new Vue({
+          el: '#main-menu',
+          delimiters: ['[[', ']]'],
+          data() {
+            return {
+              profileToggle: false
+            }
+          }
+        })
+        </script>
         {% block scripts %}
         {% endblock %}
     </body>

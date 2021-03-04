@@ -2,9 +2,10 @@ from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired, Email, EqualTo, ValidationError, Length
 from flask_login import UserMixin
-from app.admin_dashboard.models import User
+from app.admin_auth.models import User
 
-# ADMIN DASHBOARD forms
+
+# ADMIN AUTH forms
 
 # usermixin provides some handy functions for user class
 class LoginForm(FlaskForm, UserMixin):
