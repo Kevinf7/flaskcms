@@ -43,16 +43,16 @@ insert into page_status (name, create_date)
 values ('archived', now());
 
 INSERT into page_contact (status_id, content, page_id, user_id, update_date, create_date)
-VALUES (1, "Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 4, 1, now(), now());
+VALUES (1, "Drop me a line! Either fill in the form below or send me an email. I will get back to you shortly.", 8, 2, now(), now());
 
 INSERT into page_contact (status_id, content, page_id, user_id, update_date, create_date)
-VALUES (2, "Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 4, 1, now(), now());
+VALUES (2, "Drop me a line! Either fill in the form below or send me an <a href='abc'>email</a>. I will get back to you shortly. Thanks!", 8, 2, now(), now());
 
 
 POST
 
 INSERT into post (slug, active, create_date, post, title, update_date, user_id)
-VALUES ('test-slug', 1, now(), 'This is a test post', 'Some title', now(), 1);
+VALUES ('test-slug', 1, now(), 'This is a test post', 'Some title', now(), 2);
 
 INSERT into post (slug, active, create_date, post, title, update_date, user_id)
-VALUES ('another-slug', 1, now(), 'Another test post', 'Yep 123', now(), 1);
+VALUES ('another-slug', 1, now(), 'Another test post', 'Yep 123', now(), 2);

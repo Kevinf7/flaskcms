@@ -1,150 +1,158 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <meta name="description" content="My website">
-        <title>{% block title %}{% endblock %}</title>
-        <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
-        <!-- Flask moment -->
-        {{ moment.include_jquery() }}
-        {{ moment.include_moment() }}
-        <!-- CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles/mybulma.css') }}" type="text/css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles/app.css') }}" type="text/css">
-    </head>
-    <body>
-        <div class="columns is-gapless" style="min-height:100vh;">
-            <div class="column is-narrow has-background-info-light">
-                <div class="hero is-small is-primary">
-                    <div class="hero-body">
-                        <div class="title is-4 has-text-centered">
-                            <img src="{{ url_for('static', filename='images/crown.svg') }}" width="60"/><br/>
-                            Flask CMS
-                        </div>
-                    </div>
-                </div>
-                <aside class="menu p-5">
-                    <p class="menu-label">
-                        Blog
-                    </p>
-                    <ul class="menu-list">
-                        <li>
-                            <a href="{{ url_for('admin_blog.blog') }}">
-                                <span class="menu-spacing"><i class="fab fa-microblog"></i></span>
-                                Blog
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <span class="menu-spacing"><i class="far fa-comment"></i></span>
-                                Comments
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <span class="menu-spacing"><i class="fas fa-tag"></i></span>
-                                Tags
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('admin_media.media') }}">
-                                <span class="menu-spacing"><i class="far fa-file-image"></i></span>
-                                Media
-                            </a>
-                        </li>
-                        <p class="menu-label">
-                            Pages
-                        </p>
-                        <li>
-                            <a href="{{ url_for('admin_page.page') }}">
-                                <span class="menu-spacing"><i class="far fa-file-alt"></i></span>
-                                Pages
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('admin_media.media') }}">
-                                <span class="menu-spacing"><i class="far fa-file-image"></i></span>
-                                Media
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="menu-label">
-                        Contact Form
-                    </p>
-                    <ul class="menu-list">
-                        <li>
-                            <a href="{{ url_for('admin_message.message') }}">
-                                <span class="menu-spacing"><i class="far fa-id-badge"></i></span>
-                                Messages
-                            </a>
-                        </li>
-                    </ul>
-                    <hr style="border-top: 1px solid #DDDDDD;"/>
-                    <ul class="menu-list">
-                        <li><div class="is-size-7 has-text-centered">
-                            <a href="{{ url_for('admin_main.about') }}">About Flask CMS</a>
-                        </div></li>
-                    </ul>
-                </aside>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="My website">
+    <title>{% block title %}{% endblock %}</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
+    <!-- Flask moment -->
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/mybulma.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/app.css') }}" type="text/css">
+  </head>
+  <body>
+    <div class="columns is-gapless" style="min-height:100vh;">
+      <div class="column is-narrow has-background-info-light">
+        <div class="hero is-small is-primary">
+          <div class="hero-body">
+            <div class="title is-4 has-text-centered">
+              <img src="{{ url_for('static', filename='images/crown.svg') }}" width="60"/><br/>
+              Flask CMS
             </div>
-            <div class="column">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <article class="message is-{{ category }}">
-                                <div class="message-body">{{ message }}</div>
-                            </article>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                <div id="main-menu" class="mb-5">
-                    <nav class="level">
-                        <div class="level-left"> 
-
-                        </div>
-                        <div class="level-right">
-                            <div class="level-item">
-                                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
-                                    <div class="navbar-item has-dropdown" :class="profileToggle ? 'is-active' : ''">
-                                        <a class="navbar-link" @click.prevent="profileToggle=!profileToggle">
-                                            {{ current_user.firstname }} {{ current_user.lastname }}
-                                        </a>
-                                        <div class="navbar-dropdown">
-                                            <a class="navbar-item" href="{{ url_for('admin_auth.logout') }}">
-                                                Logout
-                                            </a>
-                                        </div>
-                                    </div>
-                                </nav>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-
-                <div class="container is-fluid">
-                {% block app_content %}{% endblock %}
-                </div>
-            </div>
+          </div>
         </div>
-        <!--Vue dev version-->
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-        <!--Vue prod version
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-        -->
-        <script>
-        new Vue({
-          el: '#main-menu',
-          delimiters: ['[[', ']]'],
-          data() {
-            return {
-              profileToggle: false
-            }
-          }
-        })
-        </script>
-        {% block scripts %}
-        {% endblock %}
-    </body>
+        <aside class="menu p-5">
+          <ul class="menu-list">
+            <li>
+              <a href="{{ url_for('admin_main.index') }}">
+                <span class="menu-spacing"><i class="fas fa-home"></i></span>
+                Home
+              </a>
+            </li>
+          </ul>
+          <p class="menu-label">
+            Blog
+          </p>
+          <ul class="menu-list">
+            <li>
+              <a href="{{ url_for('admin_blog.blog') }}">
+                <span class="menu-spacing"><i class="fab fa-microblog"></i></span>
+                Blog
+              </a>
+            </li>
+            <li>
+              <a href="">
+                <span class="menu-spacing"><i class="far fa-comment"></i></span>
+                Comments
+              </a>
+            </li>
+            <li>
+              <a href="">
+                <span class="menu-spacing"><i class="fas fa-tag"></i></span>
+                Tags
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('admin_media.media') }}">
+                <span class="menu-spacing"><i class="far fa-file-image"></i></span>
+                Media
+              </a>
+            </li>
+            <p class="menu-label">
+              Pages
+            </p>
+            <li>
+              <a href="{{ url_for('admin_page.page') }}">
+                <span class="menu-spacing"><i class="far fa-file-alt"></i></span>
+                Pages
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('admin_media.media') }}">
+                <span class="menu-spacing"><i class="far fa-file-image"></i></span>
+                Media
+              </a>
+            </li>
+          </ul>
+          <p class="menu-label">
+            Contact Form
+          </p>
+          <ul class="menu-list">
+            <li>
+              <a href="{{ url_for('admin_message.message') }}">
+                <span class="menu-spacing"><i class="far fa-id-badge"></i></span>
+                Messages
+              </a>
+            </li>
+          </ul>
+          <hr style="border-top: 1px solid #DDDDDD;"/>
+          <ul class="menu-list">
+            <li><div class="is-size-7 has-text-centered">
+              <a href="{{ url_for('admin_main.about') }}">About Flask CMS</a>
+            </div></li>
+          </ul>
+        </aside>
+      </div>
+      <div class="column">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <article class="message is-{{ category }}">
+                <div class="message-body">{{ message }}</div>
+              </article>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <div id="main-menu" class="mb-5">
+          <nav class="level">
+            <div class="level-left"> 
+
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
+                  <div class="navbar-item has-dropdown" :class="profileToggle ? 'is-active' : ''">
+                    <a class="navbar-link" @click.prevent="profileToggle=!profileToggle">
+                      {{ current_user.firstname }} {{ current_user.lastname }}
+                    </a>
+                    <div class="navbar-dropdown">
+                      <a class="navbar-item" href="{{ url_for('admin_auth.logout') }}">
+                        Logout
+                      </a>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+        <div class="container is-fluid">
+        {% block app_content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+    <!--Vue dev version-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <!--Vue prod version
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    -->
+    <script>
+    new Vue({
+      el: '#main-menu',
+      delimiters: ['[[', ']]'],
+      data() {
+      return {
+        profileToggle: false
+      }
+      }
+    })
+    </script>
+    {% block scripts %}
+    {% endblock %}
+  </body>
 </html>
