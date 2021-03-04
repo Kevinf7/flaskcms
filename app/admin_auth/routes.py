@@ -14,7 +14,7 @@ from werkzeug.urls import url_parse
 @bp.route('/index')
 @login_required
 def index():
-    return render_template('admin_auth/index.html')
+    return render_template('admin_main/index.html')
 
 
 @bp.route('/login', methods=['GET','POST'])
@@ -80,7 +80,6 @@ def forgot_password():
     return render_template('admin_auth/forgot_password.html',form=form)
 
 
-# Allow users to create new password
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
