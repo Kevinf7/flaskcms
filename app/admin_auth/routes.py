@@ -28,15 +28,14 @@ def login():
             flash('Invalid username or password','danger')
             return redirect(url_for('admin_auth.login',next=next_page))
 
-        # username/password is valid. sets current_user to the user
         login_user(user, remember=form.remember_me.data)
-        flash('You are now logged in.','success')
+        flash('You are now logged in','success')
 
         # in case url is absolute we will ignore, we only want a relative url
         # netloc returns the www.website.com part
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            return redirect(url_for('admin_auth.index'))
+            return redirect(url_for('admin_main.index'))
         return redirect(url_for(next_page))
 
     return render_template('admin_auth/login.html',form=form)
@@ -47,7 +46,7 @@ def login():
 def logout():
     session.pop('edit_post',None)
     logout_user()
-    flash('You are now logged out.','success')
+    flash('You are now logged out','success')
     return redirect(url_for('admin_auth.login'))
 
 
@@ -67,7 +66,6 @@ def register():
     return render_template('admin_auth/register.html', form=form)
 
 
-# User to enter email address to send forgot password link to
 @bp.route('/forgot_password',methods=['GET','POST'])
 def forgot_password():
     if current_user.is_authenticated:
