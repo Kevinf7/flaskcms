@@ -88,6 +88,7 @@ def page_contact():
     limit = 5
     if request.method == 'POST':
         limit = request.form.get('limit')
+        print('limit', limit)
         ver_only = request.form.get('ver_only')
         if ver_only != 'yes':
             btn = request.form.get('submit_btn')

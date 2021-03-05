@@ -39,35 +39,17 @@
       <nav class="level">
         <div class="level-left"><p class="is-small has-text-weight-bold">Version History</p></div>
         <div class="level-right">
-            <div class="level-item">
-              <div class="dropdown is-right" id="version-dropdown" :class="versionToggle ? 'is-active' : ''">
-                <div class="dropdown-trigger">
-                  <button class="button is-small" @click.prevent="versionToggle=!versionToggle" 
-                  aria-haspopup="true" aria-controls="dropdown-menu3">
-                    <span>Show</span>
-                    <span class="icon is-small">
-                      <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
-                  </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                  <div class="dropdown-content">
-                    <a href="#" @click.prevent="getVer(5)" class="dropdown-item is-size-7">
-                      5
-                    </a>
-                    <a href="#" @click.prevent="getVer(10)" class="dropdown-item is-size-7">
-                      10
-                    </a>
-                    <a href="#" @click.prevent="getVer(20)" class="dropdown-item is-size-7">
-                      20
-                    </a>
-                    <a href="#" @click.prevent="getVer(100)" class="dropdown-item is-size-7">
-                      100
-                    </a>
-                  </div>
-                </div>
-              </div>
+          <div class="level-item">
+            <span class="is-size-7 mr-2 has-text-weight-bold">Show</span>
+            <div class="select is-small">
+              <select v-model="numVer" @change="getVer">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+              </select>
             </div>
+          </div>
         </div>
       </nav>
       <form ref="verForm" method="post" action="{{ url_for('admin_page.page_contact') }}">
@@ -137,13 +119,11 @@
     delimiters: ['[[', ']]'],
     data() {
       return {
-        versionToggle: false,
         numVer: {{ num_ver }}
       }
     },
     methods: {
-      getVer(val) {
-        this.numVer = val
+      getVer() {
         this.$nextTick(() => {
           this.$refs.verForm.submit()
         });
