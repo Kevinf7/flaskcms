@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from config import Config
+from app.breadcrumb import Breadcrumb
 
 
 db = SQLAlchemy()
@@ -13,6 +14,8 @@ migrate = Migrate(compare_type=True)
 moment = Moment()
 login_manager = LoginManager()
 csrf = CSRFProtect()
+
+breadcrumb = Breadcrumb()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -51,5 +54,7 @@ def create_app(config_class=Config):
 
         from app.main import bp as main_bp
         app.register_blueprint(main_bp)
+
+        breadcrumb.init_app(app)
 
     return app

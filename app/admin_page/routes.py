@@ -7,12 +7,14 @@ from app.admin_media.models import Images
 import os
 from PIL import Image
 from datetime import datetime
+from app.breadcrumb import set_breadcrumb
 
 
 # ADMIN PAGE routes 
 
 @bp.route('/page',methods=['GET'])
 @login_required
+@set_breadcrumb('home page')
 def page():
     page = request.args.get('page',1,type=int)
     pages = Page.query.order_by(Page.name.asc()) \
@@ -73,12 +75,14 @@ def imageuploader():
 
 @bp.route('/page/page_home',methods=['GET'])
 @login_required
+@set_breadcrumb('home page page-home')
 def page_home():
     return redirect(url_for('admin_page.page'))
 
 
 @bp.route('/page/page_contact', methods=['GET', 'POST'])
 @login_required
+@set_breadcrumb('home page page-contact')
 def page_contact():
     edit_ver = None
     limit = 5

@@ -4,14 +4,15 @@ from flask_login import login_required
 from app import db, csrf
 from app.admin_media import bp
 from app.admin_media.models import Images
+from app.breadcrumb import set_breadcrumb
 
 
 # ADMIN_MEDIA routes
 
 @bp.route('/media',methods=['GET'])
 @login_required
+@set_breadcrumb('home media-page')
 def media():
-    # get page number from url. If no page number use page 1
     page = request.args.get('page',1,type=int)
     # True means 404 error is returned if page is out of range. False means an empty list is returned
     images = Images.query.order_by(Images.create_date.desc()) \

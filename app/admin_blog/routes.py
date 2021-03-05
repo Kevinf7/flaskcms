@@ -7,12 +7,14 @@ from app.admin_blog.forms import PostForm
 from app.admin_media.models import Images
 from datetime import datetime
 from slugify import slugify
+from app.breadcrumb import set_breadcrumb
 
 
 # ADMIN BLOG routes
 
 @bp.route('/blog',methods=['GET'])
 @login_required
+@set_breadcrumb('home blog')
 def blog():
     page = request.args.get('page',1,type=int)
     posts = Post.query.order_by(Post.create_date.asc()) \
