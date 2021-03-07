@@ -2,8 +2,7 @@
 {% block title %}Media{% endblock %}
 
 {% block app_content %}
-<div id="app">
-          
+<div id="this-block">       
   <div :class="showDelModal ? 'is-active' : ''" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
@@ -102,11 +101,13 @@
 
 <script>
   new Vue({
-    el: '#app',
+    el: '#this-block',
     delimiters: ['[[', ']]'],
-    data: {
-      id: 0,
-      showDelModal: false
+    data() {
+      return {
+        id: 0,
+        showDelModal: false
+      }
     },
     methods: {
       showConfirm(id) {

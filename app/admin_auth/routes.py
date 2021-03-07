@@ -14,6 +14,7 @@ from werkzeug.urls import url_parse
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('admin_auth.index'))
+    next_page = request.args.get('next')
     form=LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()

@@ -8,8 +8,8 @@ load_dotenv(basedir / '.env')
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'random string'
-    SERVER_NAME = 'flaskcms.pythonanywhere.com'
-    #SERVER_NAME = 'localhost:5000'
+    #SERVER_NAME = 'flaskcms.pythonanywhere.com'
+    SERVER_NAME = 'localhost:5000'
 
     # Dev only so browser doesnt cache for CSS
     if (os.environ.get('FLASK_ENV') == 'development'):

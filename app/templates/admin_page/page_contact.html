@@ -3,116 +3,107 @@
 
 {% block app_content %}
 <div id="this-block">
-  <div class="section">
-    <form method="post" action="{{ url_for('admin_page.page_contact') }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-      <input type="hidden" name="id" value="{{ edit_ver.id }}">
-      <input type="hidden" name="limit" :value="numVer"/>
-      <div class="level">
-        <div class="level-left">
-          <div class="level-item">
-            <div class="content">
-              <h5>Content</h5>
-            </div>
-          </div>
-        </div>
-        <div class="level-right">
-          {% if edit_ver.page_status.name == 'draft' %}
-          <input type="submit" name="submit_btn" value="Delete" class="button mr-3">
-          <input type="submit" name="submit_btn" value="Save" class="button is-warning mr-3">
-          <input type="submit" name="submit_btn" value="Publish" class="button is-success">
-          {% else %}
-          <input type="submit" name="submit_btn" value="Save as draft" class="button is-warning">
-          {% endif %}
-        </div>
+  <form method="post" action="{{ url_for('admin_page.page_contact') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="id" value="{{ edit_ver.id }}">
+    <input type="hidden" name="limit" :value="numVer"/>
+    <div class="level">
+      <div class="level-left">
       </div>
-      <textarea name="content" id="page">
-        {{ edit_ver.content }}
-      </textarea>
-    </form>
-  </div>
+      <div class="level-right">
+        {% if edit_ver.page_status.name == 'draft' %}
+        <input type="submit" name="submit_btn" value="Delete" class="button mr-3">
+        <input type="submit" name="submit_btn" value="Save" class="button is-warning mr-3">
+        <input type="submit" name="submit_btn" value="Publish" class="button is-success">
+        {% else %}
+        <input type="submit" name="submit_btn" value="Save as draft" class="button is-warning">
+        {% endif %}
+      </div>
+    </div>
+    <textarea name="content" id="page">
+      {{ edit_ver.content }}
+    </textarea>
+  </form>
 
   {% if all_ver %}
-  <div class="section pb-6">
-    <div class="content">
+  <div class="content mt-5 mb-6">
 
-      <nav class="level">
-        <div class="level-left"><p class="is-small has-text-weight-bold">Version History</p></div>
-        <div class="level-right">
-          <div class="level-item">
-            <span class="is-size-7 mr-2 has-text-weight-bold">Show</span>
-            <div class="select is-small">
-              <select v-model="numVer" @change="getVer">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="100">100</option>
-              </select>
-            </div>
+    <nav class="level">
+      <div class="level-left"><p class="is-small has-text-weight-bold">Version History</p></div>
+      <div class="level-right">
+        <div class="level-item">
+          <span class="is-size-7 mr-2 has-text-weight-bold">Show</span>
+          <div class="select is-small">
+            <select v-model="numVer" @change="getVer">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="100">100</option>
+            </select>
           </div>
         </div>
-      </nav>
-      <form ref="verForm" method="post" action="{{ url_for('admin_page.page_contact') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <input type="hidden" name="limit" :value="numVer"/>
-        <input type="hidden" name="ver_only" value="yes"/>
-      </form>
+      </div>
+    </nav>
+    <form ref="verForm" method="post" action="{{ url_for('admin_page.page_contact') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="limit" :value="numVer"/>
+      <input type="hidden" name="ver_only" value="yes"/>
+    </form>
 
-      <table class="table is-narrow is-hoverable is-size-7">
-        <thead>
+    <table class="table is-narrow is-hoverable is-size-7">
+      <thead>
+        <tr>
+          <th>Last published</th>
+          <th>by</th>
+          <th>Content</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in all_ver %}
+          {% if v.page_status.name == 'published' %}
+          <tr class="has-background-success-light">
+            <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
+            <td>{{ v.author.email }}</td>
+            <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
+            <td>Published</td>
+          {% elif v.page_status.name == 'draft' %}
+          <tr class="has-background-warning-light">
+            <td></td>
+            <td></td>
+            <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
+            <td>Draft</td>
+          {% else %}
           <tr>
-            <th>Last published</th>
-            <th>by</th>
-            <th>Content</th>
-            <th>Status</th>
-            <th></th>
+            <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
+            <td>{{ v.author.email }}</td>
+            <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
+            <td>Archived</td>
+          {% endif %}
+            <td>
+              {% if v.id == edit_ver.id %}
+              <p>Currently editing</p>
+              {% else %}
+              <form method="post" action="{{ url_for('admin_page.page_contact') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="limit" :value="numVer"/>
+                <input type="hidden" name="id" value="{{ v.id }}"/>
+                <input type="submit" name="submit_btn" value="Edit this version" class="button is-small">
+              </form>
+              {% endif %}
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {% for v in all_ver %}
-            {% if v.page_status.name == 'published' %}
-            <tr class="has-background-success-light">
-              <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
-              <td>{{ v.author.email }}</td>
-              <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
-              <td>Published</td>
-            {% elif v.page_status.name == 'draft' %}
-            <tr class="has-background-warning-light">
-              <td></td>
-              <td></td>
-              <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
-              <td>Draft</td>
-            {% else %}
-            <tr>
-              <td>{{ moment(v.update_date).format('D MMM YYYY hh:mm') }}</td>
-              <td>{{ v.author.email }}</td>
-              <td>{{ v.content|truncate(50,true,'...')|striptags }}</td>
-              <td>Archived</td>
-            {% endif %}
-              <td>
-                {% if v.id == edit_ver.id %}
-                <p>Currently editing</p>
-                {% else %}
-                <form method="post" action="{{ url_for('admin_page.page_contact') }}">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                  <input type="hidden" name="limit" :value="numVer"/>
-                  <input type="hidden" name="id" value="{{ v.id }}"/>
-                  <input type="submit" name="submit_btn" value="Edit this version" class="button is-small">
-                </form>
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
   {% endif %}
 </div>
 {% endblock %}
 
 {% block scripts %}
-{% include 'utils/_tinymce.html' %}
+{% include 'utils/_tinymce_page.html' %}
 <script>
   new Vue({
     el: '#this-block',

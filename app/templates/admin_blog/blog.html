@@ -2,60 +2,137 @@
 {% block title %}Blog{% endblock %}
 
 {% block app_content %}
-<table class="table is-narrow is-fullwidth">
-  <thead>
-    <tr>
-      <th>First publish</th>
-      <th>Last update</th>
-      <th>Last update by</th>
-      <th>Title</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for p in posts.items %}
-    <tr>
-      <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
-      <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
-      <td>{{ p.author.email }}</td>
-      <td>{{ p.title }}</td>
-      <td class="has-text-right"><a href="{{ url_for('admin_page.page_home') }}"><i class="far fa-edit"></i></a></td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-
-{% if posts.pages > 1 %}
-<div class="section">
-  <div class="container">
-    <nav class="pagination" role="navigation" aria-label="pagination">
-      {% if posts.has_prev%}
-        <a class="pagination-previous" href="{{ url_for('admin_page.page', page=posts.prev_num) }}">Previous</a>
-      {% else %}
-        <a class="pagination-previous" disabled>Previous</a>
-      {% endif %}
-      {% if posts.has_next %}
-        <a class="pagination-next" href="{{ url_for('admin_page.page', page=posts.next_num) }}">Next Page</a>
-      {% else %}
-        <a class="pagination-next" disabled>Next Page</a>
-      {% endif %}
-      <ul class="pagination-list">
-      {% for page_num in pagess.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
-        {% if page_num %}
-          {% if page_num != page.page %}
-            <li>
-              <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_page.page', page=page_num) }}">{{ page_num }}</a>
-            </li>
-          {% else %}
-            <li class="pagination-link is-current" aria-label="Page {{ page_num }}" aria-current="page">{{ page_num }}</li>
-          {% endif %}
-        {% else %}
-          <span class="pagination-ellipsis">&hellip;</span>
-        {% endif %}
-      {% endfor %}
-      </ul>
-    </nav>
+<div id="this-block">
+  <div :class="showDelModal ? 'is-active' : ''" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <form ref="delForm" method="post" action="{{ url_for('admin_blog.del_post') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="id" :value="id">
+        <div class="card">
+          <div class="card-content">
+            <div class="content">
+            <p>Please choose delete type</p>
+              <label class="radio">
+                <input type="radio" name="delType" value="soft" v-model="delPicked">
+                Soft
+              </label>
+              <label class="radio">
+                <input type="radio" name="delType" value="hard" v-model="delPicked">
+                Hard (permanent)
+              </label>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="container p-4 has-text-centered">
+              <button class="button is-success" @click.prevent="doDelete">Delete</button>
+              <button class="button" @click.prevent="doCancel">Cancel</button>
+            </div>
+          </footer>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+
+  <div class="level">
+    <div class="level-left">
+    </div>
+    <div class="level-right">
+      <button class="button is-success" @click="gotoURL('{{ url_for('admin_blog.post') }}')">
+          Create Post
+      </button>
+    </div>
+  </div>
+  <table class="table is-narrow is-fullwidth">
+    <thead>
+      <tr>
+        <th>First publish</th>
+        <th>Last update</th>
+        <th>Last update by</th>
+        <th>Title</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in posts.items %}
+      <tr>
+        <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
+        <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
+        <td>{{ p.author.email }}</td>
+        <td>{{ p.title }}</td>
+        <td class="has-text-right">
+          <a href="{{ url_for('admin_blog.blog') }}" class="mr-3"><i class="far fa-edit"></i></a>
+          <a href="#" @click="showDelOptions({{ p.id }})"><i class="far fa-trash-alt"></i></a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% if posts.pages > 1 %}
+  <div class="section">
+    <div class="container">
+      <nav class="pagination" role="navigation" aria-label="pagination">
+        {% if posts.has_prev%}
+          <a class="pagination-previous" href="{{ url_for('admin_blog.blog', page=posts.prev_num) }}">Previous</a>
+        {% else %}
+          <a class="pagination-previous" disabled>Previous</a>
+        {% endif %}
+        {% if posts.has_next %}
+          <a class="pagination-next" href="{{ url_for('admin_blog.blog', page=posts.next_num) }}">Next Page</a>
+        {% else %}
+          <a class="pagination-next" disabled>Next Page</a>
+        {% endif %}
+        <ul class="pagination-list">
+        {% for page_num in pagess.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
+          {% if page_num %}
+            {% if page_num != page.blog %}
+              <li>
+                <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_blog.blog', page=page_num) }}">{{ page_num }}</a>
+              </li>
+            {% else %}
+              <li class="pagination-link is-current" aria-label="Page {{ page_num }}" aria-current="page">{{ page_num }}</li>
+            {% endif %}
+          {% else %}
+            <span class="pagination-ellipsis">&hellip;</span>
+          {% endif %}
+        {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  </div>
 {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  new Vue({
+    el: '#this-block',
+    delimiters: ['[[', ']]'],
+    data() {
+      return {
+        id: 0,
+        delPicked: 'soft',
+        showDelModal: false
+      }
+    },
+    methods: {
+      showDelOptions(id) {
+        this.id = id
+        this.showDelModal = true
+      },
+      doCancel() {
+        this.showDelModal = false
+      },
+      doDelete() {
+        this.showDelModal = false
+        this.$refs.delForm.requestSubmit()
+      },
+      gotoURL(url) {
+        window.location.href=(url)
+      }
+    }
+  })
+</script>
 {% endblock %}

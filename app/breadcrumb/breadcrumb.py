@@ -15,6 +15,8 @@ class Breadcrumb(object):
                 'url': url_for('admin_main.index'), 'icon': '<i class="fas fa-home"></i>'})
             Breadcrumb.map.append({'key': 'blog', 'name': 'Blog', 
                 'url': url_for('admin_blog.blog'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'post', 'name': 'Create Post', 
+                'url': url_for('admin_blog.post'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page', 'name': 'Pages', 
                 'url': url_for('admin_page.page'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact Us', 

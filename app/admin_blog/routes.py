@@ -17,7 +17,7 @@ from app.breadcrumb import set_breadcrumb
 @set_breadcrumb('home blog')
 def blog():
     page = request.args.get('page',1,type=int)
-    posts = Post.query.order_by(Post.create_date.asc()) \
+    posts = Post.query.order_by(Post.active.desc(), Post.create_date.desc()) \
     .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
 
     return render_template('admin_blog/blog.html',posts=posts)
@@ -56,18 +56,17 @@ def processTags(tags_new,post):
     if changed:
         db.session.commit()
 
-'''
-# add a new post
-@bp.route('/add_post/',methods=['GET','POST'])
+
+@bp.route('/post',methods=['GET','POST'])
 @login_required
-def add_post():
+@set_breadcrumb('home blog post')
+def post():
     form = PostForm()
     if form.validate_on_submit():
-        heading = form.heading.data
-        slug = slugify(heading)
+        title = form.title.data
+        slug = slugify(title)
         if Post.getPostBySlug(slug) is None:
-            # write post to db
-            post = Post(heading=heading,slug=slug,post=form.post.data,author=current_user)
+            post = Post(title=title,slug=slug,post=form.post.data,author=current_user)
             db.session.add(post)
             db.session.commit()
 
@@ -76,16 +75,15 @@ def add_post():
             tag_list = [t.strip() for t in tags.split(',')]
             processTags(tag_list,post)
 
-            flash('Your post has been published!','success')
-            return redirect(url_for('main.index'))
-        flash('Error post not created as title already exists in database.','danger')
-        return redirect(url_for('main.index'))
-    return render_template('post/add_post.html',form=form)
+            flash('Your post has been published','success')
+        else:
+            flash('Error post not created as title already exists in database','danger')
+    return render_template('admin_blog/post.html',form=form)
 
-# edit an existing post which you posted
-@bp.route('/edit_post/<slug>',methods=['GET','POST'])
+'''
+@bp.route('/post/id',methods=['GET','POST'])
 @login_required
-def edit_post(slug):
+def edit_post(id):
     old_slug = slug
     post = Post.getPostBySlug(slug)
     # slug is wrong
@@ -125,33 +123,29 @@ def edit_post(slug):
 
     tags = post.getTagNamesStr()
     return render_template('post/edit_post.html',form=form,post=post,tags=tags)
+'''
 
-# delete an existing post - only admin can perform
-@bp.route('/del_post/<slug>',methods=['GET','POST'])
+@bp.route('/del_post',methods=['POST'])
 @login_required
-def del_post(slug):
-    post = Post.getPostBySlug(slug)
-    # slug is wrong
+def del_post():
+    post_id = request.form.get('id')
+    del_type = request.form.get('delType')
+    post = Post.query.filter_by(id=post_id).first()
     if post is None:
-        flash('No such post exists.','danger')
-        return redirect(url_for('index'))
-    # only admin can delete post
-    if not current_user.is_admin():
-        flash('You do not have permission to perform this function','danger')
-        return redirect(url_for('main.index'))
-
-    # user confirms he wants to delete
-    if request.method == 'POST':
-        #we want to do a soft delete only
-        post.current=False
-        db.session.add(post)
-        #also delete all the tag links associated to this post
+        flash('No such post exist','danger')
+    elif del_type != 'soft' and del_type != 'hard':
+        flash('Select option error','danger')
+    else:
         tagged = Tagged.query.filter_by(post_id=post.id).all()
         for t in tagged:
             db.session.delete(t)
+        if del_type == 'soft':
+            post.active=False
+            db.session.add(post)
+            flash('The post has been soft deleted','success')
+        elif del_type == 'hard':
+            db.session.delete(post)
+            flash('The post has been hard (permanently) deleted','success')
         db.session.commit()
-        flash('The post has been deleted','danger')
-        return redirect(url_for('main.index'))
-    tags = post.getTagNamesStr()
-    return render_template('post/del_post.html',post=post,tags=tags)
-'''
+        
+    return redirect(url_for('admin_blog.blog'))
