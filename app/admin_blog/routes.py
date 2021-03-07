@@ -80,10 +80,14 @@ def post():
             flash('Error post not created as title already exists in database','danger')
     return render_template('admin_blog/post.html',form=form)
 
-'''
-@bp.route('/post/id',methods=['GET','POST'])
+
+@bp.route('/edit_post',methods=['GET','POST'])
 @login_required
-def edit_post(id):
+@set_breadcrumb('home blog edit-post')
+def edit_post():
+    form = PostForm()
+    return render_template('admin_blog/post.html',form=form)
+'''
     old_slug = slug
     post = Post.getPostBySlug(slug)
     # slug is wrong

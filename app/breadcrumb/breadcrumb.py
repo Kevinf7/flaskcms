@@ -17,6 +17,8 @@ class Breadcrumb(object):
                 'url': url_for('admin_blog.blog'), 'icon': ''})
             Breadcrumb.map.append({'key': 'post', 'name': 'Create Post', 
                 'url': url_for('admin_blog.post'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'edit-post', 'name': 'Edit Post', 
+                'url': url_for('admin_blog.edit_post'), 'icon': '', 'has-arg': True})
             Breadcrumb.map.append({'key': 'page', 'name': 'Pages', 
                 'url': url_for('admin_page.page'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact Us', 
@@ -38,7 +40,14 @@ def set_breadcrumb(path):
             for k in key:
                 for b in Breadcrumb.map:
                     if k == b['key']:
-                        breadcrumb.append(b)
+                        new_b = b.copy()
+                        if 'has-arg' in b:
+                            if b['has-arg']:
+                                r = request.query_string
+                                if r:
+                                    r = r.decode('utf-8')
+                                    new_b['url'] = new_b['url'] + '?' + r
+                        breadcrumb.append(new_b)
             setattr(g, 'breadcrumb', breadcrumb)
             return f(*args, **kwargs)
         return wrapper

@@ -2,34 +2,36 @@
 {% block title %}Page{% endblock %}
 
 {% block app_content %}
-<table class="table is-narrow is-fullwidth">
-  <thead>
-    <tr>
-      <th>Page</th>
-      <th>Published</th>
-      <th>by</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for msg in pages.items %}
-    <tr>
-      {% if msg.name == 'contact' %}
-      <td>Contact Us</td>
-      {% elif msg.name == 'home' %}
-      <td>Home</td>
-      {% endif %}
-      <td>{{ moment(msg.last_publish_date).format('D MMM YYYY hh:mm') }}</td>
-      <td>{{ msg.last_publish_by.email }}</td>
-      {% if msg.name == 'contact' %}
-      <td class="has-text-right"><a href="{{ url_for('admin_page.page_contact') }}"><i class="far fa-edit"></i></a></td>
-      {% elif msg.name == 'home' %}
-      <td class="has-text-right"><a href="{{ url_for('admin_page.page_home') }}"><i class="far fa-edit"></i></a></td>
-      {% endif %}
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<div class="table-container">
+  <table class="table is-narrow is-fullwidth">
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Published</th>
+        <th>by</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for msg in pages.items %}
+      <tr>
+        {% if msg.name == 'contact' %}
+        <td>Contact Us</td>
+        {% elif msg.name == 'home' %}
+        <td>Home</td>
+        {% endif %}
+        <td>{{ moment(msg.last_publish_date).format('D MMM YYYY hh:mm') }}</td>
+        <td>{{ msg.last_publish_by.email }}</td>
+        {% if msg.name == 'contact' %}
+        <td class="has-text-right"><a href="{{ url_for('admin_page.page_contact') }}"><i class="far fa-edit"></i></a></td>
+        {% elif msg.name == 'home' %}
+        <td class="has-text-right"><a href="{{ url_for('admin_page.page_home') }}"><i class="far fa-edit"></i></a></td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% if pages.pages > 1 %}
 <div class="section">

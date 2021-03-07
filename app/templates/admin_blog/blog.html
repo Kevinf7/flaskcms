@@ -43,31 +43,33 @@
       </button>
     </div>
   </div>
-  <table class="table is-narrow is-fullwidth">
-    <thead>
-      <tr>
-        <th>First publish</th>
-        <th>Last update</th>
-        <th>Last update by</th>
-        <th>Title</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for p in posts.items %}
-      <tr>
-        <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
-        <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
-        <td>{{ p.author.email }}</td>
-        <td>{{ p.title }}</td>
-        <td class="has-text-right">
-          <a href="{{ url_for('admin_blog.blog') }}" class="mr-3"><i class="far fa-edit"></i></a>
-          <a href="#" @click="showDelOptions({{ p.id }})"><i class="far fa-trash-alt"></i></a>
-        </td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-container">
+    <table class="table is-narrow is-fullwidth">
+      <thead>
+        <tr>
+          <th>First publish</th>
+          <th>Last update</th>
+          <th>Last update by</th>
+          <th>Title</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for p in posts.items %}
+        <tr>
+          <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
+          <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
+          <td>{{ p.author.email }}</td>
+          <td>{{ p.title }}</td>
+          <td class="has-text-right">
+            <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}" class="mr-3"><i class="far fa-edit"></i></a>
+            <a href="#" @click="showDelOptions({{ p.id }})"><i class="far fa-trash-alt"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
   {% if posts.pages > 1 %}
   <div class="section">
