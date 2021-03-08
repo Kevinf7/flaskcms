@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="My website">
     <title>{% block title %}{% endblock %}</title>
@@ -22,8 +22,9 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
+
     <div class="container">
-      <div class="columns is-justify-content-center mt-6">
+      <div class="columns is-justify-content-center pt-6 pl-2 pr-2">
         <div class="column is-narrow">
           <div class="hero is-small is-primary">
             <div class="hero-body">

@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="My website">
+    <meta name="description" content="Flask CMS">
     <title>{% block title %}{% endblock %}</title>
     <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF" crossorigin="anonymous"></script>
     <!-- Flask moment -->
@@ -143,7 +143,7 @@
           </nav>
         </div>
 
-        <div class="container ml-5 mr-5">
+        <div class="container is-fluid pl-5 pr-5 pt-3 pb-5">
         {% block app_content %}{% endblock %}
         </div>
       </div>

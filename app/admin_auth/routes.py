@@ -13,7 +13,7 @@ from werkzeug.urls import url_parse
 @bp.route('/login', methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('admin_auth.index'))
+        return redirect(url_for('admin_main.index'))
     next_page = request.args.get('next')
     form=LoginForm()
     if form.validate_on_submit():

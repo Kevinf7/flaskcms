@@ -8,6 +8,9 @@
     <div class="field">
       {{ form.title.label(class_='label') }}
       <p class="control">
+        {% if post %}
+        {% set t = form.title.process_data(post.title) %}
+        {% endif %}
         {{ form.title(class_="input") }}
       </p>
       {% for error in form.title.errors %}
@@ -17,11 +20,14 @@
 
     <div class="field">
       {{ form.post.label(class_='label') }}
-      <p class="help is-info"">
+      <p class="help is-info">
         Hint: Add a summary break by adding &lt;p&gt;br&lt;a id="br"&gt;&lt;/a&gt;&lt;/p&gt;
       </p>
       <p class="control">
-        {{ form.post(rows=16) }}
+        {% if post %}
+        {% set p = form.post.process_data(post.post) %}
+        {% endif %}
+        {{ form.post() }}
       </p>
       {% for error in form.post.errors %}
       <p class="help is-danger">{{ error }}</p>

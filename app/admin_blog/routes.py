@@ -85,21 +85,18 @@ def post():
 @login_required
 @set_breadcrumb('home blog edit-post')
 def edit_post():
+    id = request.args.get('id')
+    if id:
+        post = Post.query.filter_by(id=id).first()
+        if not post:
+            flash('Post not found','danger')
+            return redirect(url_for('admin_blog.blog'))
+    else:
+        flash('id is missing','danger')
+        return redirect(url_for('admin_blog.blog'))
     form = PostForm()
-    return render_template('admin_blog/post.html',form=form)
+    return render_template('admin_blog/post.html',form=form,post=post)
 '''
-    old_slug = slug
-    post = Post.getPostBySlug(slug)
-    # slug is wrong
-    if post is None:
-        flash('No such post exists.','danger')
-        return redirect(url_for('index'))
-    # users's cannot edit other user's post, not needed in this blog but there anyways
-    if post.author.id != current_user.id:
-        flash("You are not authorised to edit someone else's post",'danger')
-        return redirect(url_for('main.index'))
-
-    form = PostForm()
     if form.validate_on_submit():
         heading = form.heading.data
         slug = slugify(heading)
