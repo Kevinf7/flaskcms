@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, current_app
+from flask import render_template, redirect, url_for, flash, request, current_app, session
 from flask_login import current_user, login_required
 from app import db
 from app.admin_blog import bp
@@ -12,49 +12,60 @@ from app.breadcrumb import set_breadcrumb
 
 # ADMIN BLOG routes
 
-@bp.route('/blog',methods=['GET'])
+@bp.route('/blog',methods=['GET', 'POST'])
 @login_required
 @set_breadcrumb('home blog')
 def blog():
+    if 'blog_show_type' in session:
+        show_type = session['blog_show_type']
+    else:
+        show_type = 'all'
+    if request.method == 'POST':
+        s = request.form.get('show_type')
+        if s!= 'all' and s!= 'published' and s!= 'draft':
+            flash('Show type error', 'danger')
+        else:
+            show_type = s
     page = request.args.get('page',1,type=int)
-    posts = Post.query.order_by(Post.active.desc(), Post.create_date.desc()) \
-    .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+    if show_type == 'all':
+        session['blog_show_type'] = 'all'
+        posts = Post.query.order_by(Post.active.desc(), Post.create_date.desc()) \
+        .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+    elif show_type == 'published':
+        session['blog_show_type'] = 'published'
+        posts = Post.query.filter_by(active=True) \
+        .order_by(Post.active.desc(), Post.create_date.desc()) \
+        .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+    elif show_type == 'draft':
+        session['blog_show_type'] = 'draft'
+        posts = Post.query.filter_by(active=False) \
+        .order_by(Post.active.desc(), Post.create_date.desc()) \
+        .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
 
-    return render_template('admin_blog/blog.html',posts=posts)
+    return render_template('admin_blog/blog.html',posts=posts,show_type=show_type)
 
 
 def processTags(tags_new,post):
-    changed=False
-    # get all current tags for post
     tags_current = post.getTagNames()
     # check if any tags should be deleted
     for tag in tags_current:
         if tag not in tags_new:
-            # tag has been deleted, delete from Tagged table
             id = Tag.getTagId(tag)
             Tagged.query.filter_by(post_id=post.id,tag_id=id).delete()
             changed=True
-
     # is there tags to add?
     if not(len(tags_new) == 1 and tags_new[0] == ''):
-        # if tag doesn't exist create it in Tags table
         for tag in tags_new:
             if Tag.getTagId(tag) == -1:
                 t = Tag(name=tag)
                 db.session.add(t)
                 changed=True
-
         #check if any tags should be added
         for tag in tags_new:
             if tag not in tags_current:
-                # tag is new, add to Tagged table
                 id = Tag.getTagId(tag)
                 t = Tagged(post_id=post.id, tag_id=id)
                 db.session.add(t)
-                changed=True
-    # maybe better, just call commit once
-    if changed:
-        db.session.commit()
 
 
 @bp.route('/post',methods=['GET','POST'])
@@ -62,23 +73,23 @@ def processTags(tags_new,post):
 @set_breadcrumb('home blog post')
 def post():
     form = PostForm()
+    new_tags=''
     if form.validate_on_submit():
         title = form.title.data
         slug = slugify(title)
         if Post.getPostBySlug(slug) is None:
             post = Post(title=title,slug=slug,post=form.post.data,author=current_user)
             db.session.add(post)
-            db.session.commit()
-
-            # tags should be separated by commas (,) and start with hash (#)
-            tags = form.tags.data
+            tags = request.form.get('tags')
             tag_list = [t.strip() for t in tags.split(',')]
             processTags(tag_list,post)
-
+            db.session.commit()
+            new_tags = post.getTagNamesStr()
             flash('Your post has been published','success')
+            return redirect(url_for('admin_blog.edit_post',id=post.id))
         else:
-            flash('Error post not created as title already exists in database','danger')
-    return render_template('admin_blog/post.html',form=form)
+            flash('Title already exists on another post','danger')
+    return render_template('admin_blog/post.html',form=form,tags=new_tags)
 
 
 @bp.route('/edit_post',methods=['GET','POST'])
@@ -86,67 +97,108 @@ def post():
 @set_breadcrumb('home blog edit-post')
 def edit_post():
     id = request.args.get('id')
-    if id:
-        post = Post.query.filter_by(id=id).first()
-        if not post:
-            flash('Post not found','danger')
-            return redirect(url_for('admin_blog.blog'))
-    else:
+    if not id:
         flash('id is missing','danger')
         return redirect(url_for('admin_blog.blog'))
+    post = Post.query.filter_by(id=id).first()
+    if not post:
+        flash('Post not found','danger')
+        return redirect(url_for('admin_blog.blog'))
+
     form = PostForm()
-    return render_template('admin_blog/post.html',form=form,post=post)
-'''
     if form.validate_on_submit():
-        heading = form.heading.data
-        slug = slugify(heading)
-        # check if heading already exists
+        title = form.title.data
+        slug = slugify(title)
         check_post = Post.getPostBySlug(slug)
-        if (check_post is not None):
-            if (check_post.id != post.id):
-                flash('Error post not created as title already exists in database.','danger')
-                return redirect('/post_detail/' + old_slug)
-
-        post.heading = heading
-        post.slug = slug
-        post.post = form.post.data
-        post.update_date = datetime.utcnow()
-        db.session.add(post)
-        db.session.commit()
-
-        # tags should be separated by commas (,) and start with hash (#)
-        tags = form.tags.data
-        tag_list = [t.strip() for t in tags.split(',')]
-        processTags(tag_list,post)
-
-        flash('Your post has been updated!','success')
-        return redirect('/post_detail/' + slug)
+        if (check_post is not None and check_post.id != post.id):
+            flash('Title already exists on another post','danger')
+        else:
+            post.title = title
+            post.slug = slug
+            post.post = form.post.data
+            post.update_date = datetime.utcnow()
+            db.session.add(post)
+            tags = form.tags.data
+            tag_list = [t.strip() for t in tags.split(',')]
+            processTags(tag_list,post)
+            db.session.commit()
+            flash('Post has been updated','success')
 
     tags = post.getTagNamesStr()
-    return render_template('post/edit_post.html',form=form,post=post,tags=tags)
-'''
+    return render_template('admin_blog/edit_post.html',form=form,post=post,tags=tags)
+
 
 @bp.route('/del_post',methods=['POST'])
 @login_required
 def del_post():
     post_id = request.form.get('id')
-    del_type = request.form.get('delType')
+    del_type = request.form.get('del_type')
     post = Post.query.filter_by(id=post_id).first()
     if post is None:
         flash('No such post exist','danger')
-    elif del_type != 'soft' and del_type != 'hard':
-        flash('Select option error','danger')
+    elif del_type != 'soft' and del_type != 'hard' and del_type != 'restore':
+        flash('Delete type error','danger')
     else:
-        tagged = Tagged.query.filter_by(post_id=post.id).all()
-        for t in tagged:
-            db.session.delete(t)
-        if del_type == 'soft':
-            post.active=False
+        if del_type == 'restore':
+            post.active=True
             db.session.add(post)
-            flash('The post has been soft deleted','success')
-        elif del_type == 'hard':
-            db.session.delete(post)
-            flash('The post has been hard (permanently) deleted','success')
+            flash('The post has been restored','success')
+        else:
+            tagged = Tagged.query.filter_by(post_id=post.id).all()
+            for t in tagged:
+                db.session.delete(t)
+            if del_type == 'soft':
+                post.active=False
+                db.session.add(post)
+                flash('The post has been soft deleted','success')
+            elif del_type == 'hard':
+                db.session.delete(post)
+                flash('The post has been hard (permanently) deleted','success')
         db.session.commit()
         
     return redirect(url_for('admin_blog.blog'))
+
+
+@bp.route('/tags',methods=['GET'])
+@login_required
+@set_breadcrumb('home blog tags')
+def tags():
+    tag_used = db.session.query(Tag).join(Tagged).all()
+    tag_all = Tag.query.all()
+    tag_notused = []
+    for t in tag_all:
+        if t not in tag_used:
+            tag_notused.append(t)
+
+    return render_template('admin_blog/tags.html',tag_used=tag_used, tag_notused=tag_notused)
+
+'''
+@bp.route('/edit_tag/<id>',methods=['GET','POST'])
+@login_required
+def edit_tag(id):
+    form = EditTagForm()
+    tag = Tag.getTag(id)
+    if form.validate_on_submit():
+        tag.name = form.tag_name.data
+        tag.update_date = datetime.utcnow()
+        db.session.add(tag)
+        db.session.commit()
+        flash('The tag has been successfully updated','success')
+        return redirect(url_for('admin_tag.manage_tags'))
+    return render_template('admin_tag/edit_tag.html',form=form,tag=tag)
+
+@bp.route('/del_tag/<id>',methods=['GET','POST'])
+@login_required
+def del_tag(id):
+    form = DeleteTagForm()
+    tag = Tag.getTag(id)
+    if tag is None:
+        flash('No such tag.','danger')
+        return redirect(url_for('main.index'))
+    if form.validate_on_submit():
+        db.session.delete(tag)
+        db.session.commit()
+        flash('The tag has been successfully deleted','success')
+        return redirect(url_for('admin_tag.manage_tags'))
+    return render_template('admin_tag/del_tag.html',form=form,tag=tag)
+'''

@@ -3,71 +3,131 @@
 
 {% block app_content %}
 <div id="this-block">
-  <div :class="showDelModal ? 'is-active' : ''" class="modal">
+  <div :class="showDraftModal ? 'is-active' : ''" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <form ref="delForm" method="post" action="{{ url_for('admin_blog.del_post') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <input type="hidden" name="id" :value="id">
-        <div class="card">
-          <div class="card-content">
-            <div class="content">
-            <p>Please choose delete type</p>
-              <label class="radio">
-                <input type="radio" name="delType" value="soft" v-model="delPicked">
-                Soft
-              </label>
-              <label class="radio">
-                <input type="radio" name="delType" value="hard" v-model="delPicked">
-                Hard (permanent)
-              </label>
-            </div>
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+          <p>Do you want to make this post a draft (unpublish)?</p>
           </div>
-          <footer class="card-footer">
-            <div class="container p-4 has-text-centered">
-              <button class="button is-success" @click.prevent="doDelete">Delete</button>
-              <button class="button" @click.prevent="doCancel">Cancel</button>
-            </div>
-          </footer>
         </div>
-      </form>
+        <footer class="card-footer">
+          <div class="container p-4 has-text-centered">
+            <button class="button is-success" @click.prevent="doMakeDraft">Make Draft</button>
+            <button class="button" @click.prevent="doDraftCancel">Cancel</button>
+          </div>
+        </footer>
+      </div>
     </div>
   </div>
+
+  <div :class="showDeleteModal ? 'is-active' : ''" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+          <p>Do you want to permanently delete this post?</p>
+          </div>
+        </div>
+        <footer class="card-footer">
+          <div class="container p-4 has-text-centered">
+            <button class="button is-success" @click.prevent="doDelete">Delete</button>
+            <button class="button" @click.prevent="doDeleteCancel">Cancel</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <div :class="showRestoreModal ? 'is-active' : ''" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+          <p>Do you want to restore this post?</p>
+          </div>
+        </div>
+        <footer class="card-footer">
+          <div class="container p-4 has-text-centered">
+            <button class="button is-success" @click.prevent="doRestore">Restore</button>
+            <button class="button" @click.prevent="doRestoreCancel">Cancel</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <form ref="delForm" method="post" action="{{ url_for('admin_blog.del_post') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="del_type" :value="del_type"/>
+    <input type="hidden" name="id" :value="id"/>
+  </form>
+
+  <form ref="showForm" method="post" action="{{ url_for('admin_blog.blog') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="show_type" :value="showType"/>
+  </form>
 
   <div class="level">
     <div class="level-left">
     </div>
     <div class="level-right">
+      <span class="mr-2">Show</span>
+      <div class="select mr-5">
+        <select v-model="showType" @change="getShow">
+          <option value="all">All</option>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
       <button class="button is-success" @click="gotoURL('{{ url_for('admin_blog.post') }}')">
           Create Post
       </button>
     </div>
   </div>
   <div class="table-container">
-    <table class="table is-narrow is-fullwidth">
+    <table class="table is-narrow is-striped is-hoverable is-fullwidth">
       <thead>
         <tr>
+          <th>Title</th>
+          <th>Post</th>
           <th>First publish</th>
           <th>Last update</th>
           <th>Last update by</th>
-          <th>Title</th>
           <th></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
       {% for p in posts.items %}
+        {% if p.active %}
         <tr>
-          <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
-          <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
-          <td>{{ p.author.email }}</td>
+        {% else %}
+        <tr class="has-text-grey-light">
+        {% endif %}
           <td>{{ p.title }}</td>
+          <td>{{ p.post|truncate(50,true,'...')|striptags }}</td>
+          <td class="is-size-7">{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
+          <td class="is-size-7">{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
+          <td class="is-size-7">{{ p.author.email }}</td>
+          {% if p.active %}
           <td class="has-text-right">
             <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}"><i class="far fa-edit"></i></a>
           </td>
           <td class="has-text-right">
-            <a href="#" @click="showDelOptions({{ p.id }})"><i class="far fa-trash-alt"></i></a>
+            <a href="#" @click="showDraftConfirm({{ p.id }})"><i class="fas fa-backspace"></i></a>
           </td>
+          {% else %}
+          <td class="has-text-right">
+            <a href="#" @click="showRestoreConfirm({{ p.id }})"><i class="fas fa-undo-alt"></i></a>
+          </td>
+          <td class="has-text-right">
+            <a href="#" @click="showDeleteConfirm({{ p.id }})"><i class="far fa-trash-alt"></i></a>
+          </td>
+          {% endif %}
         </tr>
       {% endfor %}
       </tbody>
@@ -89,9 +149,9 @@
           <a class="pagination-next" disabled>Next Page</a>
         {% endif %}
         <ul class="pagination-list">
-        {% for page_num in pagess.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
+        {% for page_num in posts.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
           {% if page_num %}
-            {% if page_num != page.blog %}
+            {% if page_num != posts.blog %}
               <li>
                 <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_blog.blog', page=page_num) }}">{{ page_num }}</a>
               </li>
@@ -117,22 +177,61 @@
     delimiters: ['[[', ']]'],
     data() {
       return {
+        showType: '{{ show_type }}',
         id: 0,
-        delPicked: 'soft',
-        showDelModal: false
+        del_type: '',
+        showDraftModal: false,
+        showDeleteModal: false,
+        showRestoreModal: false
       }
     },
     methods: {
-      showDelOptions(id) {
-        this.id = id
-        this.showDelModal = true
+      getShow() {
+        this.$nextTick(() => {
+          this.$refs.showForm.submit()
+        });
       },
-      doCancel() {
-        this.showDelModal = false
+      showDraftConfirm(id) {
+        this.id = id
+        this.showDraftModal = true
+      },
+      doDraftCancel() {
+        this.showDraftModal = false
+      },
+      doMakeDraft() {
+        this.showDraftModal = false
+        this.del_type = 'soft'
+        Vue.nextTick(() => {
+          this.$refs.delForm.submit()
+        })
+      },
+      showDeleteConfirm(id) {
+        this.id = id
+        this.showDeleteModal = true
+      },
+      doDeleteCancel() {
+        this.showDeleteModal = false
       },
       doDelete() {
-        this.showDelModal = false
-        this.$refs.delForm.requestSubmit()
+        this.showDeleteModal = false
+        this.del_type = 'hard'
+        Vue.nextTick(() => {
+          this.$refs.delForm.submit()
+        })
+      },
+      showRestoreConfirm(id) {
+        this.id = id
+        this.showRestoreModal = true
+      },
+      doRestoreCancel() {
+        this.showRestoreModal = false
+      },
+      doRestore() {
+        this.showRestoreModal = false
+        this.del_type = 'restore'
+        Vue.nextTick(() => {
+          this.$refs.delForm.submit()
+        })
       },
       gotoURL(url) {
         window.location.href=(url)

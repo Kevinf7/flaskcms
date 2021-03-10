@@ -45,15 +45,15 @@
               </a>
             </li>
             <li>
-              <a href="">
-                <span class="menu-spacing"><i class="far fa-comment"></i></span>
-                Comments
+              <a href="{{ url_for('admin_blog.tags') }}">
+                <span class="menu-spacing"><i class="fas fa-tag"></i></span>
+                Tags
               </a>
             </li>
             <li>
               <a href="">
-                <span class="menu-spacing"><i class="fas fa-tag"></i></span>
-                Tags
+                <span class="menu-spacing"><i class="far fa-comment"></i></span>
+                Comments
               </a>
             </li>
             <li>
@@ -115,7 +115,12 @@
                 <ul>
               {% endif %}
               {% for b in breadcrumb %}
-                <li><a href="{{ b.url }}">
+              {% if not loop.last %}
+                <li>
+              {% else %}
+                <li class="has-text-weight-bold">
+              {% endif %}
+                  <a href="{{ b.url }}">
               {% if b.icon %}    
                   <span class="mr-2">{{ b.icon|safe }}</span> 
               {% endif %}

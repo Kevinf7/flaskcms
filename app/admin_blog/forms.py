@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField, TextAreaField, HiddenField
 from wtforms.validators import InputRequired, Email, Length, Optional
 
 # ADMIN BLOG forms
@@ -7,8 +7,9 @@ from wtforms.validators import InputRequired, Email, Length, Optional
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[InputRequired(), Length(max=100)])
     post = TextAreaField('Write something')
-    tags = StringField('Tags')
+    tags = HiddenField('Tags')
     submit = SubmitField('Submit')
+
 
 # Two forms for commeting, one if user is not logged in
 class CommentFormAnon(FlaskForm):

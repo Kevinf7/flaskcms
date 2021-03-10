@@ -17,3 +17,6 @@ body {
     display: inline-block;
     width: 30px;
 }
+.tag-tags {
+    display:inline-flex;
+}

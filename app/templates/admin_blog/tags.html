@@ -1,0 +1,97 @@
+{% extends "admin_main/base.html" %}
+{% block title %}Blog{% endblock %}
+
+{% block app_content %}
+<div id="this-block">
+  <div class="tabs is-boxed">
+    <ul>
+    <li :class="{ 'is-active': tabTagUsed }">
+      <a href="#" @click.prevent="tabTagUsed=true">
+      Tags used
+      </a>
+    </li>
+    <li :class="{ 'is-active': !tabTagUsed }">
+      <a href="#" @click.prevent="tabTagUsed=false">
+      Tags not used
+      </a>
+    </li>
+    </ul>
+  </div>
+
+  <div v-if="tabTagUsed">
+    <table class="table is-striped is-hoverable">
+    {% if tag_used|length > 0 %}
+    <thead>
+      <tr>
+      <th>Name</th>
+      <th>Posts used in</th>
+      <th></th>
+      </tr>
+    </thead>
+    {% endif %}
+    <tbody>
+    {% for tu in tag_used %}
+      <tr>
+      <td>{{ tu.name }}</td>
+      <td>
+        {% for p in tu.posts %}
+        {% if not loop.last %}
+        {{ p.posts.title }}, 
+        {% else %}
+        {{ p.posts.title }}
+        {% endif %}
+        {% endfor %}
+      </td>
+      <td>
+        <a href="{{ url_for('admin_blog.tags',id=tu.id) }}">
+        <i class="far fa-edit"></i></a>
+      </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+  </div>
+
+  <table v-else class="table is-striped is-hoverable">
+    {% if tag_notused|length > 0 %}
+    <thead>
+    <tr>
+      <th class="has-text-weight-bold">Name</th>
+      <th class="has-text-weight-bold" colspan="2"></th>
+    </tr>
+    </thead>
+    {% endif %}
+    <tbody>
+    {% for tnu in tag_notused %}
+    <tr>
+      <td>{{ tnu.name }}</td>
+      <td>
+        <a href="{{ url_for('admin_blog.tags',id=tnu.id) }}">
+          <i class="far fa-edit"></i>
+        </a>
+      </td>
+      <td>
+        <a href="{{ url_for('admin_blog.tags',id=tnu.id) }}">
+          <i class="far fa-trash-alt"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  new Vue({
+  el: '#this-block',
+  delimiters: ['[[', ']]'],
+  data: {
+    tabTagUsed: true
+  }
+  });
+</script>
+{% endblock %}

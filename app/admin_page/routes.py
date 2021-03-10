@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, make_response, jsonify, current_app
+from flask import render_template, redirect, url_for, flash, request, make_response, jsonify, current_app, session
 from flask_login import login_required, current_user
 from app import db, csrf
 from app.admin_page import bp
@@ -85,10 +85,14 @@ def page_home():
 @set_breadcrumb('home page page-contact')
 def page_contact():
     edit_ver = None
-    limit = 5
+    if 'page_limit' in session:
+        limit = session['page_limit']
+    else:
+        limit = 5
     if request.method == 'POST':
-        limit = request.form.get('limit')
-        print('limit', limit)
+        limit = int(request.form.get('limit'))
+        if limit >= 5 and limit <= 100:
+            session['page_limit'] = limit
         ver_only = request.form.get('ver_only')
         if ver_only != 'yes':
             btn = request.form.get('submit_btn')

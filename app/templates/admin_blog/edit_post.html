@@ -4,11 +4,12 @@
 {% block app_content %}
 <div id="this-block">
   <div class="content mb-6">
-    <form ref="form" action="{{ url_for('admin_blog.post') }}"  method="post">
+    <form ref="form" action="{{ url_for('admin_blog.edit_post',id=post.id) }}"  method="post">
     {{ form.csrf_token }}
       <div class="field">
         {{ form.title.label(class_='label') }}
         <p class="control">
+          {% set t = form.title.process_data(post.title) %}
           {{ form.title(class_="input") }}
         </p>
         {% for error in form.title.errors %}
@@ -19,6 +20,7 @@
       <div class="field">
         {{ form.post.label(class_='label') }}
         <p class="control">
+          {% set p = form.post.process_data(post.post) %}
           {{ form.post() }}
         </p>
         {% for error in form.post.errors %}

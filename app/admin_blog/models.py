@@ -27,15 +27,15 @@ class Post(db.Model):
     #cascade delete-orphan means if student object is deleted then association table row is also deleted
     tags = db.relationship('Tagged',foreign_keys=[Tagged.post_id], \
                                     backref=db.backref('posts',lazy='joined'),
-                                    lazy='dynamic',
+                                    lazy='joined',
                                     cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
     def getPost(id):
-        return Post.query.filter(Post.id==id, Post.current.is_(True)).first()
+        return Post.query.filter(Post.id==id).first()
 
     def getPostBySlug(slug):
-        return Post.query.filter(Post.slug==slug, Post.current.is_(True)).first()
+        return Post.query.filter(Post.slug==slug).first()
 
     #return a list of tag names for this post
     def getTagNames(self):
@@ -89,7 +89,7 @@ class Tag(db.Model):
     #cascade delete-orphan means if student object is deleted then association table row is also deleted
     posts = db.relationship('Tagged',foreign_keys=[Tagged.tag_id], \
                                     backref=db.backref('tags',lazy='joined'),
-                                    lazy='dynamic',
+                                    lazy='joined',
                                     cascade='all, delete-orphan')
 
     #return tag id given tag name. Return -1 if not found
