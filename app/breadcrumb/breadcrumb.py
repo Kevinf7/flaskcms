@@ -30,7 +30,9 @@ class Breadcrumb(object):
             Breadcrumb.map.append({'key': 'media-blog', 'name': 'Media', 
                 'url': url_for('admin_media.media'), 'icon': ''})
             Breadcrumb.map.append({'key': 'message', 'name': 'Messages', 
-                'url': url_for('admin_message.message'), 'icon': ''})    
+                'url': url_for('admin_message.message'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'about', 'name': 'About Flask CMS', 
+                'url': url_for('admin_main.about'), 'icon': ''})  
 
 
 def set_breadcrumb(path):

@@ -74,7 +74,7 @@ new Vue({
     addTag(event) {
       this.tagError = ''
       event.preventDefault()
-      var val = event.target.value.trim()
+      var val = event.target.value.trim().toLowerCase()
       if (val.length >= 12) {
         this.tagError = "Too many characters"
         event.target.value = ''

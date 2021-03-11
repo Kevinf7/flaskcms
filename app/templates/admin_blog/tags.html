@@ -1,8 +1,12 @@
 {% extends "admin_main/base.html" %}
+{% from 'macros/_modal.html' import modal %}
 {% block title %}Blog{% endblock %}
 
 {% block app_content %}
 <div id="this-block">
+
+  {{ modal('showDelModal', 'Confirm you wish to delete the tag "[[ tagName ]]"','Delete','doDelDelete','Cancel','doDelCancel') }}
+
   <div class="tabs is-boxed">
     <ul>
     <li :class="{ 'is-active': tabTagUsed }">
@@ -36,9 +40,9 @@
       <td>
         {% for p in tu.posts %}
         {% if not loop.last %}
-        {{ p.posts.title }}, 
+        <a href="{{ url_for('admin_blog.edit_post',id=p.posts.id) }}">{{ p.posts.title }}</a>, 
         {% else %}
-        {{ p.posts.title }}
+        <a href="{{ url_for('admin_blog.edit_post',id=p.posts.id) }}">{{ p.posts.title }}</a>
         {% endif %}
         {% endfor %}
       </td>
@@ -66,12 +70,7 @@
     <tr>
       <td>{{ tnu.name }}</td>
       <td>
-        <a href="{{ url_for('admin_blog.tags',id=tnu.id) }}">
-          <i class="far fa-edit"></i>
-        </a>
-      </td>
-      <td>
-        <a href="{{ url_for('admin_blog.tags',id=tnu.id) }}">
+        <a href="#" @click.prevent="showDel({{ tnu.id }}, '{{ tnu.name }}')">
           <i class="far fa-trash-alt"></i>
         </a>
       </td>
@@ -87,11 +86,27 @@
 {% block scripts %}
 <script>
   new Vue({
-  el: '#this-block',
-  delimiters: ['[[', ']]'],
-  data: {
-    tabTagUsed: true
-  }
-  });
+    el: '#this-block',
+    delimiters: ['[[', ']]'],
+    data: {
+      tabTagUsed: true,
+      id: 0,
+      tagName: '',
+      showDelModal: false
+    },
+    methods: {
+      showDel(id, tagName) {
+        this.id = id
+        this.tagName = tagName
+        this.showDelModal = true
+      },
+      doDelCancel() {
+        this.showDelModal = false
+      },
+      doDelDelete() {
+        this.showDelModal = false
+      },
+    }
+  })
 </script>
 {% endblock %}

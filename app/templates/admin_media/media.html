@@ -1,28 +1,15 @@
 {% extends "admin_main/base.html" %}
+{% from 'macros/_modal.html' import modal %}
 {% block title %}Media{% endblock %}
 
 {% block app_content %}
-<div id="this-block">       
-  <div :class="showDelModal ? 'is-active' : ''" class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-content">
-      <div class="card">
-        <div class="card-content">
-          <p>Are you sure you want to delete this image?</p>
-        </div>
-        <footer class="card-footer">
-          <div class="container p-4 has-text-centered">
-            <form ref="delForm" method="post" action="{{ url_for('admin_media.del_image') }}">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-              <input type="hidden" name="id" :value="id">
-              <button class="button is-success" @click.prevent="doDelete">Delete</button>
-              <button class="button" @click.prevent="doCancel">Cancel</button>
-            </form>
-          </div>
-        </footer>
-      </div>
-    </div>
-  </div>
+<div id="this-block">
+  {{ modal('showDelModal', 'Are you sure you want to delete this image?','Delete','doMDelete','Cancel','doCancel') }} 
+
+  <form ref="delForm" method="post" action="{{ url_for('admin_media.del_image') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="id" :value="id">
+  </form>
 
   {% for img in images.items %}
   <div class="is-inline-block is-size-7" style="padding:10px;">

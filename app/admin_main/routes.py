@@ -17,6 +17,7 @@ def index():
 
 @bp.route('/about', methods=['GET'])
 @login_required
+@set_breadcrumb('home about')
 def about():
     return render_template('admin_main/about.html')
 
