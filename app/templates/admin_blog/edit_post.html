@@ -1,4 +1,4 @@
-{% extends "admin_main/base.html" %}
+{% extends "shared/base_main.html" %}
 {% block title %}Blog{% endblock %}
 
 {% block app_content %}
@@ -62,6 +62,7 @@
 {% endblock %}
 
 {% block scripts %}
+{{ super() }}
 <script>
 new Vue({
   el: '#this-block',
@@ -77,7 +78,7 @@ new Vue({
       this.tagError = ''
       event.preventDefault()
       var val = event.target.value.trim().toLowerCase()
-      if (val.length >= 12) {
+      if (val.length > 12) {
         this.tagError = "Too many characters"
         event.target.value = ''
       } else if (this.tags.length >= 6) {
@@ -104,5 +105,5 @@ new Vue({
   }
 })
 </script>
-{% include 'utils/_tinymce_blog.html' %}
+{% include 'shared/tinymce/_tinymce_blog.html' %}
 {% endblock %}

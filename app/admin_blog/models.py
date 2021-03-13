@@ -81,7 +81,7 @@ class Tag(db.Model):
     __tablename__ = 'tag'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), unique=True, nullable=False)
     update_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
     #joined means all rows returned
@@ -99,9 +99,6 @@ class Tag(db.Model):
             return -1
         else:
             return tag.id
-
-    def getTag(tag_id):
-        return Tag.query.filter_by(id=tag_id).first()
 
     def __repr__(self):
         return '<Tag {}>'.format(self.name)

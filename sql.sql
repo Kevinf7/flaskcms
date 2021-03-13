@@ -56,3 +56,9 @@ VALUES ('test-slug', 1, now(), 'This is a test post', 'Some title', now(), 2);
 
 INSERT into post (slug, active, create_date, post, title, update_date, user_id)
 VALUES ('another-slug', 1, now(), 'Another test post', 'Yep 123', now(), 2);
+
+
+INSERT INTO image_type(name)
+values('blog');
+INSERT INTO image_type(name)
+values('page');

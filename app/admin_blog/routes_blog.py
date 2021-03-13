@@ -103,7 +103,7 @@ def edit_post():
     post = Post.query.filter_by(id=id).first()
     if not post:
         flash('Post not found','danger')
-        return redirect(url_for('admin_blog.blog'))
+        return redirect(url_for('admin_blog.blog',not_used=True))
 
     form = PostForm()
     if form.validate_on_submit():
@@ -158,47 +158,3 @@ def del_post():
         
     return redirect(url_for('admin_blog.blog'))
 
-
-@bp.route('/tags',methods=['GET'])
-@login_required
-@set_breadcrumb('home blog tags')
-def tags():
-    tag_used = db.session.query(Tag).join(Tagged).all()
-    tag_all = Tag.query.all()
-    tag_notused = []
-    for t in tag_all:
-        if t not in tag_used:
-            tag_notused.append(t)
-
-    return render_template('admin_blog/tags.html',tag_used=tag_used, tag_notused=tag_notused)
-
-'''
-@bp.route('/edit_tag/<id>',methods=['GET','POST'])
-@login_required
-def edit_tag(id):
-    form = EditTagForm()
-    tag = Tag.getTag(id)
-    if form.validate_on_submit():
-        tag.name = form.tag_name.data
-        tag.update_date = datetime.utcnow()
-        db.session.add(tag)
-        db.session.commit()
-        flash('The tag has been successfully updated','success')
-        return redirect(url_for('admin_tag.manage_tags'))
-    return render_template('admin_tag/edit_tag.html',form=form,tag=tag)
-
-@bp.route('/del_tag/<id>',methods=['GET','POST'])
-@login_required
-def del_tag(id):
-    form = DeleteTagForm()
-    tag = Tag.getTag(id)
-    if tag is None:
-        flash('No such tag.','danger')
-        return redirect(url_for('main.index'))
-    if form.validate_on_submit():
-        db.session.delete(tag)
-        db.session.commit()
-        flash('The tag has been successfully deleted','success')
-        return redirect(url_for('admin_tag.manage_tags'))
-    return render_template('admin_tag/del_tag.html',form=form,tag=tag)
-'''

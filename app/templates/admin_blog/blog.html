@@ -1,5 +1,5 @@
-{% extends "admin_main/base.html" %}
-{% from 'macros/_modal.html' import modal %}
+{% extends "shared/base_main.html" %}
+{% from 'shared/macros/_modal.html' import modal %}
 {% block title %}Blog{% endblock %}
 
 {% block app_content %}
@@ -120,6 +120,7 @@
 
 {% block scripts %}
 <script>
+  {{ super() }}
   new Vue({
     el: '#this-block',
     delimiters: ['[[', ']]'],

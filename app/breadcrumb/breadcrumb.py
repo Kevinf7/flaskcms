@@ -19,8 +19,8 @@ class Breadcrumb(object):
                 'url': url_for('admin_blog.post'), 'icon': ''})
             Breadcrumb.map.append({'key': 'edit-post', 'name': 'Edit Post', 
                 'url': url_for('admin_blog.edit_post'), 'icon': '', 'has-arg': True})
-            Breadcrumb.map.append({'key': 'tags', 'name': 'Tags', 
-                'url': url_for('admin_blog.tags'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'tag', 'name': 'Tags', 
+                'url': url_for('admin_blog.tag'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page', 'name': 'Pages', 
                 'url': url_for('admin_page.page'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact Us', 

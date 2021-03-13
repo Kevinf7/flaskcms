@@ -1,4 +1,4 @@
-{% extends "admin_main/base.html" %}
+{% extends "shared/base_main.html" %}
 {% block title %}Page Contact{% endblock %}
 
 {% block app_content %}
@@ -105,7 +105,7 @@
 {% endblock %}
 
 {% block scripts %}
-{% include 'utils/_tinymce_page.html' %}
+{{ super() }}
 <script>
   new Vue({
     el: '#this-block',
@@ -119,9 +119,10 @@
       getVer() {
         this.$nextTick(() => {
           this.$refs.verForm.submit()
-        });
+        })
       }
     }
   })
 </script>
+{% include 'shared/tinymce/_tinymce_page.html' %}
 {% endblock %}

@@ -12,6 +12,7 @@ class Images(db.Model):
     file_size = db.Column(db.Integer, nullable=False)
     file_width = db.Column(db.Integer, nullable=False)
     file_height = db.Column(db.Integer, nullable=False)
+    image_type_id = db.Column(db.Integer, db.ForeignKey('image_type.id'), nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def getImage(image_id):
@@ -19,3 +20,13 @@ class Images(db.Model):
 
     def __repr__(self):
         return '<Images {}>'.format(self.filename)
+
+
+class ImageType(db.Model):
+    __tablename__ = 'image_type'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), nullable=False)
+    images = db.relationship('Images', backref='image_type', lazy='dynamic')
+
+    def __repr__(self):
+        return '<ImageType {}>'.format(self.name)

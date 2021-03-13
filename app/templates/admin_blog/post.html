@@ -1,4 +1,4 @@
-{% extends "admin_main/base.html" %}
+{% extends "shared/base_main.html" %}
 {% block title %}Blog{% endblock %}
 
 {% block app_content %}
@@ -60,6 +60,7 @@
 {% endblock %}
 
 {% block scripts %}
+{{ super() }}
 <script>
 new Vue({
   el: '#this-block',
@@ -102,5 +103,5 @@ new Vue({
   }
 })
 </script>
-{% include 'utils/_tinymce_blog.html' %}
+{% include 'shared/tinymce/_tinymce_blog.html' %}
 {% endblock %}

@@ -33,20 +33,24 @@ class Config(object):
     
     #####
 
-    # DASHBOARD specific
+    ### AUTH ###
     FORGOT_PASSWORD_TOKEN_EXPIRE = 3600  # in seconds, 3600 = 1 hour
 
-    # POST specific
-    # number of blog posts to show per page
+    ### BLOG ###
+    ADMIN_BLOG = True
     POSTS_PER_PAGE = 6
+    UPLOAD_PATH_BLOG = basedir / 'app/static/uploads/blog'
+    UPLOAD_PATH_THUMB_BLOG = basedir / 'app/static/uploads/blog/thumbnails'
     # admin number of images
     IMAGES_PER_PAGE = 12
     SEARCH_RESULTS_RETURN = 12
 
-    # CONTACT specific
+    ### MESSAGE ###
+    ADMIN_MESSAGE = True
     MESSAGES_PER_PAGE = 10
 
-    # PAGE specific
+    ### PAGE ###
+    ADMIN_PAGE = True
     PAGES_PER_PAGE = 10
     UPLOAD_PATH_PAGE = basedir / 'app/static/uploads/page'
     UPLOAD_PATH_THUMB_PAGE = basedir / 'app/static/uploads/page/thumbnails'
