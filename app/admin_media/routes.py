@@ -41,8 +41,13 @@ def del_image():
     if image is None:
         flash('No such image.','danger')
     else:
-        img_fullpath = os.path.join(current_app.config['UPLOAD_PATH_PAGE'], image.filename)
-        tmb_fullpath = os.path.join(current_app.config['UPLOAD_PATH_THUMB_PAGE'], image.thumbnail)
+        upload_path = current_app.config['UPLOAD_PATH_PAGE']
+        upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_PAGE']
+        if image.image_type.name == 'blog':
+            upload_path = current_app.config['UPLOAD_PATH_BLOG']
+            upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_BLOG']
+            img_fullpath = os.path.join(upload_path, image.filename)
+            tmb_fullpath = os.path.join(upload_path_thumb, image.thumbnail)
         try:
             os.remove(img_fullpath)
             os.remove(tmb_fullpath)
