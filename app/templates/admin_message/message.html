@@ -67,7 +67,7 @@
   </form>
 
   {% if messages.pages > 1 %}
-  {{ pagination(messages,url_for('admin_message.message')) }}
+  {{ pagination(messages,'admin_message.message') }}
   {% endif %}
 </div>
 {% endblock %}

@@ -84,7 +84,7 @@
   </div>
 
   {% if posts.pages > 1 %}
-  {{ pagination(posts,url_for('admin_blog.blog')) }}
+  {{ pagination(posts,'admin_blog.blog') }}
   {% endif %}
 </div>
 {% endblock %}

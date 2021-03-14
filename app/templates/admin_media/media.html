@@ -51,7 +51,7 @@
   {% endfor %}
 
   {% if images.pages > 1 %}
-  {{ pagination(images,url_for('admin_media.media')) }}
+  {{ pagination(images,'admin_media.media') }}
   {% endif %}
 </div>
 {% endblock %}
