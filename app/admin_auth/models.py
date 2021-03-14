@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
     page_contact = db.relationship('PageContact', backref='author', lazy='dynamic')
     page_home = db.relationship('PageHome', backref='author', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    comments = db.relationship('Comment', backref='commenter', lazy='dynamic')
+    #comments = db.relationship('Comment', backref='commenter', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     last_seen = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)

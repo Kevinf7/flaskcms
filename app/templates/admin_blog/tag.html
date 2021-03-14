@@ -42,7 +42,7 @@
           <td>
             {% for p in tu.posts %}
             {% if not loop.last %}
-            <a href="{{ url_for('admin_blog.edit_post',id=p.posts.id) }}">{{ p.posts.title }}</a> /
+            <a href="{{ url_for('admin_blog.edit_post',id=p.posts.id) }}">{{ p.posts.title }}</a>,
             {% else %}
             <a href="{{ url_for('admin_blog.edit_post',id=p.posts.id) }}">{{ p.posts.title }}</a>
             {% endif %}

@@ -25,14 +25,14 @@ class Breadcrumb(object):
                 'url': url_for('admin_page.page'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact Us', 
                 'url': url_for('admin_page.page_contact'), 'icon': ''})
-            Breadcrumb.map.append({'key': 'media-page', 'name': 'Media', 
-                'url': url_for('admin_media.media'), 'icon': ''})
-            Breadcrumb.map.append({'key': 'media-blog', 'name': 'Media', 
-                'url': url_for('admin_media.media'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'media', 'name': 'Media', 
+                'url': url_for('admin_media.media'), 'icon': '', 'has-arg': True})
             Breadcrumb.map.append({'key': 'message', 'name': 'Messages', 
                 'url': url_for('admin_message.message'), 'icon': ''})
             Breadcrumb.map.append({'key': 'about', 'name': 'About Flask CMS', 
-                'url': url_for('admin_main.about'), 'icon': ''})  
+                'url': url_for('admin_main.about'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'comment', 'name': 'Comments', 
+                'url': url_for('admin_blog.comment'), 'icon': ''})  
 
 
 def set_breadcrumb(path):

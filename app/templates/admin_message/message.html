@@ -1,4 +1,5 @@
 {% extends "shared/base_main.html" %}
+{% from 'shared/macros/_pagination.html' import pagination %}
 {% block title %}Contact{% endblock %}
 
 {% block app_content %}
@@ -63,41 +64,11 @@
       </tbody>
       {% endfor %}
     </table>
-
-    {% if messages.pages > 1 %}
-    <div class="section">
-      <div class="container">
-        <nav class="pagination" role="navigation" aria-label="pagination">
-          {% if messages.has_prev%}
-            <a class="pagination-previous" href="{{ url_for('admin_message.message', page=messages.prev_num) }}">Previous</a>
-          {% else %}
-            <a class="pagination-previous" disabled>Previous</a>
-          {% endif %}
-          {% if messages.has_next %}
-            <a class="pagination-next" href="{{ url_for('admin_message.message',page=messages.next_num) }}">Next Page</a>
-          {% else %}
-            <a class="pagination-next" disabled>Next Page</a>
-          {% endif %}
-          <ul class="pagination-list">
-          {% for page_num in messages.iter_pages(left_edge=1, left_current=3, right_current=3, right_edge=1) %}
-            {% if page_num %}
-              {% if page_num != messages.page %}
-                <li>
-                  <a class="pagination-link" aria-label="Goto page {{ page_num }}" href="{{ url_for('admin_message.message', page=page_num) }}">{{ page_num }}</a>
-                </li>
-              {% else %}
-                <li class="pagination-link is-current" aria-label="Page {{ page_num }}" aria-current="page">{{ page_num }}</li>
-              {% endif %}
-            {% else %}
-              <span class="pagination-ellipsis">&hellip;</span>
-            {% endif %}
-          {% endfor %}
-          </ul>
-        </nav>
-      </div>
-    </div>
-    {% endif %}
   </form>
+
+  {% if messages.pages > 1 %}
+  {{ pagination(messages,url_for('admin_message.message')) }}
+  {% endif %}
 </div>
 {% endblock %}
 

@@ -62,3 +62,8 @@ INSERT INTO image_type(name)
 values('blog');
 INSERT INTO image_type(name)
 values('page');
+
+INSERT INTO comment(comment, name,email,post_id,create_date)
+values('Nice post by the way','Joe','joe@abc.com',1,now());
+INSERT INTO comment(comment, name,email,post_id,create_date)
+values('I have a question','Mary','mary@jjj.com',1,now());

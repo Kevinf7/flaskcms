@@ -1,0 +1,47 @@
+{% extends "shared/base_main.html" %}
+{% from 'shared/macros/_modal.html' import modal %}
+{% from 'shared/macros/_pagination.html' import pagination %}
+{% block title %}Blog{% endblock %}
+
+{% block app_content %}
+<div id="this-block">
+  <div class="table-container">
+    <table class="table is-narrow is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Comment</th>
+          <th>Post</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for c in comments.items %}
+        <tr>
+          <td>{{ c.comment }}</td>
+          <td>{{ c.post.title }}</td>
+          <td>{{ moment(c.create_date).format('D MMM YYYY hh:mm') }}</td>
+          <td class="has-text-right">
+            <i class="far fa-trash-alt"></i>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if comments.pages > 1 %}
+  {{ pagination(comments,url_for('admin_blog.comment')) }}
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  new Vue({
+    el: '#this-block',
+    delimiters: ['[[', ']]']
+  })
+</script>
+{% endblock %}

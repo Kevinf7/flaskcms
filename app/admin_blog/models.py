@@ -110,10 +110,8 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(1000), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    # user can either comment as anonymous user or with a registered account
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    name = db.Column(db.String(20), nullable=True)
-    email = db.Column(db.String(50), nullable=True)
+    name = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def __repr__(self):

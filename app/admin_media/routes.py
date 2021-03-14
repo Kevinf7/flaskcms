@@ -12,7 +12,7 @@ import os
 
 @bp.route('/media',methods=['GET'])
 @login_required
-@set_breadcrumb('home media-page')
+@set_breadcrumb('home media')
 def media():
     page = request.args.get('page',1,type=int)
     show = request.args.get('show')
