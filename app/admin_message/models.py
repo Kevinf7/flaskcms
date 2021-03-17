@@ -10,7 +10,6 @@ class Message(db.Model):
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(400), nullable=False)
-    user_read = db.Column(db.Boolean, default=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def __repr__(self):

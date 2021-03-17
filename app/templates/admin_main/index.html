@@ -2,5 +2,94 @@
 {% block title %}My website{% endblock %}
 
 {% block app_content %}
-<h1>Hello World</h1>
+<div class="tile is-ancestor">
+  <div class="tile is-parent">
+    <div class="tile is-child box">
+      <p class="title">Blog</p>
+      <div class="content">
+        <p>{{ total_post }} total posts</p>
+        {% if post_latest %}
+        <p><span>Last post updated was "{{ post_latest.title }}"
+          on {{ moment(post_latest.update_date).format('D MMM YYYY') }}</span>
+        </p>
+        {% endif %}
+        <a href="{{ url_for('admin_blog.blog') }}">Edit Posts</a>
+      </div>
+    </div>
+  </div>
+  <div class="tile is-parent">
+    <div class="tile is-child box">
+      <p class="title">Tags</p>
+      <div class="content">
+        <p>{{ tag_used }} tags used, {{ tag_not_used }} tags unused</p>
+        <p>Top tags: 
+        {% for t in top_tags %}
+        <span class="tag is-info is-light">{{ t[0].name }} - {{ t[1] }}</span> 
+        {% endfor %}
+        </p>
+        <a href="{{ url_for('admin_blog.tag') }}">Edit Tags</a>
+      </div>
+    </div>
+  </div>
+  <div class="tile is-parent">
+    <div class="tile is-child box">
+      <p class="title">Comments</p>
+      <div class="content">
+        <p>{{ total_comment }} total comments</p>
+        {% if new_comment > 0 %}
+        <p><span class="has-background-warning">You have {{ new_comment }} new comments since last login</span></p>
+        {% else %}
+        <p>You have {{ new_comment }} new comments since last login</p>
+        {% endif %}
+        <a href="{{ url_for('admin_blog.comment') }}">Edit Comments</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tile is-ancestor">
+  <div class="tile is-parent">
+    <div class="tile is-child box">
+      <p class="title">Pages</p>
+      <div class="content">
+        <p>{{ total_pages }} total pages</p>
+        {% if page_latest %}
+        <p><span>Last page updated was "{{ page_latest.name }}" 
+          on {{ moment(page_latest.last_publish_date).format('D MMM YYYY') }}</span></p>
+        {% endif %}
+        <a href="{{ url_for('admin_page.page') }}">Edit Pages</a>
+      </div>
+    </div>
+  </div>
+  <div class="tile is-parent">
+    <div class="tile is-child box">
+      <p class="title">Media</p>
+      <div class="content">
+        <p>{{ total_media }} total images</p>
+        {% if image_latest %}
+          <p>Latest uploads:<br/>
+          {% for img in image_latest %}
+          <img width="80" src="{{ url_for('static',filename='uploads/' ~ img.image_type.name ~ '/thumbnails/' ~ img.thumbnail) }}">
+          {% endfor %}
+          </p>
+        {% endif %}
+        <a href="{{ url_for('admin_media.media') }}">Edit Media</a>
+      </div>
+    </div>
+  </div>
+  <div class="tile is-parent">
+    <div class="tile is-child box">
+      <div class="content">
+        <p class="title">Messages</p>
+        <div class="content">
+          <p>{{ total_message }} total messages</p>
+          {% if new_message > 0 %}
+          <p><span class="has-background-warning">You have {{ new_message }} new messages since last login</span></p>
+          {% else %}
+          <p>You have {{ new_message }} new messages since last login</p>
+          {% endif %}
+          <a href="{{ url_for('admin_message.message') }}">Edit Messages</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

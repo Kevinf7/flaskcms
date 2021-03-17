@@ -32,7 +32,7 @@
           <option value="draft">Draft</option>
         </select>
       </div>
-      <button class="button is-success" @click="gotoURL('{{ url_for('admin_blog.post') }}')">
+      <button class="button is-link" @click="gotoURL('{{ url_for('admin_blog.post') }}')">
           Create Post
       </button>
     </div>
@@ -59,9 +59,9 @@
         {% endif %}
           <td>{{ p.title }}</td>
           <td>{{ p.post|truncate(50,true,'...')|striptags }}</td>
-          <td class="is-size-7">{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
-          <td class="is-size-7">{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
-          <td class="is-size-7">{{ p.author.email }}</td>
+          <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
+          <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
+          <td>{{ p.author.email }}</td>
           {% if p.active %}
           <td class="has-text-right">
             <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}"><i class="far fa-edit"></i></a>

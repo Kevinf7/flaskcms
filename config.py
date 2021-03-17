@@ -30,26 +30,23 @@ class Config(object):
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     MAIL_FROM = os.environ.get('MAIL_FROM')
     MAIL_ADMINS = os.environ.get('MAIL_ADMINS').split(' ')
-    
-    #####
 
-    ### AUTH ###
+    ### ADMIN AUTH ###
     FORGOT_PASSWORD_TOKEN_EXPIRE = 3600  # in seconds, 3600 = 1 hour
 
-    ### BLOG ###
+    ### ADMIN BLOG ###
     ADMIN_BLOG = True
-    POSTS_PER_PAGE = 6
     UPLOAD_PATH_BLOG = basedir / 'app/static/uploads/blog'
     UPLOAD_PATH_THUMB_BLOG = basedir / 'app/static/uploads/blog/thumbnails'
-    # admin number of images
+    POSTS_PER_PAGE = 10
     IMAGES_PER_PAGE = 12
-    SEARCH_RESULTS_RETURN = 12
+    COMMENTS_PER_PAGE = 20
 
-    ### MESSAGE ###
+    ### ADMIN MESSAGE ###
     ADMIN_MESSAGE = True
     MESSAGES_PER_PAGE = 10
 
-    ### PAGE ###
+    ### ADMIN PAGE ###
     ADMIN_PAGE = True
     PAGES_PER_PAGE = 10
     UPLOAD_PATH_PAGE = basedir / 'app/static/uploads/page'

@@ -13,23 +13,22 @@ from app.breadcrumb import set_breadcrumb
 @set_breadcrumb('home message')
 def message():
     page = request.args.get('page',1,type=int)
-    messages = Message.query.order_by(Message.user_read.asc(), Message.create_date.desc()) \
+    messages = Message.query.order_by(Message.create_date.desc()) \
     .paginate(page,current_app.config['MESSAGES_PER_PAGE'],False)
 
     return render_template('admin_message/message.html',messages=messages)
 
 
-@bp.route('/message/mark_read',methods=['POST'])
+@bp.route('/message/del_message',methods=['POST'])
 @login_required
-def mark_read():
-    id = request.form.getlist('chk')
-    if not id:
-        flash('Nothing to update','danger')
+def del_message():
+    msg_id = request.form.getlist('id')
+    msg = Message.query.filter_by(id=msg_id).first()
+    if not msg:
+        flash('No such message','danger')
         return redirect(url_for('admin_message.message'))
-    for i in id:
-        c = Message.query.filter_by(id=i).first()
-        c.user_read = 1-c.user_read
-        db.session.add(c)
-    db.session.commit()
-    flash('Update successful','success')
+    else:
+        db.session.delete(msg)
+        db.session.commit()
+        flash('The message has been deleted','success')
     return redirect(url_for('admin_message.message'))

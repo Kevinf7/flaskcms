@@ -45,7 +45,9 @@
     <p>{{ img.file_size }} bytes</p>
     <p>
       Uploaded: {{ moment(img.create_date).format('DD/MM/YY') }}
-      <a href="#" @click.prevent="showConfirm({{ img.id }})"><i class="fas fa-trash-alt"></i></a>
+      <a href="#" @click.prevent="showConfirm({{ img.id }})">
+        <i class="fas fa-trash-alt"></i>
+      </a>
     </p>
   </div>
   {% endfor %}
@@ -75,18 +77,11 @@
         let elem_id = "copyclip-" + id;
         let txt = this.$refs[elem_id].innerHTML
 
-        // Create dummy textarea
-        let temp = document.createElement("textarea")
-        document.body.appendChild(temp)
-        temp.value= txt
-        temp.select()
-
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            console.log('Copy to clipboard was unsuccessful');
-        }
-        this.showCopyMsg = elem_id
+        this.$copyText(txt).then((e) => {
+          this.showCopyMsg = elem_id
+        }, (e) => {
+          console.log(e)
+        })
       },
       checkShowMsg(elem_id) {
         if (elem_id == this.showCopyMsg) {
@@ -105,7 +100,7 @@
       },
       doDelete() {
         this.showDelModal = false
-        this.$refs.delForm.requestSubmit()
+        this.$refs.delForm.submit()
       },
       reloadPage() {
         if (this.showType) {
@@ -117,4 +112,5 @@
     }
   })
 </script>
+<script src="../../static/scripts/vue-clipboard.min.js"></script>
 {% endblock %}

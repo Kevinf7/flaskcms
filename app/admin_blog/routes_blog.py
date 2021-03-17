@@ -30,17 +30,17 @@ def blog():
     if show_type == 'all':
         session['blog_show_type'] = 'all'
         posts = Post.query.order_by(Post.active.desc(), Post.create_date.desc()) \
-        .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+        .paginate(page,current_app.config['POSTS_PER_PAGE'],False)
     elif show_type == 'published':
         session['blog_show_type'] = 'published'
         posts = Post.query.filter_by(active=True) \
         .order_by(Post.active.desc(), Post.create_date.desc()) \
-        .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+        .paginate(page,current_app.config['POSTS_PER_PAGE'],False)
     elif show_type == 'draft':
         session['blog_show_type'] = 'draft'
         posts = Post.query.filter_by(active=False) \
         .order_by(Post.active.desc(), Post.create_date.desc()) \
-        .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+        .paginate(page,current_app.config['POSTS_PER_PAGE'],False)
 
     return render_template('admin_blog/blog.html',posts=posts,show_type=show_type)
 

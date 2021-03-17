@@ -6,6 +6,7 @@ from app.admin_auth.forms import LoginForm, RegistrationForm, ResetPasswordForm,
 from app.admin_auth.email import send_password_reset_email
 from app.admin_auth.models import User
 from werkzeug.urls import url_parse
+from datetime import datetime
 
 
 # ADMIN AUTH routes
@@ -23,6 +24,9 @@ def login():
             return redirect(url_for('admin_auth.login',next=next_page))
 
         login_user(user, remember=form.remember_me.data)
+        user.last_seen = datetime.utcnow()
+        db.session.add(user)
+        db.session.commit()
         flash('You are now logged in','success')
 
         # in case url is absolute we will ignore, we only want a relative url

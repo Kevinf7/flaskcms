@@ -14,22 +14,22 @@ from app.breadcrumb import set_breadcrumb
 def comment():
     page = request.args.get('page',1,type=int)
     comments = Comment.query.order_by(Comment.create_date.desc()) \
-    .paginate(page,current_app.config['PAGES_PER_PAGE'],False)
+    .paginate(page,current_app.config['COMMENTS_PER_PAGE'],False)
 
     return render_template('admin_blog/comment.html',comments=comments)
 
-'''
+
 @bp.route('/del_comment',methods=['POST'])
 @login_required
-def del_tag():
-    tag_id = request.form.get('id')
-    tag = Tag.query.filter_by(id=tag_id).first()
-    if tag is None:
-        flash('No such tag','danger')
+def del_comment():
+    comment_id = request.form.get('id')
+    comment = Comment.query.filter_by(id=comment_id).first()
+    if comment is None:
+        flash('No such comment','danger')
     else:
-        db.session.delete(tag)
+        db.session.delete(comment)
         db.session.commit()
-        flash('The tag has been deleted','success')
-    return redirect(url_for('admin_blog.tag',tab=2))
-'''
+        flash('The comment has been deleted','success')
+    return redirect(url_for('admin_blog.comment'))
+
 
