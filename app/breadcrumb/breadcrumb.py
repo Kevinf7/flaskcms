@@ -23,8 +23,10 @@ class Breadcrumb(object):
                 'url': url_for('admin_blog.tag'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page', 'name': 'Pages', 
                 'url': url_for('admin_page.page'), 'icon': ''})
-            Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact Us', 
+            Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact', 
                 'url': url_for('admin_page.page_contact'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'page-home-main', 'name': 'Home-Main', 
+                'url': url_for('admin_page.page_home_main'), 'icon': ''})
             Breadcrumb.map.append({'key': 'media', 'name': 'Media', 
                 'url': url_for('admin_media.media'), 'icon': '', 'has-arg': True})
             Breadcrumb.map.append({'key': 'message', 'name': 'Messages', 

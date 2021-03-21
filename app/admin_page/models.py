@@ -9,11 +9,12 @@ class Page(db.Model):
     __tablename__ = 'page'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
+    display = db.Column(db.String(20), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     last_publish_date = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
-    page_home = db.relationship(
-        "PageHome", backref="page", lazy="dynamic")
+    page_home_main = db.relationship(
+        "PageHomeMain", backref="page", lazy="dynamic")
     page_contact = db.relationship(
         "PageContact", backref="page", lazy="dynamic")
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
@@ -31,8 +32,8 @@ class PageStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
-    page_home = db.relationship(
-        "PageHome", backref="page_status", lazy="dynamic")
+    page_home_main = db.relationship(
+        "PageHomeMain", backref="page_status", lazy="dynamic")
     page_contact = db.relationship(
         "PageContact", backref="page_status", lazy="dynamic")
 
@@ -48,12 +49,13 @@ class PageStatus(db.Model):
 # The two below are just examples
 # You also need to create an entry in Page which is like the parent and will be used by Dashboard
 
-class PageHome(db.Model):
-    __tablename__ = 'page_home'
+class PageHomeMain(db.Model):
+    __tablename__ = 'page_home_main'
     id = db.Column(db.Integer, primary_key=True)
-    hero = db.Column(db.String(100))
-    section1 = db.Column(db.String(1000))
-    section2 = db.Column(db.String(1000))
+    heading = db.Column(db.String(50))
+    important = db.Column(db.String(1000))
+    text = db.Column(db.String(1000))
+    image_id = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=True)
     status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -62,7 +64,7 @@ class PageHome(db.Model):
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
-        return '<PageHome {}'.format(self.id)
+        return '<PageHome {}>'.format(self.heading)
 
 
 class PageContact(db.Model):
@@ -77,6 +79,6 @@ class PageContact(db.Model):
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
-        return '<PageContact {}'.format(self.id)
+        return '<PageContact {}>'.format(self.id)
 
 

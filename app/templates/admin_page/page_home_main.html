@@ -1,0 +1,135 @@
+{% extends "shared/base_main.html" %}
+{% from 'shared/macros/_version.html' import version with context %}
+{% block title %}Page Home Main{% endblock %}
+
+{% block app_content %}
+<div id="this-block">
+  <div class="content mb-6">
+    <form ref="form" action="{{ url_for('admin_page.page_home_main') }}" 
+      method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="id" value="{{ edit_ver.id }}">
+      <input type="hidden" name="image_id" value="{{ edit_ver.image_id }}"/>
+      <input type="hidden" name="action" :value="action">
+
+      {% include 'shared/macros/_page_edit_buttons.html' %}
+      
+      <div class="field">
+        <label class="label">Heading</label>
+        <div class="control">
+          <input 
+            name="heading"
+            class="input"
+            type="text"
+            v-model="heading">
+        </div>
+        <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Important Text</label>
+        <div class="control">
+          <textarea class="textarea" name="important" rows="3" v-model="important">
+          </textarea>
+        </div>
+        <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Main Text</label>
+        <div class="control">
+          <textarea class="textarea" name="text" rows="3" v-model="text">
+          </textarea>
+        </div>
+        <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Current image</label>
+        <p class="is-size-7">{{ edit_ver.image.filename }}</p>
+        <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image.thumbnail) }}">
+        {% if edit_ver.page_status.name == 'draft' %}
+        <div class="file is-normal has-name">
+          <label class="file-label">
+            <input ref="fileselect" @change="fileSelected" class="file-input" type="file" name="new_image">
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label">
+                Upload new image
+              </span>
+            </span>
+            <span class="file-name">[[ filename ]] 
+              <span v-if="filename != 'No file selected'">
+                <button @click.prevent="clearSelection" class="delete is-small"></button>
+              </span>
+            </span>
+          </label>
+        </div>
+        {% endif %}
+      </div>
+      
+    </form>
+
+    {{ version(edit_ver.page.name) }}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+new Vue({
+  el: '#this-block',
+  delimiters: ['[[', ']]'],
+  data() {
+    return {
+      heading: '{{ edit_ver.heading }}',
+      important: '{{ edit_ver.important }}',
+      text: '{{ edit_ver.text }}',
+      errorMsg: ['','',''],
+      action: '',
+      filename: 'No file selected'
+    }
+  },
+  methods: {
+    hasError() {
+      err = false
+      for(let i=0; i<this.errorMsg.length; i++) {
+        if(this.errorMsg[i] != '') err = true
+      }
+      return err
+    },
+    doValidate(evt) {
+      if (evt.target.value != "Delete") {
+        if (this.heading.length > 50) {
+          Vue.set(this.errorMsg, 0, 'Maximum 20 characters')
+        }
+        if (this.important.length > 1000) {
+          Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
+        }
+        if (this.text.length > 1000) {
+          Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
+        }
+      }
+      if (!this.hasError()) {
+        this.action = evt.target.value
+        this.$nextTick(() => {
+          this.$refs.form.submit()
+        })
+      }
+    },
+    fileSelected(evt) {
+      if (evt.target.files.length > 0) {
+        this.filename = evt.target.files[0].name
+      }
+    },
+    clearSelection(evt) {
+      this.$refs.fileselect.value = ''
+      this.filename = 'No file selected'
+    }
+  }
+})
+</script>
+{% endblock %}

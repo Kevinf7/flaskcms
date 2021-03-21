@@ -67,3 +67,7 @@ INSERT INTO comment(comment, name,email,post_id,create_date)
 values('Nice post by the way','Joe','joe@abc.com',1,now());
 INSERT INTO comment(comment, name,email,post_id,create_date)
 values('I have a question','Mary','mary@jjj.com',1,now());
+
+
+INSERT INTO page_home_main(important,text,image,status_id,page_id,user_id,update_date,create_date,heading)
+values('bla bla this is important', 'hello 123', '',2,3,1,now(),now(),'Some heading')

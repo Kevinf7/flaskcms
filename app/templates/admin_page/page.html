@@ -16,17 +16,13 @@
     <tbody>
     {% for page in pages.items %}
       <tr>
-        {% if page.name == 'contact' %}
-        <td>Contact Us</td>
-        {% elif page.name == 'home' %}
-        <td>Home</td>
-        {% endif %}
+        <td>{{ page.display }}</td>
         <td>{{ moment(page.last_publish_date).format('D MMM YYYY hh:mm') }}</td>
         <td>{{ page.last_publish_by.email }}</td>
         {% if page.name == 'contact' %}
         <td class="has-text-right"><a href="{{ url_for('admin_page.page_contact') }}"><i class="far fa-edit"></i></a></td>
-        {% elif page.name == 'home' %}
-        <td class="has-text-right"><a href="{{ url_for('admin_page.page_home') }}"><i class="far fa-edit"></i></a></td>
+        {% elif page.name == 'home_main' %}
+        <td class="has-text-right"><a href="{{ url_for('admin_page.page_home_main') }}"><i class="far fa-edit"></i></a></td>
         {% endif %}
       </tr>
     {% endfor %}
