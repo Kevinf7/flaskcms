@@ -67,6 +67,7 @@
             </span>
           </label>
         </div>
+        <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
         {% endif %}
       </div>
       
@@ -88,7 +89,7 @@ new Vue({
       heading: '{{ edit_ver.heading }}',
       important: '{{ edit_ver.important }}',
       text: '{{ edit_ver.text }}',
-      errorMsg: ['','',''],
+      errorMsg: ['','','',''],
       action: '',
       filename: 'No file selected'
     }
@@ -112,11 +113,17 @@ new Vue({
         if (this.text.length > 1000) {
           Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
         }
+        let fs = this.$refs.fileselect.files[0]
+        if (fs) {
+          if((fs.size/1024) > 500) {
+            Vue.set(this.errorMsg, 3, 'Image cannot be larger than 500KB')
+          }
+        }
       }
       if (!this.hasError()) {
         this.action = evt.target.value
         this.$nextTick(() => {
-          this.$refs.form.submit()
+          //this.$refs.form.submit()
         })
       }
     },
