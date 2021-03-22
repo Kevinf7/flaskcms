@@ -46,33 +46,62 @@
 
       <div class="field">
         <label class="label">Current image</label>
-        <p class="is-size-7">{{ edit_ver.image.filename }}</p>
-        <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image.thumbnail) }}">
-        {% if edit_ver.page_status.name == 'draft' %}
-        <div class="file is-normal has-name">
-          <label class="file-label">
-            <input ref="fileselect" @change="fileSelected" class="file-input" type="file" name="new_image">
-            <span class="file-cta">
-              <span class="file-icon">
-                <i class="fas fa-upload"></i>
-              </span>
-              <span class="file-label">
-                Upload new image
-              </span>
-            </span>
-            <span class="file-name">[[ filename ]] 
-              <span v-if="filename != 'No file selected'">
-                <button @click.prevent="clearSelection" class="delete is-small"></button>
-              </span>
-            </span>
+        <div class="control">
+          <p class="is-size-7">{{ edit_ver.image.filename }}</p>
+          <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image.thumbnail) }}">
+        </div>
+      </div>
+
+      {% if edit_ver.page_status.name == 'draft' %}
+      <div class="field">      
+        <div class="control">
+          <label class="radio">
+            <input type="radio" value="upload" v-model="newimage" @change="changeUpload">
+            Upload new image
+          </label>
+          <label class="radio">
+            <input type="radio" value="select" v-model="newimage" @change="changeSelect">
+            Use image from Media
           </label>
         </div>
-        <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
-        {% endif %}
       </div>
-      
-    </form>
 
+      <div class="field">
+        <div class="control">
+          <div v-if="newimage=='upload'" class="file is-normal has-name">
+            <label class="file-label">
+              <input ref="imgupload" @change="fileSelected" class="file-input" type="file" name="new_image">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">
+                  Upload new image
+                </span>
+              </span>
+              <span class="file-name">[[ filename ]] 
+                <span v-if="filename != 'No file selected'">
+                  <button @click.prevent="clearSelection" class="delete is-small"></button>
+                </span>
+              </span>
+            </label>
+          </div>
+
+          <input 
+            v-else-if="newimage=='select'"
+            ref="imgselect" 
+            class="input" 
+            name="imgpath" 
+            type="text" 
+            placeholder="Enter image name or path">
+
+        </div>
+      </div>
+
+      <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
+      {% endif %}
+
+    </form>
     {{ version(edit_ver.page.name) }}
   </div>
 </div>
@@ -91,7 +120,8 @@ new Vue({
       text: '{{ edit_ver.text }}',
       errorMsg: ['','','',''],
       action: '',
-      filename: 'No file selected'
+      filename: 'No file selected',
+      newimage: 'upload'
     }
   },
   methods: {
@@ -113,17 +143,21 @@ new Vue({
         if (this.text.length > 1000) {
           Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
         }
-        let fs = this.$refs.fileselect.files[0]
-        if (fs) {
-          if((fs.size/1024) > 500) {
-            Vue.set(this.errorMsg, 3, 'Image cannot be larger than 500KB')
+        if (evt.target.value != 'Save as draft') {
+          if (this.newimage=='upload') {
+            let fs = this.$refs.imgupload.files[0]
+            if (fs) {
+              if((fs.size/1024) > 500) {
+                Vue.set(this.errorMsg, 3, 'Image cannot be larger than 500KB')
+              }
+            }
           }
         }
       }
       if (!this.hasError()) {
         this.action = evt.target.value
         this.$nextTick(() => {
-          //this.$refs.form.submit()
+          this.$refs.form.submit()
         })
       }
     },
@@ -132,9 +166,17 @@ new Vue({
         this.filename = evt.target.files[0].name
       }
     },
-    clearSelection(evt) {
-      this.$refs.fileselect.value = ''
+    clearSelection() {
+      this.$refs.imgupload.value = ''
+      Vue.set(this.errorMsg, 3, '')
       this.filename = 'No file selected'
+    },
+    changeUpload() {
+      this.$refs.imgselect.value = ''
+      Vue.set(this.errorMsg, 3, '')
+    },
+    changeSelect() {
+      this.clearSelection()
     }
   }
 })

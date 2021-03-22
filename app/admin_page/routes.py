@@ -22,6 +22,24 @@ def page():
     return render_template('admin_page/page.html',pages=pages)
 
 
+
+def getUploadedImage():
+    r = request.files
+    if 'new_image' in r:
+        new_image = request.files['new_image']
+        if new_image:
+            upload_path = current_app.config['UPLOAD_PATH_PAGE']
+            upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_PAGE']
+            img_type_obj = ImageType.query.filter_by(name='page').first()
+            resp = process_image(new_image,upload_path,upload_path_thumb,img_type_obj)
+            if resp['status'] == 'error':
+                flash(resp['msg'])
+                return False
+            else:
+                return Images.query.filter_by(filename=resp['msg']).first()
+    return False
+
+
 @bp.route('/page/page_home_main',methods=['GET', 'POST'])
 @login_required
 @set_breadcrumb('home page page-home-main')
@@ -46,28 +64,25 @@ def page_home_main():
                     flash('This page is not a draft', 'danger')
             elif action == 'Save':
                 if page.page_status.name == 'draft':
-                    new_image = request.files['new_image']
-                    resp = {'status':'ok'}
-                    if new_image:
-                        upload_path = current_app.config['UPLOAD_PATH_PAGE']
-                        upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_PAGE']
-                        img_type_obj = ImageType.query.filter_by(name='page').first()
-                        resp = process_image(new_image,upload_path,upload_path_thumb,img_type_obj)
-                    if resp['status'] == 'error':
-                        flash(resp['msg'])
+                    imgpath = request.form.get('imgpath')
+                    if imgpath:
+                        i = imgpath.rsplit('/',1)
+                        img = Images.query.filter_by(filename=i[1]).first()
+                        page.image = img
                     else:
-                        page.heading = heading
-                        page.important = important
-                        page.text = text
-                        if new_image:
-                            img = Images.query.filter_by(filename=resp['msg']).first()
-                            page.image = img 
-                        page.author = current_user
-                        page.update_date = datetime.utcnow()
-                        page.create_date = datetime.utcnow()
-                        db.session.add(page)
-                        db.session.commit()
-                        flash('Draft saved', 'success')
+                        img = getUploadedImage()
+                        if img:
+                            page.image = img
+
+                    page.heading = heading
+                    page.important = important
+                    page.text = text
+                    page.author = current_user
+                    page.update_date = datetime.utcnow()
+                    page.create_date = datetime.utcnow()
+                    db.session.add(page)
+                    db.session.commit()
+                    flash('Draft saved', 'success')
                 else:
                     flash('This page is not a draft', 'danger')
             elif action == 'Save as draft':
@@ -95,34 +110,32 @@ def page_home_main():
                 if page.page_status == PageStatus.getStatus('published'):
                     flash('Page already published', 'danger')
                 elif page.page_status == PageStatus.getStatus('draft'):
-                    new_image = request.files['new_image']
-                    resp = {'status':'ok'}
-                    if new_image:
-                        upload_path = current_app.config['UPLOAD_PATH_PAGE']
-                        upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_PAGE']
-                        img_type_obj = ImageType.query.filter_by(name='page').first()
-                        resp = process_image(new_image,upload_path,upload_path_thumb,img_type_obj)
-                    if resp['status'] == 'error':
-                        flash(resp['msg'])
+                    # there should only be 1 published.. this is just to make 100% sure
+                    page_pub = PageHomeMain.query.filter_by(page_status=PageStatus.getStatus('published')).all()
+                    for p in page_pub:
+                        db.session.delete(p)
+
+                    imgpath = request.form.get('imgpath')
+                    if imgpath:
+                        i = imgpath.rsplit('/',1)
+                        img = Images.query.filter_by(filename=i[1]).first()
+                        page.image = img
                     else:
-                        # there should only be 1 published.. this is just to make 100% sure
-                        page_pub = PageHomeMain.query.filter_by(page_status=PageStatus.getStatus('published')).all()
-                        for p in page_pub:
-                            db.session.delete(p)
-                        page.heading = heading
-                        page.important = important
-                        page.text = text
-                        if new_image:
-                            img = Images.query.filter_by(filename=resp['msg']).first()
-                            page.image = img 
-                        page.page_status = PageStatus.getStatus('published')
-                        page.author = current_user
-                        page.update_date = datetime.utcnow()
-                        page.page.last_publish_by = current_user
-                        page.page.last_publish_date = datetime.utcnow()
-                        db.session.add(page)
-                        db.session.commit()
-                        flash('Page published', 'success')
+                        img = getUploadedImage()
+                        if img:
+                            page.image = img
+                    
+                    page.heading = heading
+                    page.important = important
+                    page.text = text
+                    page.page_status = PageStatus.getStatus('published')
+                    page.author = current_user
+                    page.update_date = datetime.utcnow()
+                    page.page.last_publish_by = current_user
+                    page.page.last_publish_date = datetime.utcnow()
+                    db.session.add(page)
+                    db.session.commit()
+                    flash('Page published', 'success')
                 else:
                     flash('Status error', 'danger')
             elif action == 'Edit this version':
