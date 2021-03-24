@@ -131,7 +131,6 @@ new Vue({
       }
     },
     clearSelection(ref,img_num,err_num) {
-      console.log('x',ref)
       this.$refs[ref].value = ''
       Vue.set(this.errorMsg, err_num, '')
       this['filename'+img_num] = 'No file selected'
