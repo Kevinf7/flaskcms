@@ -194,6 +194,15 @@ new Vue({
       Vue.set(this.errorMsg, err_num, '')
       this['filename'+img_num] = 'No file selected'
     }
+  },
+  filters: {
+    truncate: function (text, length, suffix) {
+      if (text.length > length) {
+          return text.substring(0, length) + suffix;
+      } else {
+          return text;
+      }
+    }
   }
 })
 </script>

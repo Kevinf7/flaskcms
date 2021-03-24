@@ -28,9 +28,9 @@
             Upload new image
           </span>
         </span>
-        <span class="file-name">[[ filename{{ img_num }} ]] 
+        <span class="file-name">[[ filename{{ img_num }} | truncate(20, '..') ]] 
           <span v-if="filename{{ img_num }} != 'No file selected'">
-            <button @click.prevent="clearSelection('imgselect{{ img_num }}',{{ img_num }},{{ err_num }})" class="delete is-small"></button>
+            <button @click.prevent="clearSelection('imgupload{{ img_num }}',{{ img_num }},{{ err_num }})" class="delete is-small"></button>
           </span>
         </span>
       </label>
