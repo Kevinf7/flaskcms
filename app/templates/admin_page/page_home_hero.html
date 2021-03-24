@@ -9,10 +9,11 @@
     <form ref="form" action="{{ url_for('admin_page.page_home_hero') }}" 
       method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-      <input type="hidden" name="id" value="{{ edit_ver.id }}">
+      <input type="hidden" name="id" value="{{ edit_ver.id }}"/>
       <input type="hidden" name="image_id1" value="{{ edit_ver.image_id1 }}"/>
       <input type="hidden" name="image_id2" value="{{ edit_ver.image_id2 }}"/>
-      <input type="hidden" name="action" :value="action">
+      <input type="hidden" name="excludeimg2" :value="!secondSlider"/>
+      <input type="hidden" name="action" :value="action"/>
 
       {% include 'shared/macros/_page_edit_buttons.html' %}
       
@@ -38,28 +39,7 @@
       </div>
 
       <div class="field">
-        <label class="label">Heading2</label>
-        <div class="control">
-          <input 
-            name="heading2"
-            class="input"
-            type="text"
-            v-model="heading2">
-        </div>
-        <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
-      </div>
-
-      <div class="field">
-        <label class="label">Main Text2</label>
-        <div class="control">
-          <textarea class="textarea" name="text2" rows="3" v-model="text2">
-          </textarea>
-        </div>
-        <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
-      </div>
-
-      <div class="field">
-        <label class="label">Current image - 1</label>
+        <label class="label">Current image</label>
         <div class="control">
           {% if edit_ver.image1.filename %}
           <p class="is-size-7">{{ edit_ver.image1.filename }}</p>
@@ -69,20 +49,61 @@
           {% endif %}
         </div>
       </div>
-      {{ form_image(1,4) }}
+      {{ form_image(1,2) }}
+
+      <hr/>
 
       <div class="field">
-        <label class="label">Current image - 2</label>
+        <label class="label">Include a second slider?</label>
         <div class="control">
-          {% if edit_ver.image2.filename %}
-          <p class="is-size-7">{{ edit_ver.image2.filename }}</p>
-          <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image2.thumbnail) }}">
-          {% else %}
-          <p>Empty</p>
-          {% endif %}
+          <label class="radio">
+            <input type="radio" name="secondslider" :value="true" v-model="secondSlider">
+            Yes
+          </label>
+          <label class="radio">
+            <input type="radio" name="secondslider" :value="false" v-model="secondSlider">
+            No
+          </label>
         </div>
       </div>
-      {{ form_image(2,5) }}
+
+      <div v-if="secondSlider" ref="secondSlider">
+        <div class="field">
+          <label class="label">Heading - 2</label>
+          <div class="control">
+            <input
+              ref="heading2"
+              name="heading2"
+              class="input"
+              type="text"
+              v-model="heading2">
+          </div>
+          <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
+        </div>
+
+        <div class="field">
+          <label class="label">Main Text - 2</label>
+          <div class="control">
+            <textarea ref="text2" class="textarea" 
+              name="text2" rows="3" v-model="text2">
+            </textarea>
+          </div>
+          <p v-if="errorMsg[4]" class="help is-danger">[[ errorMsg[4] ]]</p>
+        </div>
+
+        <div class="field">
+          <label class="label">Current image - 2</label>
+          <div class="control">
+            {% if edit_ver.image2.filename %}
+            <p class="is-size-7">{{ edit_ver.image2.filename }}</p>
+            <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image2.thumbnail) }}">
+            {% else %}
+            <p>Empty</p>
+            {% endif %}
+          </div>
+        </div>
+        {{ form_image(2,5) }}
+      </div>
 
     </form>
     {{ version(edit_ver.page.name) }}
@@ -98,16 +119,17 @@ new Vue({
   delimiters: ['[[', ']]'],
   data() {
     return {
-      heading: '{{ edit_ver.heading }}',
-      text: '{{ edit_ver.text }}',
-      heading2: '{{ edit_ver.heading2 }}',
-      text2: '{{ edit_ver.text2 }}',
-      errorMsg: ['','','',''],
+      heading: '{{ edit_ver.heading or "" }}',
+      text: '{{ edit_ver.text or "" }}',
+      heading2: '{{ edit_ver.heading2 or "" }}',
+      text2: '{{ edit_ver.text2 or "" }}',
+      errorMsg: ['','','','','',''],
       action: '',
       filename1: 'No file selected',
       newimage1: 'upload',
       filename2: 'No file selected',
-      newimage2: 'upload'
+      newimage2: 'upload',
+      secondSlider: {{ 'true' if edit_ver.heading2 is not none and edit_ver.heading2!='' else 'false' }}
     }
   },
   methods: {
@@ -123,16 +145,26 @@ new Vue({
         if (this.heading.length == 0) {
           Vue.set(this.errorMsg, 0, 'This is a mandatory field')
         } else if (this.heading.length > 50) {
-          Vue.set(this.errorMsg, 0, 'Maximum 20 characters')
+          Vue.set(this.errorMsg, 0, 'Maximum 50 characters')
         }
         if (this.text.length == 0) {
           Vue.set(this.errorMsg, 1, 'This is a mandatory field')
         } else if (this.text.length > 1000) {
           Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
         }
-
+        if (this.secondSlider) {
+          if (this.heading2.length > 50) {
+            Vue.set(this.errorMsg, 3, 'Maximum 50 characters')
+          }
+          if (this.text2.length > 1000) {
+            Vue.set(this.errorMsg, 4, 'Maximum 1000 characters')
+          }
+        }
         if (evt.target.value != 'Save as draft') {
           let num_images = {{ num_images }}
+          if (!this.secondSlider) {
+            num_images = 1
+          }
           for (n in num_images) {
             if (this['newimage'+n]=='upload') {
               let fs = this.$refs['imgupload'+n].files[0]

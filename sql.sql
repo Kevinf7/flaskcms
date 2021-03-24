@@ -72,8 +72,8 @@ INSERT INTO comment(comment, name,email,post_id,create_date)
 values('I have a question','Mary','mary@jjj.com',1,now());
 
 
-INSERT INTO page_home_main(important,text,image,status_id,page_id,user_id,update_date,create_date,heading)
-values('bla bla this is important', 'hello 123', '',2,3,1,now(),now(),'Some heading')
+INSERT INTO page_home_main(important,text,image_id1,status_id,page_id,user_id,update_date,create_date,heading)
+values('bla bla this is important', 'hello 123', 12,2,7,2,now(),now(),'Some heading')
 
 INSERT INTO page_home_hero(text,image_id1,image_id2,status_id,page_id,user_id,update_date,create_date,heading)
-values('bla bla this is important', 20,20,2,5,1,now(),now(),'Some heading')
+values('bla bla this is important', 12,12,2,9,2,now(),now(),'Some heading')

@@ -129,7 +129,7 @@
                                 </div>
 
                             </div>
-
+                            {% if hero.heading2 %}
                             <div class="heading-slider-single-slide">
 
                                 <img src="{{ url_for('static', filename='uploads/page/' ~ hero.image2.filename) }}" class="image-data-for-parent" alt="Game of lotto" />
@@ -158,6 +158,7 @@
                                 </div>
 
                             </div>
+                            {% endif %}
 
                         </section>
 

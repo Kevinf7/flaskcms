@@ -51,15 +51,19 @@ def page_post(page_model, page_name, fields, num_images):
             elif action == 'Save':
                 if page.page_status.name == 'draft':
                     for r in range(1,num_images+1):
-                        new_path = request.form.get('new_path'+str(r))
-                        if new_path:
-                            i = new_path.rsplit('/',1)
-                            img = Images.query.filter_by(filename=i[1]).first()
-                            setattr(page,'image'+str(r),img)
+                        excludeimg = request.form.get('excludeimg'+str(r))
+                        if excludeimg=='true':
+                            setattr(page,'image'+str(r),None)
                         else:
-                            img = getUploadedImage(r)
-                            if img:
+                            new_path = request.form.get('new_path'+str(r))
+                            if new_path:
+                                i = new_path.rsplit('/',1)
+                                img = Images.query.filter_by(filename=i[1]).first()
                                 setattr(page,'image'+str(r),img)
+                            else:
+                                img = getUploadedImage(r)
+                                if img:
+                                    setattr(page,'image'+str(r),img)
                     for f in fields:
                         setattr(page,f['name'],data[f['name']])
                     page.author = current_user
@@ -104,15 +108,19 @@ def page_post(page_model, page_name, fields, num_images):
                         db.session.delete(p)
 
                     for r in range(1,num_images+1):
-                        new_path = request.form.get('new_path'+str(r))
-                        if new_path:
-                            i = new_path.rsplit('/',1)
-                            img = Images.query.filter_by(filename=i[1]).first()
-                            setattr(page,'image'+str(r),img)
+                        excludeimg = request.form.get('excludeimg'+str(r))
+                        if excludeimg=='true':
+                            setattr(page,'image'+str(r),None)
                         else:
-                            img = getUploadedImage(r)
-                            if img:
+                            new_path = request.form.get('new_path'+str(r))
+                            if new_path:
+                                i = new_path.rsplit('/',1)
+                                img = Images.query.filter_by(filename=i[1]).first()
                                 setattr(page,'image'+str(r),img)
+                            else:
+                                img = getUploadedImage(r)
+                                if img:
+                                    setattr(page,'image'+str(r),img)
                     for f in fields:
                         setattr(page,f['name'],data[f['name']])
                     page.page_status = PageStatus.getStatus('published')
