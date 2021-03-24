@@ -3,91 +3,97 @@
 
 {% block app_content %}
 <div class="tile is-ancestor">
-  <div class="tile is-parent">
+  <div class="tile is-parent is-vertical">
     <div class="tile is-child box">
-      <p class="title">Blog</p>
       <div class="content">
-        <p>{{ total_post }} total posts</p>
-        {% if post_latest %}
-        <p><span>Last post updated was "{{ post_latest.title }}"
-          on {{ moment(post_latest.update_date).format('D MMM YYYY') }}</span>
-        </p>
-        {% endif %}
-        <a href="{{ url_for('admin_blog.blog') }}">Edit Posts</a>
+        <h3>Welcome to Flask CMS</h3>
+        <p>Where you control your content</p>
+        <p><a href="{{ url_for('main.index') }}">Go to main site</a></p>
       </div>
     </div>
-  </div>
-  <div class="tile is-parent">
     <div class="tile is-child box">
-      <p class="title">Tags</p>
       <div class="content">
-        <p>{{ tag_used }} tags used, {{ tag_not_used }} tags unused</p>
-        <p>Top tags: 
-        {% for t in top_tags %}
-        <span class="tag is-info is-light">{{ t[0].name }} - {{ t[1] }}</span> 
-        {% endfor %}
+        <h4>At a glance</h4>
+        <h6>Blog</h6>
+        <p>
+          <a href="{{ url_for('admin_blog.blog') }}">{{ total_post }} Posts</a>,
+          <a href="{{ url_for('admin_blog.tag') }}">{{ total_tags }} Tags</a>,
+          <a href="{{ url_for('admin_blog.comment') }}">{{ total_comment }} Comments</a>,
+          <a href="{{ url_for('admin_media.media',show='blog') }}">{{ total_media_blog }} Images</a>
         </p>
-        <a href="{{ url_for('admin_blog.tag') }}">Edit Tags</a>
+        <h6>Pages</h6>
+        <p>
+          <a href="{{ url_for('admin_page.page') }}">{{ total_pages }} Pages</a>,
+          <a href="{{ url_for('admin_media.media',show='page') }}">{{ total_media_page }} Images</a>
+        </p>
+        <h6>Messages</h6>
+        <p>
+          <a href="{{ url_for('admin_message.message') }}">{{ total_message }} Messages</a>
+        </p>
       </div>
     </div>
-  </div>
-  <div class="tile is-parent">
     <div class="tile is-child box">
-      <p class="title">Comments</p>
       <div class="content">
-        <p>{{ total_comment }} total comments</p>
+        <h4>Alerts</h4>
         {% if new_comment > 0 %}
         <p><span class="has-background-warning">You have {{ new_comment }} new comments since last login</span></p>
         {% else %}
         <p>You have {{ new_comment }} new comments since last login</p>
         {% endif %}
-        <a href="{{ url_for('admin_blog.comment') }}">Edit Comments</a>
+        {% if new_message > 0 %}
+        <p><span class="has-background-warning">You have {{ new_message }} new messages since last login</span></p>
+        {% else %}
+        <p>You have {{ new_message }} new messages since last login</p>
+        {% endif %}
       </div>
     </div>
   </div>
-</div>
-<div class="tile is-ancestor">
   <div class="tile is-parent">
     <div class="tile is-child box">
-      <p class="title">Pages</p>
       <div class="content">
-        <p>{{ total_pages }} total pages</p>
+        <h4>Activity</h4>
+        <h6>Most recent posts</h6>
+        <p>
+        {% for p in post_latest %}
+        {{ moment(p.update_date).format('D MMM YYYY') }} - 
+        <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}">{{ p.title }}</a>
+        <br/>
+        {% endfor %}
+        </p>
+        <h6>Most used tags</h6>
+        {% for t in top_tags %}
+        <span class="tag is-info is-light">{{ t[0].name }}</span>
+        <span class="is-size-7">({{ t[1] }})</span>
+        {% endfor %}
+        </p>
+        <h6>Most recent comment</h6>
+        <div class="columns">
+          <div class="column is-narrow">
+            <img src="{{ url_for('static',filename='images/def_gravatar.png') }}" width="50"/>
+          </div>
+          <div class="column">
+            <div class="content">
+              <p>
+                <span class="is-size-7">From {{ comment_latest.name }} on {{comment_latest.post.title}}</span><br/>
+                {{ comment_latest.comment|truncate(480) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h6>Most recent page updated</h6>
         {% if page_latest %}
-        <p><span>Last page updated was "{{ page_latest.name }}" 
-          on {{ moment(page_latest.last_publish_date).format('D MMM YYYY') }}</span></p>
+        <p>
+          {{ moment(page_latest.last_publish_date).format('D MMM YYYY') }} -
+          {{ page_latest.display }}
+        </p>
         {% endif %}
-        <a href="{{ url_for('admin_page.page') }}">Edit Pages</a>
-      </div>
-    </div>
-  </div>
-  <div class="tile is-parent">
-    <div class="tile is-child box">
-      <p class="title">Media</p>
-      <div class="content">
-        <p>{{ total_media }} total images</p>
+        <h6>Most recent images</h6>
         {% if image_latest %}
-          <p>Latest uploads:<br/>
-          {% for img in image_latest %}
-          <img width="80" src="{{ url_for('static',filename='uploads/' ~ img.image_type.name ~ '/thumbnails/' ~ img.thumbnail) }}">
-          {% endfor %}
-          </p>
-        {% endif %}
-        <a href="{{ url_for('admin_media.media') }}">Edit Media</a>
-      </div>
-    </div>
-  </div>
-  <div class="tile is-parent">
-    <div class="tile is-child box">
-      <div class="content">
-        <p class="title">Messages</p>
-        <div class="content">
-          <p>{{ total_message }} total messages</p>
-          {% if new_message > 0 %}
-          <p><span class="has-background-warning">You have {{ new_message }} new messages since last login</span></p>
-          {% else %}
-          <p>You have {{ new_message }} new messages since last login</p>
-          {% endif %}
-          <a href="{{ url_for('admin_message.message') }}">Edit Messages</a>
+        {% for img in image_latest %}
+        <img width="80" src="{{ url_for('static',filename='uploads/' ~ img.image_type.name ~ '/thumbnails/' ~ img.thumbnail) }}">
+        {% endfor %}
+      {% endif %}
       </div>
     </div>
   </div>

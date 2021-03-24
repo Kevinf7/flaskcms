@@ -9,7 +9,7 @@
       method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="id" value="{{ edit_ver.id }}">
-      <input type="hidden" name="image_id" value="{{ edit_ver.image_id }}"/>
+      <input type="hidden" name="image_id1" value="{{ edit_ver.image_id1 }}"/>
       <input type="hidden" name="action" :value="action">
 
       {% include 'shared/macros/_page_edit_buttons.html' %}
@@ -47,8 +47,12 @@
       <div class="field">
         <label class="label">Current image</label>
         <div class="control">
-          <p class="is-size-7">{{ edit_ver.image.filename }}</p>
-          <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image.thumbnail) }}">
+          {% if edit_ver.image1.filename %}
+          <p class="is-size-7">{{ edit_ver.image1.filename }}</p>
+          <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image1.thumbnail) }}">
+          {% else %}
+          <p>Empty</p>
+          {% endif %}
         </div>
       </div>
 
@@ -91,7 +95,7 @@
             v-else-if="newimage=='select'"
             ref="imgselect" 
             class="input" 
-            name="imgpath" 
+            name="imgpath1" 
             type="text" 
             placeholder="Enter image name or path">
 
@@ -134,21 +138,39 @@ new Vue({
     },
     doValidate(evt) {
       if (evt.target.value != "Delete") {
-        if (this.heading.length > 50) {
+        if (this.heading.length == 0) {
+          Vue.set(this.errorMsg, 0, 'This is a mandatory field')
+        } else if (this.heading.length > 50) {
           Vue.set(this.errorMsg, 0, 'Maximum 20 characters')
         }
         if (this.important.length > 1000) {
           Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
         }
-        if (this.text.length > 1000) {
+        if (this.text.length == 0) {
+          Vue.set(this.errorMsg, 2, 'This is a mandatory field')
+        } else if (this.text.length > 1000) {
           Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
         }
         if (evt.target.value != 'Save as draft') {
-          if (this.newimage=='upload') {
-            let fs = this.$refs.imgupload.files[0]
-            if (fs) {
-              if((fs.size/1024) > 500) {
-                Vue.set(this.errorMsg, 3, 'Image cannot be larger than 500KB')
+          let hasImg = '{{ edit_ver.image1.filename }}'
+          if (!hasImg) {
+            let fs = false
+            let is = false
+            if (this.newimage=='upload') {
+              fs = this.$refs.imgupload.value
+            } else {
+              is = this.$refs.imgselect.value
+            }
+            if (!fs && !is) {
+              Vue.set(this.errorMsg, 3, 'You need to either upload an image or select an image from Media')
+            }
+          } else {
+            if (this.newimage=='upload') {
+              let fs = this.$refs.imgupload.files[0]
+              if (fs) {
+                if((fs.size/1024) > 500) {
+                  Vue.set(this.errorMsg, 3, 'Image cannot be larger than 500KB')
+                }
               }
             }
           }

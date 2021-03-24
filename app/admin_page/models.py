@@ -15,6 +15,8 @@ class Page(db.Model):
         db.DateTime, default=datetime.utcnow, nullable=False)
     page_home_main = db.relationship(
         "PageHomeMain", backref="page", lazy="dynamic")
+    page_home_hero = db.relationship(
+        "PageHomeHero", backref="page", lazy="dynamic")
     page_contact = db.relationship(
         "PageContact", backref="page", lazy="dynamic")
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
@@ -34,6 +36,8 @@ class PageStatus(db.Model):
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
     page_home_main = db.relationship(
         "PageHomeMain", backref="page_status", lazy="dynamic")
+    page_home_hero = db.relationship(
+        "PageHomeHero", backref="page_status", lazy="dynamic")
     page_contact = db.relationship(
         "PageContact", backref="page_status", lazy="dynamic")
 
@@ -52,10 +56,10 @@ class PageStatus(db.Model):
 class PageHomeMain(db.Model):
     __tablename__ = 'page_home_main'
     id = db.Column(db.Integer, primary_key=True)
-    heading = db.Column(db.String(50))
+    heading = db.Column(db.String(50), nullable=False)
     important = db.Column(db.String(1000))
-    text = db.Column(db.String(1000))
-    image_id = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=True)
+    text = db.Column(db.String(1000), nullable=False)
+    image_id1 = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)
     status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -64,7 +68,27 @@ class PageHomeMain(db.Model):
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
-        return '<PageHome {}>'.format(self.heading)
+        return '<PageHomeMain {}>'.format(self.heading)
+
+
+class PageHomeHero(db.Model):
+    __tablename__ = 'page_home_hero'
+    id = db.Column(db.Integer, primary_key=True)
+    heading = db.Column(db.String(50), nullable=False)
+    text = db.Column(db.String(500), nullable=False)
+    heading2 = db.Column(db.String(50), nullable=True)
+    text2 = db.Column(db.String(500), nullable=True)
+    image_id1 = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)
+    image_id2 = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=True)
+    status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
+    page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    update_date = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False)
+    create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
+
+    def __repr__(self):
+        return '<PageHomeHero {}>'.format(self.heading)
 
 
 class PageContact(db.Model):

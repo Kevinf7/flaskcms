@@ -5,7 +5,7 @@ from app import db
 from app.admin_main import bp
 from app.admin_blog.models import Post, Tag, Tagged, Comment
 from app.admin_page.models import Page
-from app.admin_media.models import Images
+from app.admin_media.models import Images, ImageType
 from app.admin_message.models import Message
 from app.breadcrumb import set_breadcrumb
 
@@ -18,9 +18,8 @@ from app.breadcrumb import set_breadcrumb
 @set_breadcrumb('home')
 def index():
     total_post = Post.query.filter_by(active=True).count()
-    post_latest = Post.query.order_by(desc(Post.update_date)).first()
-    tag_used = len(Tag.query.join(Tagged).all())
-    tag_not_used = Tag.query.count() - tag_used
+    post_latest = Post.query.order_by(desc(Post.update_date)).limit(3).all()
+    total_tags = db.session.query(Tag).count()
     top_tags = db.session.query(Tag, db.func.count(Tagged.tag_id)) \
         .join(Tagged).group_by(Tagged.tag_id).limit(3).all()
     total_comment = Comment.query.count()
@@ -28,16 +27,20 @@ def index():
     new_comment = Comment.query.filter(Comment.create_date>=last_login).count()
     total_pages = Page.query.count()
     page_latest = Page.query.order_by(desc(Page.last_publish_date)).first()
-    total_media = Images.query.count()
+    total_media_blog = db.session.query(Images).join(ImageType).filter(ImageType.name=='blog').count()
+    total_media_page = db.session.query(Images).join(ImageType).filter(ImageType.name=='page').count()
     total_message = Message.query.count()
     new_message = Message.query.filter(Message.create_date>=last_login).count()
     image_latest = Images.query.order_by(desc(Images.create_date)).limit(3).all()
-    
+    comment_latest = Comment.query.order_by(desc(Comment.create_date)).first()
+
     return render_template('admin_main/index.html', total_post=total_post, \
-        tag_used=tag_used, tag_not_used=tag_not_used, total_comment=total_comment, \
-        new_comment=new_comment, total_pages=total_pages, total_media=total_media, \
+        total_tags=total_tags, total_comment=total_comment, \
+        new_comment=new_comment, total_pages=total_pages, \
+        total_media_blog=total_media_blog, total_media_page=total_media_page, \
         total_message=total_message, new_message=new_message, post_latest=post_latest, \
-        page_latest=page_latest, top_tags=top_tags, image_latest=image_latest)
+        page_latest=page_latest, top_tags=top_tags, image_latest=image_latest, \
+        comment_latest=comment_latest)
     
 
 @bp.route('/about', methods=['GET'])

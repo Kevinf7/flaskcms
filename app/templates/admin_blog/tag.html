@@ -50,7 +50,7 @@
           </td>
           <td>
             <a href="#" @click.prevent="showEdit({{ tu.id }}, '{{ tu.name }}')">
-              <span key="tab1"><i class="far fa-edit"></i></span>
+              <span key="tab1"><i class="far fa-edit" title="edit"></i></span>
             </a>
           </td>
         </tr>
@@ -74,7 +74,7 @@
           <td>{{ tnu.name }}</td>
           <td>
             <a href="#" @click.prevent="showDel({{ tnu.id }}, '{{ tnu.name }}')">
-              <span key="tab2"><i class="far fa-trash-alt" key="tab2"></i></span>
+              <span key="tab2"><i class="far fa-trash-alt" key="tab2" title="delete"></i></span>
             </a>
           </td>
         </tr>

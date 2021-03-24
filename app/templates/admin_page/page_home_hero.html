@@ -1,0 +1,168 @@
+{% extends "shared/base_main.html" %}
+{% from 'shared/macros/_version.html' import version with context %}
+{% from 'shared/macros/_form_image.html' import form_image with context %}
+{% block title %}Page Home Main{% endblock %}
+
+{% block app_content %}
+<div id="this-block">
+  <div class="content mb-6">
+    <form ref="form" action="{{ url_for('admin_page.page_home_hero') }}" 
+      method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="id" value="{{ edit_ver.id }}">
+      <input type="hidden" name="image_id1" value="{{ edit_ver.image_id1 }}"/>
+      <input type="hidden" name="image_id2" value="{{ edit_ver.image_id2 }}"/>
+      <input type="hidden" name="action" :value="action">
+
+      {% include 'shared/macros/_page_edit_buttons.html' %}
+      
+      <div class="field">
+        <label class="label">Heading</label>
+        <div class="control">
+          <input 
+            name="heading"
+            class="input"
+            type="text"
+            v-model="heading">
+        </div>
+        <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Main Text</label>
+        <div class="control">
+          <textarea class="textarea" name="text" rows="3" v-model="text">
+          </textarea>
+        </div>
+        <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Heading2</label>
+        <div class="control">
+          <input 
+            name="heading2"
+            class="input"
+            type="text"
+            v-model="heading2">
+        </div>
+        <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Main Text2</label>
+        <div class="control">
+          <textarea class="textarea" name="text2" rows="3" v-model="text2">
+          </textarea>
+        </div>
+        <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Current image - 1</label>
+        <div class="control">
+          {% if edit_ver.image1.filename %}
+          <p class="is-size-7">{{ edit_ver.image1.filename }}</p>
+          <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image1.thumbnail) }}">
+          {% else %}
+          <p>Empty</p>
+          {% endif %}
+        </div>
+      </div>
+      {{ form_image(1,4) }}
+
+      <div class="field">
+        <label class="label">Current image - 2</label>
+        <div class="control">
+          {% if edit_ver.image2.filename %}
+          <p class="is-size-7">{{ edit_ver.image2.filename }}</p>
+          <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image2.thumbnail) }}">
+          {% else %}
+          <p>Empty</p>
+          {% endif %}
+        </div>
+      </div>
+      {{ form_image(2,5) }}
+
+    </form>
+    {{ version(edit_ver.page.name) }}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+new Vue({
+  el: '#this-block',
+  delimiters: ['[[', ']]'],
+  data() {
+    return {
+      heading: '{{ edit_ver.heading }}',
+      text: '{{ edit_ver.text }}',
+      heading2: '{{ edit_ver.heading2 }}',
+      text2: '{{ edit_ver.text2 }}',
+      errorMsg: ['','','',''],
+      action: '',
+      filename1: 'No file selected',
+      newimage1: 'upload',
+      filename2: 'No file selected',
+      newimage2: 'upload'
+    }
+  },
+  methods: {
+    hasError() {
+      err = false
+      for(let i=0; i<this.errorMsg.length; i++) {
+        if(this.errorMsg[i] != '') err = true
+      }
+      return err
+    },
+    doValidate(evt) {
+      if (evt.target.value != "Delete") {
+        if (this.heading.length == 0) {
+          Vue.set(this.errorMsg, 0, 'This is a mandatory field')
+        } else if (this.heading.length > 50) {
+          Vue.set(this.errorMsg, 0, 'Maximum 20 characters')
+        }
+        if (this.text.length == 0) {
+          Vue.set(this.errorMsg, 1, 'This is a mandatory field')
+        } else if (this.text.length > 1000) {
+          Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
+        }
+
+        if (evt.target.value != 'Save as draft') {
+          let num_images = {{ num_images }}
+          for (n in num_images) {
+            if (this['newimage'+n]=='upload') {
+              let fs = this.$refs['imgupload'+n].files[0]
+              if (fs) {
+                if((fs.size/1024) > 500) {
+                  Vue.set(this.errorMsg, 1+n, 'Image cannot be larger than 500KB')
+                }
+              }
+            }
+          }
+        }
+      }
+      if (!this.hasError()) {
+        this.action = evt.target.value
+        this.$nextTick(() => {
+          this.$refs.form.submit()
+        })
+      }
+    },
+    fileSelected(evt,img_num) {
+      if (evt.target.files.length > 0) {
+        this['filename'+img_num] = evt.target.files[0].name
+      }
+    },
+    clearSelection(ref,img_num,err_num) {
+      this.$refs[ref].value = ''
+      Vue.set(this.errorMsg, err_num, '')
+      this['filename'+img_num] = 'No file selected'
+    }
+  }
+})
+</script>
+{% endblock %}

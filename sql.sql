@@ -27,11 +27,14 @@ VALUES("Troy Trojan", "troy@aabb.com", "Please help", false, now());
 
 Page
 
-insert into page (name, user_id, last_publish_date, create_date)
+insert into page (name, user_id, last_publish_date, create_date, display)
 values ('home', 2, now(), now());
 
-insert into page (name, user_id, last_publish_date, create_date)
+insert into page (name, user_id, last_publish_date, create_date, display)
 values ('contact', 2, now(), now());
+
+insert into page (name, user_id, last_publish_date, create_date, display)
+values ('home_hero', 1, now(), now(), 'Home - Hero');
 
 insert into page_status (name, create_date)
 values ('draft', now());
@@ -71,3 +74,6 @@ values('I have a question','Mary','mary@jjj.com',1,now());
 
 INSERT INTO page_home_main(important,text,image,status_id,page_id,user_id,update_date,create_date,heading)
 values('bla bla this is important', 'hello 123', '',2,3,1,now(),now(),'Some heading')
+
+INSERT INTO page_home_hero(text,image_id1,image_id2,status_id,page_id,user_id,update_date,create_date,heading)
+values('bla bla this is important', 20,20,2,5,1,now(),now(),'Some heading')

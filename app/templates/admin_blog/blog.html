@@ -58,23 +58,23 @@
         <tr class="has-text-grey-light">
         {% endif %}
           <td>{{ p.title }}</td>
-          <td>{{ p.post|truncate(50,true,'...')|striptags }}</td>
+          <td>{{ p.post|truncate(100,true,'...')|striptags }}</td>
           <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
           <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
           <td>{{ p.author.email }}</td>
           {% if p.active %}
           <td class="has-text-right">
-            <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}"><i class="far fa-edit"></i></a>
+            <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}"><i class="far fa-edit" title="edit"></i></a>
           </td>
           <td class="has-text-right">
-            <a href="#" @click="showDraftConfirm({{ p.id }})"><i class="fas fa-backspace"></i></a>
+            <a href="#" @click="showDraftConfirm({{ p.id }})"><i class="fas fa-eraser" title="unpublish"></i></a>
           </td>
           {% else %}
           <td class="has-text-right">
-            <a href="#" @click="showRestoreConfirm({{ p.id }})"><i class="fas fa-undo-alt"></i></a>
+            <a href="#" @click="showRestoreConfirm({{ p.id }})"><i class="fas fa-undo-alt" title="restore"></i></a>
           </td>
           <td class="has-text-right">
-            <a href="#" @click="showDeleteConfirm({{ p.id }})"><i class="far fa-trash-alt"></i></a>
+            <a href="#" @click="showDeleteConfirm({{ p.id }})"><i class="far fa-trash-alt" title="delete"></i></a>
           </td>
           {% endif %}
         </tr>

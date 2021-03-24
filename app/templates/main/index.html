@@ -103,7 +103,7 @@
 
                             <div class="heading-slider-single-slide">
 
-                                <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="Meeting of friends" />
+                                <img src="{{ url_for('static', filename='uploads/page/' ~ hero.image1.filename) }}" class="image-data-for-parent" alt="Meeting of friends" />
 
                                 <div class="container">
 
@@ -116,8 +116,8 @@
 
                                             <div class="heading-slider-single-slide-content">
 
-                                                <h1>Retirement you deserve</h1>
-                                                <p>Morbi eu dui mattis eros lobortis pharetra. Integer nibh sapien, eleifend sed dapibus eget, vestibulum quis felis. Aliquam non elit magna.</p>
+                                                <h1>{{ hero.heading }}</h1>
+                                                <p>{{ hero.text }}</p>
                                                 <p><a href="/about-us.html" class="button button-color"><span>Find out more <i class="fa fa-long-arrow-right"></i></span></a></p>
 
                                             </div>
@@ -132,7 +132,7 @@
 
                             <div class="heading-slider-single-slide">
 
-                                <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="Game of lotto" />
+                                <img src="{{ url_for('static', filename='uploads/page/' ~ hero.image2.filename) }}" class="image-data-for-parent" alt="Game of lotto" />
 
                                 <div class="container">
 
@@ -145,8 +145,8 @@
 
                                             <div class="heading-slider-single-slide-content">
 
-                                                <h1>Retirement you deserve</h1>
-                                                <p>Morbi eu dui mattis eros lobortis pharetra. Integer nibh sapien, eleifend sed dapibus eget, vestibulum quis felis. Aliquam non elit magna.</p>
+                                                <h1>{{ hero.heading2 }}</h1>
+                                                <p>{{ hero.text2 }}</p>
                                                 <p><a href="/about-us.html" class="button button-color"><span>Find out more <i class="fa fa-long-arrow-right"></i></span></a></p>
 
                                             </div>
@@ -202,7 +202,7 @@
 
                                             <div class="image">
 
-                                                <img src="{{ url_for('static', filename='uploads/page/' ~ main.image.filename) }}" class="image-data-for-parent" alt="Retirement House" />
+                                                <img src="{{ url_for('static', filename='uploads/page/' ~ main.image1.filename) }}" class="image-data-for-parent" alt="Retirement House" />
 
                                             </div>
 

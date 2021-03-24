@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     pages = db.relationship('Page', backref='last_publish_by', lazy='dynamic')
     page_contact = db.relationship('PageContact', backref='author', lazy='dynamic')
     page_home_main = db.relationship('PageHomeMain', backref='author', lazy='dynamic')
+    page_home_hero = db.relationship('PageHomeHero', backref='author', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     #comments = db.relationship('Comment', backref='commenter', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)

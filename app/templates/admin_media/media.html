@@ -37,7 +37,7 @@
     <p>
       <span ref="copyclip-{{ loop.index }}">../../static/uploads/{{ img.image_type.name }}/{{ img.filename }}</span>
       <a href="#" @Click.prevent="copyText({{ loop.index }})">
-        <i class="far fa-clipboard"></i>
+        <i class="far fa-clipboard" title="copy"></i>
       </a>
     </p>
     <p class="help is-info" v-if="checkShowMsg('copyclip-{{ loop.index }}')">Link copied</p>
@@ -46,7 +46,7 @@
     <p>
       Uploaded: {{ moment(img.create_date).format('DD/MM/YY') }}
       <a href="#" @click.prevent="showConfirm({{ img.id }})">
-        <i class="fas fa-trash-alt"></i>
+        <i class="fas fa-trash-alt" title="delete"></i>
       </a>
     </p>
   </div>
