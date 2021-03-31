@@ -4,6 +4,7 @@ from app.main import bp
 from app.admin_page.models import PageHomeMain, PageHomeHero, PageStatus
 from app.admin_blog.models import Post, Tag, Tagged, Comment
 from sqlalchemy import desc
+from datetime import datetime
 
 
 def get_summary_posts(posts):
@@ -63,7 +64,26 @@ def blog_single(slug):
     tags = db.session.query(Tag, db.func.count(Tagged.tag_id)) \
         .join(Tagged).group_by(Tagged.tag_id) \
         .order_by(desc(db.func.count(Tagged.tag_id))).all()
+    n = Post.query.join(Comment).filter(post.id==Comment.post_id).count()
+    post.num_comments = n
     return render_template('main/blog-single.html', post=post, tags=tags, top_post=top_post)
+
+
+@bp.route('/add_comment',methods=['POST'])
+def add_comment():
+    slug = request.form.get('slug')
+    post = Post.getPostBySlug(slug)
+    if post is None:
+        flash('No such post exists.','danger')
+        return redirect(url_for('main.blog'))
+    name = request.form.get('name')
+    email = request.form.get('email')
+    comment = request.form.get('comment')
+    cmt = Comment(comment=comment,post=post,name=name, \
+        email=email,create_date=datetime.utcnow())
+    db.session.add(cmt)
+    db.session.commit()
+    return redirect(url_for('main.blog_single',slug=slug))
 
 
 @bp.route('/contact')

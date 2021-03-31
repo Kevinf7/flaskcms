@@ -150,158 +150,49 @@
 
                         </article>
 
+                        {% if post.num_comments > 0 %}
                         <section class="comments">
 
-                            <h3>5 comments</h3>
+                            <h3>{{ post.num_comments }} comments</h3>
+                            
                             <ul class="comments-list">
-
+                                {% for c in post.comments %}
                                 <li class="comment">
 
                                     <div class="comment-data">
 
                                         <div class="comment-author-image">
 
-                                            <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" alt="Image" class="image-data-for-parent" />
+                                            <img src="{{ url_for('static', filename='images/def_gravatar.png') }}" alt="Image" class="image-data-for-parent" />
 
                                         </div>
 
-                                        <div class="comment-author-name">Kevin McDonovan <span class="reply"><a href="#"><i class="fa fa-reply"></i></a></span></div>
-                                        <div class="comment-pub-date">2 days ago</div>
+                                        <div class="comment-author-name">{{ c.name }} <span class="reply"><a href="#"><i class="fa fa-reply"></i></a></span></div>
+                                        <div class="comment-pub-date">{{ moment(c.create_date).toNow() }}</div>
 
                                     </div>
 
                                     <div class="comment-content">
 
-                                        <p>Morbi vestibulum consectetur molestie. Aliquam vel laoreet lectus, nec gravida diam. Nunc cursus facilisis mauris nec vulputate. Morbi varius sapien eget pulvinar consectetur. Aliquam mattis lacus id neque posuere, ac egestas mi volutpat. Morbi non est at velit blandit.</p>
-
-                                    </div>
-
-                                    <ul class="sub-comments">
-
-                                        <li class="comment">
-
-                                            <div class="comment-wrapper">
-
-                                                <div class="comment-data">
-
-                                                    <div class="comment-author-image">
-
-                                                        <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="Mature doctor" />
-
-                                                    </div>
-
-                                                    <div class="comment-author-name">Alison Smith <span class="author">Author</span> <span class="reply"><a href="#"><i class="fa fa-reply"></i></a></span></div>
-                                                    <div class="comment-pub-date">25 mins ago</div>
-
-                                                </div>
-
-                                                <div class="comment-content">
-
-                                                    <p>Donec vitae tellus eu purus lacinia elementum. Morbi fermentum mattis magna. Vestibulum vel gravida sem. Morbi iaculis egestas turpis, a bibendum leo tristique ut. Nullam sed eros a est bibendum imperdiet et et elit. Morbi non est at velit blandit placerat fermentum sed leo. Nullam sed eros a est bibendum imperdiet et et elit.</p>
-
-                                                </div>
-
-                                            </div>
-
-                                            <ul class="sub-comments">
-
-                                                <li class="comment">
-
-                                                    <div class="comment-wrapper">
-
-                                                        <div class="comment-data">
-
-                                                            <div class="comment-author-image">
-
-                                                                <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" alt="Image" class="image-data-for-parent" />
-
-                                                            </div>
-
-                                                            <div class="comment-author-name">Monica Wayne</div>
-                                                            <div class="comment-pub-date">1 day ago</div>
-
-                                                        </div>
-
-                                                        <div class="comment-content">
-
-                                                            <p>Donec vitae tellus eu purus lacinia elementum. Morbi fermentum mattis magna. Vestibulum vel gravida sem. Morbi iaculis egestas turpis, a bibendum leo tristique ut. Nullam sed eros a est bibendum imperdiet et et elit. Morbi non est at velit blandit placerat fermentum sed leo. Nullam sed eros a est bibendum imperdiet et et elit.</p>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </li>
-
-                                            </ul>
-
-                                        </li>
-
-                                        <li class="comment">
-
-                                            <div class="comment-wrapper">
-
-                                                <div class="comment-data">
-
-                                                    <div class="comment-author-image">
-
-                                                        <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" alt="Image" class="image-data-for-parent" />
-
-                                                    </div>
-
-                                                    <div class="comment-author-name">John Smith <span class="reply"><a href="#"><i class="fa fa-reply"></i></a></span></div>
-                                                    <div class="comment-pub-date">3 days ago</div>
-
-                                                </div>
-
-                                                <div class="comment-content">
-
-                                                    <p>Donec vitae tellus eu purus lacinia elementum. Morbi fermentum mattis magna. Vestibulum vel gravida sem. Morbi iaculis egestas turpis, a bibendum leo tristique ut. Nullam sed eros a est bibendum imperdiet et et elit. Morbi non est at velit blandit placerat fermentum sed leo. Nullam sed eros a est bibendum imperdiet et et elit.</p>
-
-                                                </div>
-
-                                            </div>
-
-                                        </li>
-
-                                    </ul>
-
-                                </li>
-
-                                <li class="comment">
-
-                                    <div class="comment-data">
-
-                                        <div class="comment-author-image">
-
-                                            <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" alt="Image" class="image-data-for-parent" />
-
-                                        </div>
-
-                                        <div class="comment-author-name">Susane Doe <span class="reply"><a href="#"><i class="fa fa-reply"></i></a></span></div>
-                                        <div class="comment-pub-date">3 days ago</div>
-
-                                    </div>
-
-                                    <div class="comment-content">
-
-                                        <p>Donec varius hendrerit mi non tempor. Sed id lacus at dui accumsan porttitor. Aliquam convallis egestas euismod. Fusce semper aliquet tincidunt. Mauris vel libero a magna maximus gravida id nec lectus. Donec ultricies, tellus non sodales ornare, felis ex volutpat lacus, a congue dolor lectus id leo. Quisque consectetur porttitor efficitur. Morbi est ipsum, efficitur nec sapien vel, vehicula.</p>
+                                        <p>{{ c.comment }}</p>
 
                                     </div>
 
                                 </li>
-
+                                {% endfor %}
                             </ul>
 
                         </section>
+                        {% endif %}
 
                         <section class="comments-form">
 
                             <h3>Leave a reply</h3>
-                            <form method="post">
-
-                                <input type="text" name="name" placeholder="Name..." />
-                                <input type="email" name="email" placeholder="E-mail address..." />
-                                <input type="url" name="url" placeholder="Website URL..." />
+                            <form method="post" action="{{ url_for('main.add_comment') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="slug" value="{{ post.slug }}"/>
+                                <input type="text" name="name" placeholder="Name..."/>
+                                <input type="email" name="email" placeholder="E-mail address..."/>
 
                                 <textarea name="comment" placeholder="Comment" cols="10" rows="5"></textarea>
                                 <button type="submit" class="button button-open-on-white"><span>Post a reply <i class="fa fa-paper-plane-o"></i></span></button>
