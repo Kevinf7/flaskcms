@@ -10,9 +10,8 @@
       method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="id" value="{{ edit_ver.id }}"/>
-      <input type="hidden" name="image_id1" value="{{ edit_ver.image_id1 }}"/>
-      <input type="hidden" name="image_id2" value="{{ edit_ver.image_id2 }}"/>
-      <input type="hidden" name="excludeimg2" :value="!secondSlider"/>
+      <input type="hidden" name="image_id1" :value="image_id1"/>
+      <input type="hidden" name="image_id2" :value="image_id2"/>
       <input type="hidden" name="action" :value="action"/>
 
       {% include 'shared/macros/_page_edit_buttons.html' %}
@@ -49,7 +48,9 @@
           {% endif %}
         </div>
       </div>
+      {% if edit_ver.page_status.name == 'draft' %}
       {{ form_image(1,2) }}
+      {% endif %}
 
       <hr/>
 
@@ -102,7 +103,9 @@
             {% endif %}
           </div>
         </div>
+        {% if edit_ver.page_status.name == 'draft' %}
         {{ form_image(2,5) }}
+        {% endif %}
       </div>
 
     </form>
@@ -129,7 +132,10 @@ new Vue({
       newimage1: 'upload',
       filename2: 'No file selected',
       newimage2: 'upload',
-      secondSlider: {{ 'true' if edit_ver.heading2 is not none and edit_ver.heading2!='' else 'false' }}
+      secondSlider: {{ 'true' if edit_ver.heading2 is not none and edit_ver.heading2!='' else 'false' }},
+      image_id1: '{{ edit_ver.image_id1 or "none" }}',
+      image_id2: '{{ edit_ver.image_id2 or "none" }}',
+      num_images: {{ num_images }}
     }
   },
   methods: {
@@ -161,11 +167,12 @@ new Vue({
           }
         }
         if (evt.target.value != 'Save as draft') {
-          let num_images = {{ num_images }}
-          if (!this.secondSlider) {
-            num_images = 1
+          if (this.secondSlider) {
+            img_loop = this.num_images
+          } else {
+            img_loop = 1
           }
-          for (n in num_images) {
+          for (let n=1; n<img_loop+1; n++) {
             if (this['newimage'+n]=='upload') {
               let fs = this.$refs['imgupload'+n].files[0]
               if (fs) {
@@ -179,6 +186,16 @@ new Vue({
       }
       if (!this.hasError()) {
         this.action = evt.target.value
+        for (let n=1; n<this.num_images+1; n++) {
+          let upl = this.$refs['imgupload'+n] ? this.$refs['imgupload'+n].value: ''
+          let sel = this.$refs['imgselect'+n] ? this.$refs['imgselect'+n].value: ''
+          if (upl || sel) {
+            this['image_id'+n]=''
+          }
+          if (!this.secondSlider) {
+            this['image_id2']='del'
+          }
+        }
         this.$nextTick(() => {
           this.$refs.form.submit()
         })

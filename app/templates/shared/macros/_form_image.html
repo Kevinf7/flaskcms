@@ -1,5 +1,4 @@
 {% macro form_image(img_num, err_num) %}
-{% if edit_ver.page_status.name == 'draft' %}
 <div class="field">      
   <div class="control">
     <label class="radio">
@@ -45,5 +44,4 @@
   </div>
 </div>
 <p v-if="errorMsg[{{ err_num }}]" class="help is-danger">[[ errorMsg[ {{ err_num }} ] ]]</p>
-{% endif %}
 {% endmacro %}

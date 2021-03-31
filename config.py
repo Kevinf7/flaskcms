@@ -52,4 +52,5 @@ class Config(object):
     UPLOAD_PATH_PAGE = basedir / 'app/static/uploads/page'
     UPLOAD_PATH_THUMB_PAGE = basedir / 'app/static/uploads/page/thumbnails'
 
-
+    ### USER SETTINGS ###
+    USER_POSTS_PER_PAGE = 5

@@ -134,6 +134,6 @@ def imageuploader(image_type):
     file = request.files.get('file')
     resp = process_image(file, upload_path, upload_path_thumb, img_type_obj)
     if resp['status'] == 'success':
-        return jsonify({'location' : resp['filename']})
+        return jsonify({'location' : resp['msg']})
     elif resp['status'] == 'error':
         return make_response(resp['msg'], 400)

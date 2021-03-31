@@ -13,6 +13,7 @@ class Images(db.Model):
     file_width = db.Column(db.Integer, nullable=False)
     file_height = db.Column(db.Integer, nullable=False)
     image_type_id = db.Column(db.Integer, db.ForeignKey('image_type.id'), nullable=False)
+    post = db.relationship('Post', backref='image1', lazy='dynamic')
     page_home_main = db.relationship('PageHomeMain', backref='image1', lazy='dynamic')
     page_home_hero1 = db.relationship('PageHomeHero',
         foreign_keys='PageHomeHero.image_id1', backref='image1', lazy='dynamic')

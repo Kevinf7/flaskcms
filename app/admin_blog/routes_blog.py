@@ -3,8 +3,9 @@ from flask_login import current_user, login_required
 from app import db
 from app.admin_blog import bp
 from app.admin_blog.models import Post, Tag, Tagged
-from app.admin_blog.forms import PostForm
+from app.admin_media.models import ImageType, Images
 from app.admin_media.models import Images
+from app.admin_media.routes import process_image
 from datetime import datetime
 from slugify import slugify
 from app.breadcrumb import set_breadcrumb
@@ -68,17 +69,46 @@ def processTags(tags_new,post):
                 db.session.add(t)
 
 
+def getUploadedImage(img_num):
+    r = request.files
+    img_key = 'new_image'+str(img_num)
+    if img_key in r:
+        new_image = request.files[img_key]
+        if new_image:
+            upload_path = current_app.config['UPLOAD_PATH_BLOG']
+            upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_BLOG']
+            img_type_obj = ImageType.query.filter_by(name='page').first()
+            resp = process_image(new_image,upload_path,upload_path_thumb,img_type_obj)
+            if resp['status'] == 'error':
+                flash(resp['msg'])
+                return False
+            else:
+                return Images.query.filter_by(filename=resp['msg']).first()
+    return False
+
+
 @bp.route('/post',methods=['GET','POST'])
 @login_required
 @set_breadcrumb('home blog post')
 def post():
-    form = PostForm()
     new_tags=''
-    if form.validate_on_submit():
-        title = form.title.data
+    if request.method=='POST':
+        title = request.form.get('title')
         slug = slugify(title)
         if Post.getPostBySlug(slug) is None:
-            post = Post(title=title,slug=slug,post=form.post.data,author=current_user)
+            post_data = request.form.get('post')
+            post = Post(title=title,slug=slug,post=post_data,author=current_user)
+            
+            new_path = request.form.get('new_path1')
+            if new_path:
+                i = new_path.rsplit('/',1)
+                img = Images.query.filter_by(filename=i[1]).first()
+                setattr(post,'image1',img)
+            else:
+                img = getUploadedImage(1)
+                if img:
+                    setattr(post,'image1',img)
+
             db.session.add(post)
             tags = request.form.get('tags')
             tag_list = [t.strip() for t in tags.split(',')]
@@ -89,7 +119,7 @@ def post():
             return redirect(url_for('admin_blog.edit_post',id=post.id))
         else:
             flash('Title already exists on another post','danger')
-    return render_template('admin_blog/post.html',form=form,tags=new_tags)
+    return render_template('admin_blog/post.html',tags=new_tags)
 
 
 @bp.route('/edit_post',methods=['GET','POST'])
@@ -105,27 +135,41 @@ def edit_post():
         flash('Post not found','danger')
         return redirect(url_for('admin_blog.blog',not_used=True))
 
-    form = PostForm()
-    if form.validate_on_submit():
-        title = form.title.data
+    if request.method=='POST':
+        title = request.form.get('title')
         slug = slugify(title)
         check_post = Post.getPostBySlug(slug)
         if (check_post is not None and check_post.id != post.id):
             flash('Title already exists on another post','danger')
         else:
+
+            excludeimg = request.form.get('excludeimg1')
+            if excludeimg=='true':
+                setattr(post,'image1',None)
+            else:
+                new_path = request.form.get('new_path1')
+                if new_path:
+                    i = new_path.rsplit('/',1)
+                    img = Images.query.filter_by(filename=i[1]).first()
+                    setattr(post,'image1',img)
+                else:
+                    img = getUploadedImage(1)
+                    if img:
+                        setattr(post,'image1',img)
+
             post.title = title
             post.slug = slug
-            post.post = form.post.data
+            post.post = request.form.get('post')
             post.update_date = datetime.utcnow()
             db.session.add(post)
-            tags = form.tags.data
+            tags = request.form.get('tags')
             tag_list = [t.strip() for t in tags.split(',')]
             processTags(tag_list,post)
             db.session.commit()
             flash('Post has been updated','success')
 
     tags = post.getTagNamesStr()
-    return render_template('admin_blog/edit_post.html',form=form,post=post,tags=tags)
+    return render_template('admin_blog/edit_post.html',post=post,tags=tags)
 
 
 @bp.route('/del_post',methods=['POST'])

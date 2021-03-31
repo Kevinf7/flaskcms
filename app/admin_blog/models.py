@@ -16,6 +16,7 @@ class Post(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.String(50), nullable=False)
+    image_id1 = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=True)
     title = db.Column(db.String(100), nullable=False)
     post = db.Column(db.String(15000), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)

@@ -6,10 +6,7 @@ from wtforms.validators import InputRequired, Email, Length
 # ADMIN BLOG forms
 
 class PostForm(FlaskForm):
-    title = StringField('Title', validators=[InputRequired(), Length(max=100)])
     post = TextAreaField('Write something')
-    tags = HiddenField('Tags')
-    submit = SubmitField('Submit')
 
 
 class CommentForm(FlaskForm):

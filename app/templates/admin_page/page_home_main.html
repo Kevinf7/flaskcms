@@ -10,7 +10,7 @@
       method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="id" value="{{ edit_ver.id }}">
-      <input type="hidden" name="image_id1" value="{{ edit_ver.image_id1 }}"/>
+      <input type="hidden" name="image_id1" :value="image_id1"/>
       <input type="hidden" name="action" :value="action">
 
       {% include 'shared/macros/_page_edit_buttons.html' %}
@@ -56,7 +56,9 @@
           {% endif %}
         </div>
       </div>
+      {% if edit_ver.page_status.name == 'draft' %}
       {{ form_image(1,3) }}
+      {% endif %}
 
     </form>
     {{ version(edit_ver.page.name) }}
@@ -78,7 +80,9 @@ new Vue({
       errorMsg: ['','','',''],
       action: '',
       filename1: 'No file selected',
-      newimage1: 'upload'
+      newimage1: 'upload',
+      image_id1: '{{ edit_ver.image_id1 or "none" }}',
+      num_images: {{ num_images }}
     }
   },
   methods: {
@@ -105,8 +109,7 @@ new Vue({
           Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
         }
         if (evt.target.value != 'Save as draft') {
-          let num_images = {{ num_images }}
-          for (n in num_images) {
+          for (let n=1; n<this.num_images+1; n++) {
             if (this['newimage'+n]=='upload') {
               let fs = this.$refs['imgupload'+n].files[0]
               if (fs) {
@@ -120,6 +123,13 @@ new Vue({
       }
       if (!this.hasError()) {
         this.action = evt.target.value
+        for (let n=1; n<this.num_images+1; n++) {
+          let upl = this.$refs['imgupload'+n] ? this.$refs['imgupload'+n].value: ''
+          let sel = this.$refs['imgselect'+n] ? this.$refs['imgselect'+n].value: ''
+          if (upl || sel) {
+            this['image_id'+n]=''
+          }
+        }
         this.$nextTick(() => {
           this.$refs.form.submit()
         })

@@ -19,6 +19,9 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- Flask moment -->
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
 
 </head>
 <body>
@@ -321,13 +324,15 @@
 
                                 <div class="row">
 
+                                    {% for p in top_post %}
+
                                     <div class="col-md-4">
 
                                         <div class="images">
 
                                             <div class="image">
 
-                                                <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="In pose of lotus" />
+                                                <img src="{{ url_for('static', filename='uploads/' ~ p.image1.image_type.name ~ '/' ~ p.image1.filename) }}" class="image-data-for-parent" />
 
                                             </div>
 
@@ -337,16 +342,15 @@
 
                                             <div class="with-date-date">
 
-                                                <span class="day">23</span>
-                                                <span class="rest">01.16</span>
-
+                                                <span class="day">{{ moment(p.create_date).format('DD') }}</span>
+                                                <span class="rest">{{ moment(p.create_date).format('MMMYY') }}</span>
                                             </div>
 
                                             <div class="with-date-content">
 
-                                                <h4><a href="/blog-single.html">Free Yoga Classes on Friday</a></h4>
+                                                <h4><a href="/blog-single.html">{{ p.title }}</a></h4>
 
-                                                <p>Integer ut diam sodales rutrum, wisi augue sed laoreet viverra. Cras ut augue. Fusce enim. Fusce dui convallis posuere. Quisque rutrum, libero malesuada id.</p>
+                                                <p>{{ p.post|safe|truncate(200) }}</p>
                                                 <p><a href="/blog-single.html">Read more</a></p>
 
                                             </div>
@@ -355,73 +359,7 @@
 
                                     </div>
 
-                                    <div class="col-md-4">
-
-                                        <div class="images">
-
-                                            <div class="image">
-
-                                                <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="Backyard of a family house" />
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="with-date">
-
-                                            <div class="with-date-date">
-
-                                                <span class="day">01</span>
-                                                <span class="rest">01.16</span>
-
-                                            </div>
-
-                                            <div class="with-date-content">
-
-                                                <h4><a href="/blog-single.html">Welcome new 2015 in Oak House</a></h4>
-
-                                                <p>Integer ut diam sodales rutrum, wisi augue sed laoreet viverra. Cras ut augue. Fusce enim. Fusce dui convallis posuere. Quisque rutrum, libero malesuada id.</p>
-                                                <p><a href="/blog-single.html">Read more</a></p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-md-4">
-
-                                        <div class="images">
-
-                                            <div class="image">
-
-                                                <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="Selfie of seniors" />
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="with-date">
-
-                                            <div class="with-date-date">
-
-                                                <span class="day">24</span>
-                                                <span class="rest">12.15</span>
-
-                                            </div>
-
-                                            <div class="with-date-content">
-
-                                                <h4><a href="/blog-single.html">Merry Christmas!</a></h4>
-
-                                                <p>Integer ut diam sodales rutrum, wisi augue sed laoreet viverra. Cras ut augue. Fusce enim. Fusce dui convallis posuere. Quisque rutrum, libero malesuada id.</p>
-                                                <p><a href="/blog-single.html">Read more</a></p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
+                                    {% endfor %}
 
                                 </div>
 
