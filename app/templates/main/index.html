@@ -347,10 +347,10 @@
 
                                             <div class="with-date-content">
 
-                                                <h4><a href="/blog-single.html">{{ p.title }}</a></h4>
+                                                <h4><a href="{{ url_for('main.blog_single',slug=p.slug) }}">{{ p.title }}</a></h4>
 
                                                 <p>{{ p.post|safe|truncate(200) }}</p>
-                                                <p><a href="/blog-single.html">Read more</a></p>
+                                                <p><a href="{{ url_for('main.blog_single',slug=p.slug) }}">Read more</a></p>
 
                                             </div>
 
@@ -366,7 +366,7 @@
 
                                     <div class="col-md-12">
 
-                                        <p class="read-all-news"><a href="/blog.html" class="button"><span>Read all older news <i class="fa fa-long-arrow-right"></i></span></a></p>
+                                        <p class="read-all-news"><a href="{{ url_for('main.blog') }}" class="button"><span>Read all older news <i class="fa fa-long-arrow-right"></i></span></a></p>
 
                                     </div>
 

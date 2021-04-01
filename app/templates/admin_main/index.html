@@ -81,7 +81,7 @@
                   {% else %}
                   {{ comment_latest.name }} 
                   {% endif %}
-                  on {{comment_latest.post.title}}
+                  on {{comment_latest.post.title}}, {{ moment(comment_latest.create_date).fromNow() }}
                 </span><br/>
                 {{ comment_latest.comment|truncate(480) }}
               </p>
