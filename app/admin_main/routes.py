@@ -8,7 +8,7 @@ from app.admin_page.models import Page
 from app.admin_media.models import Images, ImageType
 from app.admin_message.models import Message
 from app.breadcrumb import set_breadcrumb
-
+from datetime import datetime
 
 # ADMIN MAIN routes
 
@@ -23,14 +23,16 @@ def index():
     top_tags = db.session.query(Tag, db.func.count(Tagged.tag_id)) \
         .join(Tagged).group_by(Tagged.tag_id).limit(3).all()
     total_comment = Comment.query.count()
-    last_login = current_user.last_seen
-    new_comment = Comment.query.filter(Comment.create_date>=last_login).count()
+    prev_login = current_user.prev_login
+    if not prev_login:
+        prev_login = datetime(1900, 1, 1)
+    new_comment = Comment.query.filter(Comment.create_date>=prev_login).count()
     total_pages = Page.query.count()
     page_latest = Page.query.order_by(desc(Page.last_publish_date)).first()
     total_media_blog = db.session.query(Images).join(ImageType).filter(ImageType.name=='blog').count()
     total_media_page = db.session.query(Images).join(ImageType).filter(ImageType.name=='page').count()
     total_message = Message.query.count()
-    new_message = Message.query.filter(Message.create_date>=last_login).count()
+    new_message = Message.query.filter(Message.create_date>=prev_login).count()
     image_latest = Images.query.order_by(desc(Images.create_date)).limit(3).all()
     comment_latest = Comment.query.order_by(desc(Comment.create_date)).first()
 

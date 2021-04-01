@@ -28,7 +28,11 @@
         <tr>
           <td>{{ c.comment }}</td>
           <td>{{ moment(c.create_date).format('D MMM YYYY hh:mm') }}</td>
+          {% if c.user %}
+          <td><span class="has-text-info has-text-weight-bold">Admin</span></a></td>
+          {% else %}
           <td><a href="mailto:{{ c.email }}">{{ c.name }}</a></td>
+          {% endif %}
           <td>{{ c.post.title }}</td>
           <td class="has-text-right">
             <a href="#" @click.prevent="showConfirm({{ c.id }})">

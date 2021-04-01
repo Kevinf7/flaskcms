@@ -111,8 +111,9 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(1000), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    name = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(50), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def __repr__(self):

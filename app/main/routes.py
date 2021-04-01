@@ -1,4 +1,5 @@
 from flask import render_template, current_app, request, flash, redirect, url_for
+from flask_login import current_user
 from app import db
 from app.main import bp
 from app.admin_page.models import PageHomeMain, PageHomeHero, PageStatus
@@ -71,19 +72,33 @@ def blog_single(slug):
 
 @bp.route('/add_comment',methods=['POST'])
 def add_comment():
+    anchor=''
     slug = request.form.get('slug')
     post = Post.getPostBySlug(slug)
     if post is None:
         flash('No such post exists.','danger')
         return redirect(url_for('main.blog'))
-    name = request.form.get('name')
-    email = request.form.get('email')
     comment = request.form.get('comment')
-    cmt = Comment(comment=comment,post=post,name=name, \
-        email=email,create_date=datetime.utcnow())
-    db.session.add(cmt)
-    db.session.commit()
-    return redirect(url_for('main.blog_single',slug=slug))
+    admin = request.form.get('admin')
+    if admin == 'yes':
+        if current_user:
+            cmt = Comment(comment=comment,post=post,user=current_user, \
+                create_date=datetime.utcnow())
+            db.session.add(cmt)
+            db.session.commit()
+    else:
+        name = request.form.get('name')
+        email = request.form.get('email')
+        if not name or name=='' or not email or email=='':
+            flash('Name and Email are mandatory fields','danger')
+            anchor='comment_form'
+        else:
+            cmt = Comment(comment=comment,post=post,name=name, \
+                email=email,create_date=datetime.utcnow())
+            db.session.add(cmt)
+            db.session.commit()
+            anchor='comment_top'
+    return redirect(url_for('main.blog_single',slug=slug,_anchor=anchor))
 
 
 @bp.route('/contact')

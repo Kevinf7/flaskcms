@@ -21,9 +21,10 @@ class User(db.Model, UserMixin):
     page_home_main = db.relationship('PageHomeMain', backref='author', lazy='dynamic')
     page_home_hero = db.relationship('PageHomeHero', backref='author', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    #comments = db.relationship('Comment', backref='commenter', lazy='dynamic')
+    comments = db.relationship('Comment', backref='user', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
-    last_seen = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
+    prev_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
+    last_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     # generate hash of given password

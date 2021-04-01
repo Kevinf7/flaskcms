@@ -53,7 +53,7 @@
                 <div class="logo-middle-helper">
                 </div>
 
-                <a href="/index.html" class="logo">
+                <a href="{{ url_for('main.index') }}" class="logo">
 
                     <img src="{{ url_for('static', filename='_assets/_img/logo.jpg') }}" alt="Oak House - Senior Care" />
 
@@ -65,9 +65,8 @@
 
                 <div class="header-bar-top">
 
-                    <div class="header-bar-top-element" data-element-type="phone"><a href="tel:18001234567">1-800-123-4567</a></div>
-                    <div class="header-bar-top-element" data-element-type="email"><a href="mailto:email@example.com">email@example.com</a></div>
-                    <div class="header-bar-top-element" data-element-type="location">15th Avenue, New York, NY</div>
+                    <div class="header-bar-top-element" data-element-type="phone"><a href="tel:0298363566">(02) 9836 3566</a></div>
+                    <div class="header-bar-top-element" data-element-type="email"><a href="mailto:info@oakhouse.com<">info@oakhouse.com</a></div>
 
                 </div>
 
@@ -150,6 +149,7 @@
 
                         </article>
 
+                        <a name="comment_top"></a>
                         {% if post.num_comments > 0 %}
                         <section class="comments">
 
@@ -167,7 +167,11 @@
 
                                         </div>
 
+                                        {% if not c.user %}
                                         <div class="comment-author-name">{{ c.name }} <span class="reply"><a href="#"><i class="fa fa-reply"></i></a></span></div>
+                                        {% else %}
+                                        <div class="comment-author-name"><strong>Admin</strong></div>
+                                        {% endif %}
                                         <div class="comment-pub-date">{{ moment(c.create_date).toNow() }}</div>
 
                                     </div>
@@ -184,15 +188,32 @@
 
                         </section>
                         {% endif %}
-
+                        <a name="comment_form"></a>
                         <section class="comments-form">
-
+                            
                             <h3>Leave a reply</h3>
+
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <p class="alert alert-{{ category }}" role="alert">
+                                            {{ message }}
+                                        </p>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+
                             <form method="post" action="{{ url_for('main.add_comment') }}">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <input type="hidden" name="slug" value="{{ post.slug }}"/>
+                                
+                                {% if current_user.is_authenticated %}
+                                <input type="hidden" name="admin" value="yes"/>
+                                <p>Comment as Admin</p>
+                                {% else %}
                                 <input type="text" name="name" placeholder="Name..."/>
                                 <input type="email" name="email" placeholder="E-mail address..."/>
+                                {% endif %}
 
                                 <textarea name="comment" placeholder="Comment" cols="10" rows="5"></textarea>
                                 <button type="submit" class="button button-open-on-white"><span>Post a reply <i class="fa fa-paper-plane-o"></i></span></button>
@@ -273,7 +294,7 @@
     
                                         <div class="col-md-3 vertical-align-middle">
     
-                                            <p>2021 &copy; <a href="/index.html">Oak House - Senior Care</a></p>
+                                            <p>2021 &copy; Oak House - Senior Care</p>
     
                                         </div>
     

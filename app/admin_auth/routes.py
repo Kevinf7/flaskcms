@@ -24,7 +24,8 @@ def login():
             return redirect(url_for('admin_auth.login',next=next_page))
 
         login_user(user, remember=form.remember_me.data)
-        user.last_seen = datetime.utcnow()
+        user.prev_login = user.last_login
+        user.last_login = datetime.utcnow()
         db.session.add(user)
         db.session.commit()
         flash('You are now logged in','success')

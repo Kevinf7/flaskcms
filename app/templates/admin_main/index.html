@@ -74,7 +74,15 @@
           <div class="column">
             <div class="content">
               <p>
-                <span class="is-size-7">From {{ comment_latest.name }} on {{comment_latest.post.title}}</span><br/>
+                <span class="is-size-7">
+                  From 
+                  {% if comment_latest.user %}
+                  Admin
+                  {% else %}
+                  {{ comment_latest.name }} 
+                  {% endif %}
+                  on {{comment_latest.post.title}}
+                </span><br/>
                 {{ comment_latest.comment|truncate(480) }}
               </p>
             </div>
