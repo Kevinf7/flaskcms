@@ -94,7 +94,13 @@ class PageHomeHero(db.Model):
 class PageContact(db.Model):
     __tablename__ = 'page_contact'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(1000))
+    title = db.Column(db.String(50))
+    main_content = db.Column(db.String(1000))
+    contact_content = db.Column(db.String(500))
+    phone = db.Column(db.String(50))
+    email = db.Column(db.String(50))
+    address = db.Column(db.String(500))
+    image_id1 = db.Column(db.Integer, db.ForeignKey('images.id'))
     status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

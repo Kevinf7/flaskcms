@@ -1,20 +1,97 @@
 {% extends "shared/base_main.html" %}
 {% from 'shared/macros/_version.html' import version with context %}
+{% from 'shared/macros/_form_image.html' import form_image with context %}
 {% block title %}Page Contact{% endblock %}
 
 {% block app_content %}
 <div id="this-block">
-  <form ref="form" method="post" action="{{ url_for('admin_page.page_contact') }}">
+  <form ref="form" action="{{ url_for('admin_page.page_contact') }}"
+    method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <input type="hidden" name="id" value="{{ edit_ver.id }}">
+    <input type="hidden" name="image_id1" :value="image_id1"/>
     <input type="hidden" name="action" :value="action">
 
     {% include 'shared/macros/_page_edit_buttons.html' %}
 
-    <textarea name="content" id="page">
-      {{ edit_ver.content }}
-    </textarea>
-    <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
+    <div class="field">
+      <label class="label">Title</label>
+      <div class="control">
+        <input 
+          name="title"
+          class="input"
+          type="text"
+          v-model="title">
+      </div>
+      <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
+    </div>
+
+    <div class="field">
+      <label class="label">Main Content</label>
+      <div class="control">
+        <textarea class="simpletiny" name="main_content" v-model="main_content">
+        </textarea>
+      </div>
+      <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
+    </div>
+
+    <div class="field">
+      <label class="label">Contact Content</label>
+      <div class="control">
+        <textarea class="simpletiny" name="contact_content" v-model="contact_content">
+        </textarea>
+      </div>
+      <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
+    </div>
+
+    <div class="field">
+      <label class="label">Phone</label>
+      <div class="control">
+        <input 
+          name="phone"
+          class="input"
+          type="text"
+          v-model="phone">
+      </div>
+      <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
+    </div>
+
+    <div class="field">
+      <label class="label">Email</label>
+      <div class="control">
+        <input 
+          name="email"
+          class="input"
+          type="text"
+          v-model="email">
+      </div>
+      <p v-if="errorMsg[4]" class="help is-danger">[[ errorMsg[4] ]]</p>
+    </div>
+
+    <div class="field">
+      <label class="label">Address</label>
+      <div class="control">
+        <textarea class="simpletiny" name="address" v-model="address">
+        </textarea>
+      </div>
+      <p v-if="errorMsg[5]" class="help is-danger">[[ errorMsg[5] ]]</p>
+    </div>
+
+    <div class="field">
+      <label class="label">Current image</label>
+      <div class="control">
+        {% if edit_ver.image1.filename %}
+        <p class="is-size-7">{{ edit_ver.image1.filename }}</p>
+        <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image1.thumbnail) }}">
+        {% else %}
+        <p>Empty</p>
+        {% endif %}
+      </div>
+    </div>
+    {% if edit_ver.page_status.name == 'draft' %}
+    {{ form_image(1,6) }}
+    {% endif %}
+
   </form>
 
   {{ version(edit_ver.page.name) }}
@@ -29,8 +106,18 @@
     delimiters: ['[[', ']]'],
     data() {
       return {
-        errorMsg: [''],
+        title: '{{ edit_ver.title or "" }}',
+        main_content: `{{ edit_ver.main_content|safe or "" }}`,
+        contact_content: `{{ edit_ver.contact_content|safe or "" }}`,
+        phone: '{{ edit_ver.phone or "" }}',
+        email: '{{ edit_ver.email or "" }}',
+        address: `{{ edit_ver.address|safe or "" }}`,
+        errorMsg: ['','','','','',''],
         action: '',
+        filename1: 'No file selected',
+        newimage1: 'upload',
+        image_id1: '{{ edit_ver.image_id1 or "none" }}',
+        num_images: {{ num_images }}
       }
     },
     methods: {
@@ -43,14 +130,82 @@
       },
       doValidate(evt) {
         if (evt.target.value != "Delete") {
+          if (this.title.length == 0) {
+            Vue.set(this.errorMsg, 0, 'This is a mandatory field')
+          } else if (this.title.length > 50) {
+            Vue.set(this.errorMsg, 0, 'Maximum 50 characters')
+          }
+          if (this.main_content.length == 0) {
+            Vue.set(this.errorMsg, 1, 'This is a mandatory field')
+          } else if (this.main_content.length > 1000) {
+            Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
+          }
+          if (this.contact_content.length > 500) {
+            Vue.set(this.errorMsg, 2, 'Maximum 500 characters')
+          }
+          if (this.phone.length == 0) {
+            Vue.set(this.errorMsg, 3, 'This is a mandatory field')
+          } else if (this.phone.length > 50) {
+            Vue.set(this.errorMsg, 3, 'Maximum 50 characters')
+          }
+          if (this.email.length == 0) {
+            Vue.set(this.errorMsg, 4, 'This is a mandatory field')
+          } else if (this.email.length > 50) {
+            Vue.set(this.errorMsg, 4, 'Maximum 50 characters')
+          }
+          if (this.address.length == 0) {
+            Vue.set(this.errorMsg, 5, 'This is a mandatory field')
+          } else if (this.address.length > 500) {
+            Vue.set(this.errorMsg, 5, 'Maximum 500 characters')
+          }
+          if (evt.target.value != 'Save as draft') {
+            for (let n=1; n<this.num_images+1; n++) {
+              if (this['newimage'+n]=='upload') {
+                let fs = this.$refs['imgupload'+n].files[0]
+                if (fs) {
+                  if((fs.size/1024) > 500) {
+                    Vue.set(this.errorMsg, 5+n, 'Image cannot be larger than 500KB')
+                  }
+                }
+              }
+            }
+          }
         }
-        this.action = evt.target.value
-        this.$nextTick(() => {
-          this.$refs.form.submit()
-        })
+        if (!this.hasError()) {
+          this.action = evt.target.value
+          for (let n=1; n<this.num_images+1; n++) {
+            let upl = this.$refs['imgupload'+n] ? this.$refs['imgupload'+n].value: ''
+            let sel = this.$refs['imgselect'+n] ? this.$refs['imgselect'+n].value: ''
+            if (upl || sel) {
+              this['image_id'+n]=''
+            }
+          }
+          this.$nextTick(() => {
+            this.$refs.form.submit()
+          })
+        }
+      },
+      fileSelected(evt,img_num) {
+        if (evt.target.files.length > 0) {
+          this['filename'+img_num] = evt.target.files[0].name
+        }
+      },
+      clearSelection(ref,img_num,err_num) {
+        this.$refs[ref].value = ''
+        Vue.set(this.errorMsg, err_num, '')
+        this['filename'+img_num] = 'No file selected'
+      }
+    },
+    filters: {
+      truncate: function (text, length, suffix) {
+        if (text.length > length) {
+            return text.substring(0, length) + suffix;
+        } else {
+            return text;
+        }
       }
     }
   })
 </script>
-{% include 'shared/tinymce/_tinymce_page.html' %}
+{% include 'shared/tinymce/_tinymce_simple.html' %}
 {% endblock %}

@@ -12,6 +12,22 @@
     <input type="hidden" name="id" :value="id">
   </form>
 
+  <div class="level">
+    <div class="level-left">
+    </div>
+    <div class="level-right">
+      <span class="mr-2">Show</span>
+      <div class="select">
+        <select v-model="showPost" @change="reloadPage">
+          <option value="">All</option>
+          {% for p in posts %}
+          <option value="{{ p.id }}">{{ p.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
   <div class="table-container">
     <table class="table is-narrow is-striped is-hoverable is-fullwidth">
       <thead>
@@ -61,6 +77,7 @@
       return {
         id: 0,
         showDelModal: false,
+        showPost: '{{ show or "" }}'
       }
     },
     methods: {
@@ -76,6 +93,13 @@
         this.showDelModal = false
         this.$refs.delForm.submit()
       },
+      reloadPage() {
+        if (this.showPost) {
+          window.location.href=('{{ url_for("admin_blog.comment",show=x) }}' + this.showPost)
+        } else {
+          window.location.href=('{{ url_for("admin_blog.comment") }}')
+        }
+      }
     }
   })
 </script>

@@ -2,10 +2,13 @@ from flask import render_template, current_app, request, flash, redirect, url_fo
 from flask_login import current_user
 from app import db
 from app.main import bp
-from app.admin_page.models import PageHomeMain, PageHomeHero, PageStatus
+from app.email import email
+from app.admin_page.models import PageHomeMain, PageHomeHero, PageStatus, PageContact
 from app.admin_blog.models import Post, Tag, Tagged, Comment
+from app.admin_message.models import Message
 from sqlalchemy import desc
 from datetime import datetime
+
 
 
 def get_summary_posts(posts):
@@ -29,7 +32,8 @@ def index():
     main = PageHomeMain.query.filter_by(page_status=PageStatus.getStatus('published')).first()
     hero = PageHomeHero.query.filter_by(page_status=PageStatus.getStatus('published')).first()
     top_post = Post.query.order_by(desc(Post.create_date)).limit(3).all()
-    return render_template('main/index.html', main=main, hero=hero, top_post=top_post)
+    contact = PageContact.query.filter_by(page_status=PageStatus.getStatus('published')).first()
+    return render_template('main/index.html', main=main, hero=hero, top_post=top_post, contact=contact)
 
 
 @bp.route('/blog', methods=['GET'])
@@ -52,7 +56,8 @@ def blog():
             
     posts = get_summary_posts(posts)
     posts = get_num_comments(posts)
-    return render_template('main/blog.html', posts=posts, tags=tags, top_post=top_post, tag_name=tag_name)
+    contact = PageContact.query.filter_by(page_status=PageStatus.getStatus('published')).first()
+    return render_template('main/blog.html', posts=posts, tags=tags, top_post=top_post, tag_name=tag_name, contact=contact)
 
 
 @bp.route('/blog_single/<slug>')
@@ -67,7 +72,8 @@ def blog_single(slug):
         .order_by(desc(db.func.count(Tagged.tag_id))).all()
     n = Post.query.join(Comment).filter(post.id==Comment.post_id).count()
     post.num_comments = n
-    return render_template('main/blog-single.html', post=post, tags=tags, top_post=top_post)
+    contact = PageContact.query.filter_by(page_status=PageStatus.getStatus('published')).first()
+    return render_template('main/blog-single.html', post=post, tags=tags, top_post=top_post, contact=contact)
 
 
 @bp.route('/add_comment',methods=['POST'])
@@ -101,7 +107,31 @@ def add_comment():
     return redirect(url_for('main.blog_single',slug=slug,_anchor=anchor))
 
 
-@bp.route('/contact')
+@bp.route('/contact', methods=['GET'])
 def contact():
-    return render_template('main/contact.html')
+    contact = PageContact.query.filter_by(page_status=PageStatus.getStatus('published')).first()
+    return render_template('main/contact.html',contact=contact)
+
+
+@bp.route('/new_message', methods=['POST'])
+def new_message():
+    msg = Message(name=request.form.get('name'), \
+        email=request.form.get('email'), message=request.form.get('message'))
+    db.session.add(msg)
+    db.session.commit()
+
+    create_date = msg.create_date.strftime('%d/%m/%y %H:%M')
+    result = email.send_email('Someone has commented on flaskcms',
+        sender=current_app.config['MAIL_FROM'],
+        recipients=current_app.config['MAIL_ADMINS'],
+        text_body=render_template('main/email_contact.txt',
+                                    msg=msg, create_date=create_date),
+        html_body=render_template('main/email_contact.html',
+                                    msg=msg, create_date=create_date))
+    if result:
+        flash('Message has been sent', 'success')
+    else:
+        flash('Sorry system error', 'danger')
+    return redirect(url_for('main.contact',_anchor='contact_form'))
+
 

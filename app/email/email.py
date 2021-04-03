@@ -1,4 +1,4 @@
-from flask import render_template, current_app
+from flask import current_app
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Content, Personalization, Email
 
@@ -21,7 +21,7 @@ def send_email(subject, sender, recipients, text_body, html_body):
         message.add_personalization(person)
 
     try:
-        sg = SendGridAPIClient(current_app.config['SENDGRID_API_KEY'])
+        sg = SendGridAPIClient(current_app.config['SENDGRID_KEY'])
         response = sg.send(message)
         print(response.status_code)
         print(response.body)

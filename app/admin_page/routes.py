@@ -51,7 +51,12 @@ def page_home_hero():
 @set_breadcrumb('home page page-contact')
 def page_contact():
     fields = [
-        {'name': 'content', 'type': 'str'}
+        {'name': 'title', 'type': 'str'},
+        {'name': 'main_content', 'type': 'str'},
+        {'name': 'contact_content', 'type': 'str'},
+        {'name': 'phone', 'type': 'str'},
+        {'name': 'email', 'type': 'str'},
+        {'name': 'address', 'type': 'str'}
     ]
-    edit_ver, all_ver = page_post(PageContact,'contact',fields,0)
-    return render_template('admin_page/page_contact.html', all_ver=all_ver, edit_ver=edit_ver, num_images=0)
+    edit_ver, all_ver = page_post(PageContact,'contact',fields,1)
+    return render_template('admin_page/page_contact.html', edit_ver=edit_ver, all_ver=all_ver, num_images=1)

@@ -31,7 +31,7 @@
       <div class="field">
         <label class="label">Main Text</label>
         <div class="control">
-          <textarea class="textarea" name="text" rows="3" v-model="text">
+          <textarea class="simpletiny" name="text" v-model="text">
           </textarea>
         </div>
         <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <div v-if="secondSlider" ref="secondSlider">
+      <div v-show="secondSlider" ref="secondSlider">
         <div class="field">
           <label class="label">Heading - 2</label>
           <div class="control">
@@ -85,8 +85,7 @@
         <div class="field">
           <label class="label">Main Text - 2</label>
           <div class="control">
-            <textarea ref="text2" class="textarea" 
-              name="text2" rows="3" v-model="text2">
+            <textarea class="simpletiny" name="text2" rows="3" v-model="text2">
             </textarea>
           </div>
           <p v-if="errorMsg[4]" class="help is-danger">[[ errorMsg[4] ]]</p>
@@ -123,9 +122,9 @@ new Vue({
   data() {
     return {
       heading: '{{ edit_ver.heading or "" }}',
-      text: '{{ edit_ver.text or "" }}',
+      text: `{{ edit_ver.text|safe or "" }}`,
       heading2: '{{ edit_ver.heading2 or "" }}',
-      text2: '{{ edit_ver.text2 or "" }}',
+      text2: `{{ edit_ver.text2|safe or "" }}`,
       errorMsg: ['','','','','',''],
       action: '',
       filename1: 'No file selected',
@@ -223,4 +222,5 @@ new Vue({
   }
 })
 </script>
+{% include 'shared/tinymce/_tinymce_simple.html' %}
 {% endblock %}

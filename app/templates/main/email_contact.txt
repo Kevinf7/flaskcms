@@ -1,0 +1,10 @@
+You have received a message submitted from the contact form on flaskcms
+
+From: {{ msg.name }}
+
+Email: {{ msg.email }}
+
+Date: {{ create_date }}
+
+Message:
+{{ msg.message }}
