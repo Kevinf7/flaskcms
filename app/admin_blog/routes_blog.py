@@ -130,6 +130,7 @@ def edit_post():
     if not id:
         flash('id is missing','danger')
         return redirect(url_for('admin_blog.blog'))
+
     post = Post.query.filter_by(id=id).first()
     if not post:
         flash('Post not found','danger')
@@ -142,10 +143,9 @@ def edit_post():
         if (check_post is not None and check_post.id != post.id):
             flash('Title already exists on another post','danger')
         else:
-
-            excludeimg = request.form.get('excludeimg1')
-            if excludeimg=='true':
-                setattr(post,'image1',None)
+            image_id = request.form.get('image_id1')
+            if image_id:
+                pass
             else:
                 new_path = request.form.get('new_path1')
                 if new_path:
