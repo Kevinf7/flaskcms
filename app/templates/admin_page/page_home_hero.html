@@ -183,7 +183,7 @@ new Vue({
               let fs = this.$refs['imgupload'+n].files[0]
               if (fs) {
                 if((fs.size/1024) > 1024) {
-                  Vue.set(this.errorMsg, (prev_err+3)), 'Image cannot be larger than 1MB')
+                  Vue.set(this.errorMsg, prev_err+3, 'Image cannot be larger than 1MB')
                 }
               }
               prev_err = prev_err+3
