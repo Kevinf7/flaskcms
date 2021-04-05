@@ -38,7 +38,7 @@
             });
         }
     </script>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
@@ -211,7 +211,7 @@
                                     <div class="col-md-6">
 
                                         <a name="contact_form"></a>
-                                        <div class="contact-form-box">
+                                        <div id="this-block" class="contact-form-box">
 
                                             {{ contact.contact_content|safe }}
 
@@ -225,17 +225,25 @@
                                                 {% endif %}
                                             {% endwith %}
 
-                                            <form method="post" action="{{ url_for('main.new_message') }}" class="form-active">
+                                            <form ref="form" method="post" action="{{ url_for('main.new_message') }}" 
+                                                class="form-active">
                                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                                <input type="text" name="name" placeholder="Name..." class="form-field" />
-
-                                                <input type="email" name="email" placeholder="E-mail..." class="form-field" />
-                                                <textarea name="message" rows="10" cols="5" placeholder="Message..." class="form-field"></textarea>
-
-                                                <button type="submit" class="button button-color"><span>Send a message <i class="fa fa-paper-plane-o"></i></span></button>
-
+                                                <input type="text" name="name" v-model="name"
+                                                    placeholder="Name..." class="form-field" />
+                                                <p v-if="errorMsg[0]" style="color:red">[[ errorMsg[0] ]]</p>
+                                                <input type="email" name="email" v-model="email"
+                                                    placeholder="E-mail..." class="form-field" />
+                                                <p v-if="errorMsg[1]" style="color:red">[[ errorMsg[1] ]]</p>
+                                                <textarea name="message" rows="10" cols="5" v-model="message"
+                                                    placeholder="Message..." class="form-field"></textarea>
+                                                <p v-if="errorMsg[2]" style="color:red">[[ errorMsg[2] ]]</p>
+                                                <div ref="recaptcha" style="padding-bottom:10px;" class="g-recaptcha" 
+                                                    data-sitekey="{{ config['RECAPTCHA_KEY'] }}"></div>                                               
+                                                <p v-if="errorMsg[3]" style="color:red">[[ errorMsg[3] ]]</p>
+                                                <button type="submit" class="button button-color" @click.prevent="doValidate">
+                                                    <span>Send a message <i class="fa fa-paper-plane-o"></i></span>
+                                                </button>
                                             </form>
-
                                         </div>
 
                                     </div>
@@ -298,6 +306,65 @@
     <script 
         src="https://maps.googleapis.com/maps/api/js?key={{ config['GOOGLE_MAP_KEY'] }}&callback=initMap&libraries=&v=weekly"
         async>
+    </script>
+    <!--Vue dev version-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <!--Vue prod version
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    -->
+    <script>
+        new Vue({
+            el: '#this-block',
+            delimiters: ['[[', ']]'],
+            data() {
+                return {
+                    name: '',
+                    email: '',
+                    message: '',
+                    errorMsg: ['','','','']
+                }
+            },
+            methods: {
+                clearErrors() {
+                    for (let i=0; i<this.errorMsg.length;i++) {
+                    this.errorMsg[i] = ''
+                    }
+                },
+                hasError() {
+                    err = false
+                    for(let i=0; i<this.errorMsg.length; i++) {
+                    if(this.errorMsg[i] != '') err = true
+                    }
+                    return err
+                },
+                doValidate() {
+                    this.clearErrors()
+                    if (this.name.length == 0) {
+                        Vue.set(this.errorMsg, 0, 'Name is a mandatory field')
+                    } else if (this.name.length > 50) {
+                        Vue.set(this.errorMsg, 0, 'Name cannot be more than 50 characters')
+                    }
+                    if (this.email.length == 0) {
+                        Vue.set(this.errorMsg, 1, 'Email is a mandatory field')
+                    } else if (this.name.length > 50) {
+                        Vue.set(this.errorMsg, 1, 'Email cannot be more than 50 characters')
+                    }
+                    if (this.message.length == 0) {
+                        Vue.set(this.errorMsg, 2, 'Message is a mandatory field')
+                    } else if (this.name.length > 1000) {
+                        Vue.set(this.errorMsg, 2, 'Message cannot be more than 1000 characters')
+                    }
+                    if (!grecaptcha.getResponse()) {
+                        Vue.set(this.errorMsg, 3, 'Please check Recaptcha')
+                    }
+                    if (!this.hasError()) {
+                        this.$nextTick(() => {
+                            this.$refs.form.submit()
+                        })
+                    }
+                }
+            }
+        })
     </script>
 </body>
 </html>

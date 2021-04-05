@@ -121,6 +121,11 @@
       }
     },
     methods: {
+      clearErrors() {
+        for (let i=0; i<this.errorMsg.length;i++) {
+          this.errorMsg[i] = ''
+        }
+      },
       hasError() {
         err = false
         for(let i=0; i<this.errorMsg.length; i++) {
@@ -130,6 +135,7 @@
       },
       doValidate(evt) {
         if (evt.target.value != "Delete") {
+          this.clearErrors()
           if (this.title.length == 0) {
             Vue.set(this.errorMsg, 0, 'This is a mandatory field')
           } else if (this.title.length > 50) {

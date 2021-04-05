@@ -115,23 +115,27 @@ def contact():
 
 @bp.route('/new_message', methods=['POST'])
 def new_message():
-    msg = Message(name=request.form.get('name'), \
-        email=request.form.get('email'), message=request.form.get('message'))
-    db.session.add(msg)
-    db.session.commit()
+    recaptcha = request.form.get('g-recaptcha-response')
+    if recaptcha:
+        msg = Message(name=request.form.get('name'), \
+            email=request.form.get('email'), message=request.form.get('message'))
+        db.session.add(msg)
+        db.session.commit()
 
-    create_date = msg.create_date.strftime('%d/%m/%y %H:%M')
-    result = email.send_email('Someone has commented on flaskcms',
-        sender=current_app.config['MAIL_FROM'],
-        recipients=current_app.config['MAIL_ADMINS'],
-        text_body=render_template('main/email_contact.txt',
-                                    msg=msg, create_date=create_date),
-        html_body=render_template('main/email_contact.html',
-                                    msg=msg, create_date=create_date))
-    if result:
-        flash('Message has been sent', 'success')
+        create_date = msg.create_date.strftime('%d/%m/%y %H:%M')
+        result = email.send_email('Someone has commented on flaskcms',
+            sender=current_app.config['MAIL_FROM'],
+            recipients=current_app.config['MAIL_ADMINS'],
+            text_body=render_template('main/email_contact.txt',
+                                        msg=msg, create_date=create_date),
+            html_body=render_template('main/email_contact.html',
+                                        msg=msg, create_date=create_date))
+        if result:
+            flash('Message has been sent', 'success')
+        else:
+            flash('System error', 'danger')
     else:
-        flash('Sorry system error', 'danger')
+        flash('You need to check Recaptcha', 'danger')
     return redirect(url_for('main.contact',_anchor='contact_form'))
 
 
