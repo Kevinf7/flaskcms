@@ -77,7 +77,7 @@ def getUploadedImage(img_num):
         if new_image:
             upload_path = current_app.config['UPLOAD_PATH_BLOG']
             upload_path_thumb = current_app.config['UPLOAD_PATH_THUMB_BLOG']
-            img_type_obj = ImageType.query.filter_by(name='page').first()
+            img_type_obj = ImageType.query.filter_by(name='blog').first()
             resp = process_image(new_image,upload_path,upload_path_thumb,img_type_obj)
             if resp['status'] == 'error':
                 flash(resp['msg'])
