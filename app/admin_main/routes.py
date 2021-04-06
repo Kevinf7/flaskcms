@@ -21,7 +21,9 @@ def index():
     post_latest = Post.query.order_by(desc(Post.update_date)).limit(3).all()
     total_tags = db.session.query(Tag).count()
     top_tags = db.session.query(Tag, db.func.count(Tagged.tag_id)) \
-        .join(Tagged).group_by(Tagged.tag_id).limit(3).all()
+        .join(Tagged).group_by(Tagged.tag_id) \
+        .order_by(desc( db.func.count(Tagged.tag_id))) \
+        .limit(3).all()
     total_comment = Comment.query.count()
     prev_login = current_user.prev_login
     if not prev_login:
