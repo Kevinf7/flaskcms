@@ -103,14 +103,14 @@ new Vue({
         let title3 = tinyMCE.get('title3').getContent().length
         if (title1 == 0) {
           Vue.set(this.errorMsg, 0, 'This is a mandatory field')
-        } else if (title1 > 100) {
-          Vue.set(this.errorMsg, 0, 'Maximum 100 characters')
+        } else if (title1 > 400) {
+          Vue.set(this.errorMsg, 0, 'Maximum 400 characters')
         }
-        if (title2 > 100) {
-          Vue.set(this.errorMsg, 2, 'Maximum 100 characters')
+        if (title2 > 400) {
+          Vue.set(this.errorMsg, 2, 'Maximum 400 characters')
         }
-        if (title3 > 100) {
-          Vue.set(this.errorMsg, 3, 'Maximum 100 characters')
+        if (title3 > 400) {
+          Vue.set(this.errorMsg, 3, 'Maximum 400 characters')
         }
         if (evt.target.value != 'Save as draft') {
           if (this['newimage1']=='upload') {

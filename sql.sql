@@ -78,8 +78,8 @@ values('bla bla this is important', 'hello 123', 12,2,7,2,now(),now(),'Some head
 INSERT INTO page_home_hero(text,image_id1,image_id2,status_id,page_id,user_id,update_date,create_date,heading)
 values('bla bla this is important', 12,12,2,9,2,now(),now(),'Some heading')
 
-INSERT INTO page_home_splash(title1,image_id1,title2,image_id2,status_id,page_id,user_id,update_date,create_date)
-values('bla bla', 59, 'zub', 59,2,6,1,now(),now())
+INSERT INTO page_home_splash(title1,image_id1,title2,title3,status_id,page_id,user_id,update_date,create_date)
+values('bla bla', 36, 'zub', 'dub',2,10,2,now(),now())
 
 insert into page (name, user_id, last_publish_date, create_date, display)
 values ('home_splash', 1, now(), now(), 'Home - Splash');

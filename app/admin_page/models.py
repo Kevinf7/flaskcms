@@ -119,9 +119,9 @@ class PageContact(db.Model):
 class PageHomeSplash(db.Model):
     __tablename__ = 'page_home_splash'
     id = db.Column(db.Integer, primary_key=True)
-    title1 = db.Column(db.String(100), nullable=False)
-    title2 = db.Column(db.String(100))
-    title3 = db.Column(db.String(100))
+    title1 = db.Column(db.String(400), nullable=False)
+    title2 = db.Column(db.String(400))
+    title3 = db.Column(db.String(400))
     image_id1 = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)
     status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
