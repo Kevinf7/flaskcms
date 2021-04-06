@@ -15,7 +15,7 @@
     {% include 'shared/macros/_page_edit_buttons.html' %}
 
     <div class="field">
-      <label class="label">Title</label>
+      <label class="label">Title*</label>
       <div class="control">
         <input 
           name="title"
@@ -27,9 +27,10 @@
     </div>
 
     <div class="field">
-      <label class="label">Main Content</label>
+      <label class="label">Main Content*</label>
       <div class="control">
-        <textarea class="simpletiny" name="main_content" v-model="main_content">
+        <textarea id="main_content" class="simpletiny" 
+          name="main_content" v-model="main_content">
         </textarea>
       </div>
       <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
@@ -38,14 +39,15 @@
     <div class="field">
       <label class="label">Contact Content</label>
       <div class="control">
-        <textarea class="simpletiny" name="contact_content" v-model="contact_content">
+        <textarea id="contact_content" class="simpletiny" 
+          name="contact_content" v-model="contact_content">
         </textarea>
       </div>
       <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
     </div>
 
     <div class="field">
-      <label class="label">Phone</label>
+      <label class="label">Phone*</label>
       <div class="control">
         <input 
           name="phone"
@@ -57,7 +59,7 @@
     </div>
 
     <div class="field">
-      <label class="label">Email</label>
+      <label class="label">Email*</label>
       <div class="control">
         <input 
           name="email"
@@ -69,16 +71,17 @@
     </div>
 
     <div class="field">
-      <label class="label">Address</label>
+      <label class="label">Address*</label>
       <div class="control">
-        <textarea class="simpletiny" name="address" v-model="address">
+        <textarea id="address" class="simpletiny" 
+          name="address" v-model="address">
         </textarea>
       </div>
       <p v-if="errorMsg[5]" class="help is-danger">[[ errorMsg[5] ]]</p>
     </div>
 
     <div class="field">
-      <label class="label">Current image</label>
+      <label class="label">Current image*</label>
       <div class="control">
         {% if edit_ver.image1.filename %}
         <p class="is-size-7">{{ edit_ver.image1.filename }}</p>
@@ -136,17 +139,20 @@
       doValidate(evt) {
         if (evt.target.value != "Delete") {
           this.clearErrors()
+          let main_content= tinyMCE.get('main_content').getContent().length
+          let contact_content = tinyMCE.get('contact_content').getContent().length
+          let address = tinyMCE.get('address').getContent().length
           if (this.title.length == 0) {
             Vue.set(this.errorMsg, 0, 'This is a mandatory field')
           } else if (this.title.length > 50) {
             Vue.set(this.errorMsg, 0, 'Maximum 50 characters')
           }
-          if (this.main_content.length == 0) {
+          if (main_content == 0) {
             Vue.set(this.errorMsg, 1, 'This is a mandatory field')
-          } else if (this.main_content.length > 1000) {
+          } else if (main_content > 1000) {
             Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
           }
-          if (this.contact_content.length > 500) {
+          if (contact_content > 500) {
             Vue.set(this.errorMsg, 2, 'Maximum 500 characters')
           }
           if (this.phone.length == 0) {
@@ -159,9 +165,9 @@
           } else if (this.email.length > 50) {
             Vue.set(this.errorMsg, 4, 'Maximum 50 characters')
           }
-          if (this.address.length == 0) {
+          if (address == 0) {
             Vue.set(this.errorMsg, 5, 'This is a mandatory field')
-          } else if (this.address.length > 500) {
+          } else if (address > 500) {
             Vue.set(this.errorMsg, 5, 'Maximum 500 characters')
           }
           if (evt.target.value != 'Save as draft') {

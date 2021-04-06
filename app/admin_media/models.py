@@ -21,6 +21,8 @@ class Images(db.Model):
         foreign_keys='PageHomeHero.image_id2', backref='image2', lazy='dynamic')
     page_contact = db.relationship('PageContact',
         foreign_keys='PageContact.image_id1', backref='image1', lazy='dynamic')
+    page_home_splash = db.relationship('PageHomeSplash',
+        foreign_keys='PageHomeSplash.image_id1', backref='image1', lazy='dynamic')
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     def getImage(image_id):

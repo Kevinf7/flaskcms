@@ -3,7 +3,7 @@ from flask_login import current_user
 from app import db
 from app.main import bp
 from app.email import email
-from app.admin_page.models import PageHomeMain, PageHomeHero, PageStatus, PageContact
+from app.admin_page.models import PageHomeMain, PageHomeHero, PageStatus, PageContact, PageHomeSplash
 from app.admin_blog.models import Post, Tag, Tagged, Comment
 from app.admin_message.models import Message
 from sqlalchemy import desc
@@ -33,7 +33,9 @@ def index():
     hero = PageHomeHero.query.filter_by(page_status=PageStatus.getStatus('published')).first()
     top_post = Post.query.order_by(desc(Post.create_date)).limit(3).all()
     contact = PageContact.query.filter_by(page_status=PageStatus.getStatus('published')).first()
-    return render_template('main/index.html', main=main, hero=hero, top_post=top_post, contact=contact)
+    splash = PageHomeSplash.query.filter_by(page_status=PageStatus.getStatus('published')).first()
+    return render_template('main/index.html', 
+        main=main, hero=hero, top_post=top_post, contact=contact, splash=splash)
 
 
 @bp.route('/blog', methods=['GET'])

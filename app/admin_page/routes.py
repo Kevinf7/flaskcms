@@ -1,7 +1,7 @@
 from flask import render_template, request, current_app
 from flask_login import login_required
 from app.admin_page import bp
-from app.admin_page.models import Page, PageHomeMain, PageHomeHero, PageContact
+from app.admin_page.models import Page, PageHomeMain, PageHomeHero, PageContact, PageHomeSplash
 from app.breadcrumb import set_breadcrumb
 from .common import page_post
 
@@ -60,3 +60,16 @@ def page_contact():
     ]
     edit_ver, all_ver = page_post(PageContact,'contact',fields,1)
     return render_template('admin_page/page_contact.html', edit_ver=edit_ver, all_ver=all_ver, num_images=1)
+
+
+@bp.route('/page/page_home_splash', methods=['GET', 'POST'])
+@login_required
+@set_breadcrumb('home page page-home-splash')
+def page_home_splash():
+    fields = [
+        {'name': 'title1', 'type': 'str'},
+        {'name': 'title2', 'type': 'str'},
+        {'name': 'title3', 'type': 'str'}
+    ]
+    edit_ver, all_ver = page_post(PageHomeSplash,'home_splash',fields,1)
+    return render_template('admin_page/page_home_splash.html', edit_ver=edit_ver, all_ver=all_ver, num_images=1)

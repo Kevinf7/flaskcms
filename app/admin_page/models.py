@@ -19,6 +19,8 @@ class Page(db.Model):
         "PageHomeHero", backref="page", lazy="dynamic")
     page_contact = db.relationship(
         "PageContact", backref="page", lazy="dynamic")
+    page_home_splash = db.relationship(
+        "PageHomeSplash", backref="page", lazy="dynamic")
     create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     @staticmethod
@@ -40,6 +42,8 @@ class PageStatus(db.Model):
         "PageHomeHero", backref="page_status", lazy="dynamic")
     page_contact = db.relationship(
         "PageContact", backref="page_status", lazy="dynamic")
+    page_home_splash = db.relationship(
+        "PageHomeSplash", backref="page_status", lazy="dynamic")
 
     @staticmethod
     def getStatus(name):
@@ -110,5 +114,23 @@ class PageContact(db.Model):
 
     def __repr__(self):
         return '<PageContact {}>'.format(self.id)
+
+
+class PageHomeSplash(db.Model):
+    __tablename__ = 'page_home_splash'
+    id = db.Column(db.Integer, primary_key=True)
+    title1 = db.Column(db.String(100), nullable=False)
+    title2 = db.Column(db.String(100))
+    title3 = db.Column(db.String(100))
+    image_id1 = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)
+    status_id = db.Column(db.Integer, db.ForeignKey('page_status.id'), nullable=False)
+    page_id = db.Column(db.Integer, db.ForeignKey('page.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    update_date = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False)
+    create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
+
+    def __repr__(self):
+        return '<PageHomeSplash {}>'.format(self.id)
 
 

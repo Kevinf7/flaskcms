@@ -233,7 +233,7 @@
 
                         <section class="references" data-interval="9000">
 
-                            <img src="{{ url_for('static', filename='_assets/_img/image.png') }}" class="image-data-for-parent" alt="Park" />
+                            <img src="{{ url_for('static', filename='uploads/page/' ~ splash.image1.filename) }}" class="image-data-for-parent" alt="Park" />
 
                             <div class="container">
 
@@ -250,12 +250,13 @@
 
                                                 <div class="single-reference-content">
 
-                                                    <p>Morbi dui ligula, et velit pede turpis et quam congue orci magna hendrerit nulla ipsum pede, risus elit a leo ut orci magna non nisl felis sagittis luctus.</p>
-                                                    <p class="author">Martha Smith<br /> <span class="title">boarder</span></p>
+                                                    {{ splash.title1|safe }}
 
                                                 </div>
 
                                             </div>
+
+                                            {% if splash.title2 %}
 
                                             <div class="single-reference">
 
@@ -264,12 +265,15 @@
 
                                                 <div class="single-reference-content">
 
-                                                    <p>Nulla dui metus, gravida ut mollis eu, accumsan nec libero. Aliquam et elementum sem. Praesent malesuada, lorem at congue molestie, enim tellus fermentum.</p>
-                                                    <p class="author">Monica Wayne<br /> <span class="title">boarder</span></p>
-
+                                                    {{ splash.title2|safe }}
+                                                    
                                                 </div>
 
                                             </div>
+
+                                            {% endif %}
+
+                                            {% if splash.title3 %}
 
                                             <div class="single-reference">
 
@@ -278,12 +282,13 @@
 
                                                 <div class="single-reference-content">
 
-                                                    <p>Sed mollis ex nulla, sit amet consequat tortor blandit at. Duis bibendum laoreet augue, in elementum elit interdum a. Nulla consequat pulvinar nulla.</p>
-                                                    <p class="author">Susane Doe<br /> <span class="title">doctor</span></p>
+                                                    {{ splash.title3|safe }}
 
                                                 </div>
 
                                             </div>
+
+                                            {% endif %}
 
                                         </div>
 

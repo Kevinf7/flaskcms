@@ -25,6 +25,8 @@
         <td class="has-text-right"><a href="{{ url_for('admin_page.page_home_main') }}"><i class="far fa-edit" title="edit"></i></a></td>
         {% elif page.name == 'home_hero' %}
         <td class="has-text-right"><a href="{{ url_for('admin_page.page_home_hero') }}"><i class="far fa-edit" title="edit"></i></a></td>
+        {% elif page.name == 'home_splash' %}
+        <td class="has-text-right"><a href="{{ url_for('admin_page.page_home_splash') }}"><i class="far fa-edit" title="edit"></i></a></td>
         {% endif %}
       </tr>
     {% endfor %}

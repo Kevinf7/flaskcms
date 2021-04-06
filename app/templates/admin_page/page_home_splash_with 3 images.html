@@ -6,40 +6,31 @@
 {% block app_content %}
 <div id="this-block">
   <div class="content mb-6">
-    <form ref="form" action="{{ url_for('admin_page.page_home_hero') }}" 
+    <form ref="form" action="{{ url_for('admin_page.page_home_splash') }}" 
       method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" name="id" value="{{ edit_ver.id }}"/>
       <input type="hidden" name="image_id1" :value="image_id1"/>
       <input type="hidden" name="image_id2" :value="image_id2"/>
+      <input type="hidden" name="image_id3" :value="image_id3"/>
       <input type="hidden" name="action" :value="action"/>
 
       {% include 'shared/macros/_page_edit_buttons.html' %}
       
       <div class="field">
-        <label class="label">Heading*</label>
+        <label class="label">Title 1</label>
         <div class="control">
           <input 
-            name="heading"
+            name="title1"
             class="input"
             type="text"
-            v-model="heading">
+            v-model="title1">
         </div>
         <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
       </div>
 
       <div class="field">
-        <label class="label">Main Text*</label>
-        <div class="control">
-          <textarea id="text" class="simpletiny" 
-            name="text" v-model="text">
-          </textarea>
-        </div>
-        <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
-      </div>
-
-      <div class="field">
-        <label class="label">Current image*</label>
+        <label class="label">Current image</label>
         <div class="control">
           {% if edit_ver.image1.filename %}
           <p class="is-size-7">{{ edit_ver.image1.filename }}</p>
@@ -50,7 +41,7 @@
         </div>
       </div>
       {% if edit_ver.page_status.name == 'draft' %}
-      {{ form_image(1,2) }}
+      {{ form_image(1,1) }}
       {% endif %}
 
       <hr/>
@@ -71,25 +62,15 @@
 
       <div v-show="secondSlider" ref="secondSlider">
         <div class="field">
-          <label class="label">Heading - 2</label>
+          <label class="label">Title 2</label>
           <div class="control">
             <input
-              name="heading2"
+              name="title2"
               class="input"
               type="text"
-              v-model="heading2">
+              v-model="title2">
           </div>
-          <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
-        </div>
-
-        <div class="field">
-          <label class="label">Main Text - 2</label>
-          <div class="control">
-            <textarea id="text2" class="simpletiny" 
-              name="text2" rows="3" v-model="text2">
-            </textarea>
-          </div>
-          <p v-if="errorMsg[4]" class="help is-danger">[[ errorMsg[4] ]]</p>
+          <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
         </div>
 
         <div class="field">
@@ -104,8 +85,54 @@
           </div>
         </div>
         {% if edit_ver.page_status.name == 'draft' %}
-        {{ form_image(2,5) }}
+        {{ form_image(2,3) }}
         {% endif %}
+
+        <hr/>
+
+        <div class="field">
+          <label class="label">Include a third slider?</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="thirdslider" :value="true" v-model="thirdSlider">
+              Yes
+            </label>
+            <label class="radio">
+              <input type="radio" name="thirdslider" :value="false" v-model="thirdSlider">
+              No
+            </label>
+          </div>
+        </div>
+  
+        <div v-show="thirdSlider" ref="thirdSlider">
+          <div class="field">
+            <label class="label">Title 3</label>
+            <div class="control">
+              <input
+                name="title3"
+                class="input"
+                type="text"
+                v-model="title3">
+            </div>
+            <p v-if="errorMsg[4]" class="help is-danger">[[ errorMsg[4] ]]</p>
+          </div>
+  
+          <div class="field">
+            <label class="label">Current image - 3</label>
+            <div class="control">
+              {% if edit_ver.image3.filename %}
+              <p class="is-size-7">{{ edit_ver.image3.filename }}</p>
+              <img src="{{ url_for('static', filename='uploads/page/thumbnails/' ~ edit_ver.image3.thumbnail) }}">
+              {% else %}
+              <p>Empty</p>
+              {% endif %}
+            </div>
+          </div>
+          {% if edit_ver.page_status.name == 'draft' %}
+          {{ form_image(3,5) }}
+          {% endif %}
+        </div>
+
       </div>
 
     </form>
@@ -122,19 +149,22 @@ new Vue({
   delimiters: ['[[', ']]'],
   data() {
     return {
-      heading: '{{ edit_ver.heading or "" }}',
-      text: `{{ edit_ver.text|safe or "" }}`,
-      heading2: '{{ edit_ver.heading2 or "" }}',
-      text2: `{{ edit_ver.text2|safe or "" }}`,
+      title1: '{{ edit_ver.title1 or "" }}',
+      title2: '{{ edit_ver.title2 or "" }}',
+      title3: '{{ edit_ver.title3 or "" }}',
       errorMsg: ['','','','','',''],
       action: '',
       filename1: 'No file selected',
       newimage1: 'upload',
       filename2: 'No file selected',
       newimage2: 'upload',
-      secondSlider: {{ 'true' if edit_ver.heading2 is not none and edit_ver.heading2!='' else 'false' }},
+      filename3: 'No file selected',
+      newimage3: 'upload',
+      secondSlider: {{ 'true' if edit_ver.title2 is not none and edit_ver.title2!='' else 'false' }},
+      thirdSlider: {{ 'true' if edit_ver.title3 is not none and edit_ver.title3!='' else 'false' }},
       image_id1: '{{ edit_ver.image_id1 or "none" }}',
       image_id2: '{{ edit_ver.image_id2 or "none" }}',
+      image_id3: '{{ edit_ver.image_id3 or "none" }}',
       num_images: {{ num_images }}
     }
   },
@@ -154,28 +184,25 @@ new Vue({
     doValidate(evt) {
       if (evt.target.value != "Delete") {
         this.clearErrors()
-        let text= tinyMCE.get('text').getContent().length
-        let text2 = tinyMCE.get('text2').getContent().length
-        if (this.heading.length == 0) {
+        if (this.title1.length == 0) {
           Vue.set(this.errorMsg, 0, 'This is a mandatory field')
-        } else if (this.heading.length > 50) {
-          Vue.set(this.errorMsg, 0, 'Maximum 50 characters')
-        }
-        if (text == 0) {
-          Vue.set(this.errorMsg, 1, 'This is a mandatory field')
-        } else if (text > 1000) {
-          Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
+        } else if (this.title1.length > 100) {
+          Vue.set(this.errorMsg, 0, 'Maximum 100 characters')
         }
         if (this.secondSlider) {
-          if (this.heading2.length > 50) {
-            Vue.set(this.errorMsg, 3, 'Maximum 50 characters')
+          if (this.title2.length > 100) {
+            Vue.set(this.errorMsg, 2, 'Maximum 100 characters')
           }
-          if (text2 > 1000) {
-            Vue.set(this.errorMsg, 4, 'Maximum 1000 characters')
+        }
+        if (this.thirdSlider) {
+          if (this.title3.length > 100) {
+            Vue.set(this.errorMsg, 4, 'Maximum 100 characters')
           }
         }
         if (evt.target.value != 'Save as draft') {
-          if (this.secondSlider) {
+          if (this.thirdSlider) {
+            img_loop = 3
+          } else if (this.secondSlider) {
             img_loop = 2
           } else {
             img_loop = 1
@@ -186,10 +213,10 @@ new Vue({
               let fs = this.$refs['imgupload'+n].files[0]
               if (fs) {
                 if((fs.size/1024) > 1024) {
-                  Vue.set(this.errorMsg, prev_err+3, 'Image cannot be larger than 1MB')
+                  Vue.set(this.errorMsg, prev_err+2, 'Image cannot be larger than 1MB')
                 }
               }
-              prev_err = prev_err+3
+              prev_err = prev_err+2
             }
           }
         }
@@ -205,8 +232,11 @@ new Vue({
         }
         if (!this.secondSlider) {
           this.image_id2='del'
-          this.heading2=''
-          tinymce.get('text2').setContent('')
+          this.title2=''
+        }
+        if (!this.secondSlider || !this.thirdSlider) {
+          this.image_id3='del'
+          this.title3=''
         }
         this.$nextTick(() => {
           this.$refs.form.submit()

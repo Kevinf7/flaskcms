@@ -37,6 +37,8 @@ class Breadcrumb(object):
                 'url': url_for('admin_page.page_home_main'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-home-hero', 'name': 'Home-Hero', 
                 'url': url_for('admin_page.page_home_hero'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'page-home-splash', 'name': 'Home-Splash', 
+                'url': url_for('admin_page.page_home_splash'), 'icon': ''})
 
 
 def set_breadcrumb(path):
