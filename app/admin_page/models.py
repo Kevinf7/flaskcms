@@ -1,4 +1,3 @@
-from flask import current_app
 from app import db
 from datetime import datetime
 
@@ -52,10 +51,6 @@ class PageStatus(db.Model):
     def __repr__(self):
         return '<PageStatus {}>'.format(self.name)
 
-
-# Add your custom page details below
-# The two below are just examples
-# You also need to create an entry in Page which is like the parent and will be used by Dashboard
 
 class PageHomeMain(db.Model):
     __tablename__ = 'page_home_main'

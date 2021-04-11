@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="columns is-gapless" style="min-height:100vh;">
-  <div class="column is-narrow has-background-primary">
+  <div id="main-app-1" class="column is-narrow has-background-primary">
     <div class="hero is-small is-primary">
       <div class="hero-body">
         <div class="title is-4 has-text-centered has-text-white">
@@ -12,7 +12,7 @@
       </div>
     </div>
     <aside class="menu p-5">
-      <ul class="menu-list ">
+      <ul class="menu-list">
         <li>
           <a href="{{ url_for('admin_main.index') }}">
             <span class="menu-spacing"><i class="fas fa-home"></i></span>
@@ -22,10 +22,15 @@
       </ul>
 
       <!--BLOG-->
-      <p class="menu-label">
-        Blog
-      </p>
-      <ul class="menu-list">
+      <div class="menu-label">
+        <a class="app-menu-link" href="#" 
+          @click="showBlog = !showBlog; setLocal('show_blog',showBlog)">
+          <span class="pr-3" v-show="showBlog"><i class="far fa-minus-square"></i></span>
+          <span class="pr-3" v-show="!showBlog"><i class="far fa-plus-square"></i></span>
+          Blog
+        </a>
+      </div>
+      <ul v-if="showBlog" class="menu-list">
         <li>
           <a href="{{ url_for('admin_blog.blog') }}">
             <span class="menu-spacing"><i class="fab fa-microblog"></i></span>
@@ -55,9 +60,14 @@
 
       <!--PAGE-->
       <p class="menu-label">
-        Pages
+        <a href="#" class="app-menu-link" 
+          @click.prevent="showPage = !showPage; setLocal('show_page',showPage)">
+          <span class="pr-3" v-show="showPage"><i class="far fa-minus-square"></i></span>
+          <span class="pr-3" v-show="!showPage"><i class="far fa-plus-square"></i></span>
+          Pages
+        </a>
       </p>
-      <ul class="menu-list">
+      <ul v-if="showPage" class="menu-list">
         <li>
           <a href="{{ url_for('admin_page.page') }}">
             <span class="menu-spacing"><i class="far fa-file-alt"></i></span>
@@ -74,10 +84,15 @@
       <!--END PAGE-->
 
       <!--MESSAGE-->
-      <p class="menu-label">
-        Contact Form
-      </p>
-      <ul class="menu-list">
+      <div class="menu-label app-menu-link">
+        <a href="#" class="app-menu-link" 
+          @click.prevent="showContact = !showContact; setLocal('show_contact',showContact)">
+          <span class="pr-3" v-show="showContact"><i class="far fa-minus-square"></i></span>
+          <span class="pr-3" v-show="!showContact"><i class="far fa-plus-square"></i></span>
+          Contact Form
+        </a>
+      </div>
+      <ul v-if="showContact" class="menu-list">
         <li>
           <a href="{{ url_for('admin_message.message') }}">
             <span class="menu-spacing"><i class="far fa-id-badge"></i></span>
@@ -88,11 +103,7 @@
       <!--END MESSAGE-->
 
       <hr style="border-top: 1px solid #DDDDDD;"/>
-      <ul class="menu-list">
-        <li><div class="is-size-7 has-text-centered">
-          <a href="{{ url_for('admin_main.about') }}">About Flask CMS</a>
-        </div></li>
-      </ul>
+      <p><a class="app-menu-link is-size-7" href="{{ url_for('admin_main.about') }}">About Flask CMS</a></p>
     </aside>
   </div>
   <div class="column">
@@ -105,7 +116,7 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
-    <div id="main-menu" class="mb-5">
+    <div class="mb-5">
       <nav class="level is-mobile">
         <div class="level-left ml-5"> 
           {% if breadcrumb %}
@@ -129,7 +140,7 @@
           </div>
           {% endif %}
         </div>
-        <div class="level-right mr-5">
+        <div id="main-app-2" class="level-right mr-5">
           <div class="level-item">
             <div class="navbar" role="navigation" aria-label="dropdown navigation">
               <div class="navbar-item has-dropdown" :class="profileToggle ? 'is-active' : ''">
@@ -161,15 +172,40 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
   -->
   <script>
-  new Vue({
-    el: '#main-menu',
-    delimiters: ['[[', ']]'],
-    data() {
-      return {
-        profileToggle: false
+    new Vue({
+      el: '#main-app-1',
+      delimiters: ['[[', ']]'],
+      data() {
+        return {
+          showBlog: true,
+          showPage: true,
+          showContact: true
+        }
+      },
+      methods: {
+        setLocal(name, val) {
+          localStorage[name] = val
+        }
+      },
+      mounted() {
+        if (localStorage.show_blog) {
+          this.showBlog = localStorage.show_blog === 'true'
+          this.showPage = localStorage.show_page === 'true'
+          this.showContact = localStorage.show_contact === 'true'
+        }
       }
-    }
-  })
+    })
   </script>
+  <script>
+    new Vue({
+      el: '#main-app-2',
+      delimiters: ['[[', ']]'],
+      data() {
+        return {
+          profileToggle: false
+        }
+      }
+    })
+    </script>
 {% endblock %}
 

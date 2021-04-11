@@ -20,5 +20,11 @@ body {
 .tag-tags {
     display:inline-flex;
 }
+.app-menu-link {
+    color:#FFFFFF;
+}
+.app-menu-link:hover {
+    color:#CCCCCC;
+}
 
   
