@@ -15,7 +15,7 @@
     {% endif %}
   </form>
 
-  {% if config['ADMIN_BLOG'] and config['ADMIN_PAGE'] %}
+  <!--PAGE AND BLOG ONLY-->
   <div class="level">
     <div class="level-left">
     </div>
@@ -30,7 +30,8 @@
       </div>
     </div>
   </div>
-  {% endif %}
+  <!--END-->
+
   {% for img in images.items %}
   <div class="is-inline-block is-size-7" style="padding:10px;">
     <img src="{{ url_for('static',filename='uploads/' ~ img.image_type.name ~ '/thumbnails/' ~ img.thumbnail) }}">

@@ -1,7 +1,7 @@
 {% extends "shared/base_main.html" %}
 {% from 'shared/macros/_version.html' import version with context %}
 {% from 'shared/macros/_form_image.html' import form_image with context %}
-{% block title %}Page Home Main{% endblock %}
+{% block title %}Page Home Hero{% endblock %}
 
 {% block app_content %}
 <div id="this-block">
@@ -20,6 +20,7 @@
         <label class="label">Heading*</label>
         <div class="control">
           <input 
+            autofocus
             name="heading"
             class="input"
             type="text"

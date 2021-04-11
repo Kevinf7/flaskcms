@@ -83,3 +83,6 @@ values('bla bla', 36, 'zub', 'dub',2,10,2,now(),now())
 
 insert into page (name, user_id, last_publish_date, create_date, display)
 values ('home_splash', 1, now(), now(), 'Home - Splash');
+
+insert into site_setting (create_date)
+values (now());

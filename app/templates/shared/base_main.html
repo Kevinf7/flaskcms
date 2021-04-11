@@ -20,7 +20,8 @@
           </a>
         </li>
       </ul>
-      {% if config['ADMIN_BLOG'] %}
+
+      <!--BLOG-->
       <p class="menu-label">
         Blog
       </p>
@@ -44,18 +45,15 @@
           </a>
         </li>
         <li>
-          {% if config['ADMIN_PAGE'] %}
           <a href="{{ url_for('admin_media.media',show='blog') }}">
-          {% else %}
-          <a href="{{ url_for('admin_media.media') }}"></a>
-          {% endif %}
             <span class="menu-spacing"><i class="far fa-file-image"></i></span>
             Media
           </a>
         </li>
       </ul>
-      {% endif %}
-      {% if config['ADMIN_PAGE'] %}
+      <!--END BLOG-->
+
+      <!--PAGE-->
       <p class="menu-label">
         Pages
       </p>
@@ -67,18 +65,15 @@
           </a>
         </li>
         <li>
-          {% if config['ADMIN_BLOG'] %}
           <a href="{{ url_for('admin_media.media',show='page') }}">
-          {% else %}
-          <a href="{{ url_for('admin_media.media') }}">
-          {% endif %}
             <span class="menu-spacing"><i class="far fa-file-image"></i></span>
             Media
           </a>
         </li>
       </ul>
-      {% endif %}
-      {% if config['ADMIN_MESSAGE'] %}
+      <!--END PAGE-->
+
+      <!--MESSAGE-->
       <p class="menu-label">
         Contact Form
       </p>
@@ -90,7 +85,8 @@
           </a>
         </li>
       </ul>
-      {% endif %}
+      <!--END MESSAGE-->
+
       <hr style="border-top: 1px solid #DDDDDD;"/>
       <ul class="menu-list">
         <li><div class="is-size-7 has-text-centered">
@@ -141,6 +137,7 @@
                   {{ current_user.firstname }} {{ current_user.lastname }}
                 </a>
                 <div class="navbar-dropdown">
+                  <a class="navbar-item" href="{{ url_for('admin_main.site_setting') }}">Site Settings</a>
                   <a class="navbar-item" href="{{ url_for('admin_auth.logout') }}">Logout</a>
                 </div>
               </div>

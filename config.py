@@ -17,8 +17,6 @@ class Config(object):
         SERVER_NAME = 'localhost:5000'
     else:
         SERVER_NAME = 'flaskcms.pythonanywhere.com'
-    
-    #####
 
     # Database settings
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
@@ -30,29 +28,19 @@ class Config(object):
     FORGOT_PASSWORD_TOKEN_EXPIRE = 3600  # in seconds, 3600 = 1 hour
 
     ### ADMIN BLOG ###
-    ADMIN_BLOG = True
     POSTS_PER_PAGE = 10
     UPLOAD_PATH_BLOG = basedir / 'app/static/uploads/blog'
     UPLOAD_PATH_THUMB_BLOG = basedir / 'app/static/uploads/blog/thumbnails'
-    IMAGES_PER_PAGE = 12
     COMMENTS_PER_PAGE = 20
 
+    ### ADMIN MEDIA ###
+    IMAGES_PER_PAGE = 12
+
     ### ADMIN MESSAGE ###
-    ADMIN_MESSAGE = True
     MESSAGES_PER_PAGE = 10
 
     ### ADMIN PAGE ###
-    ADMIN_PAGE = True
     PAGES_PER_PAGE = 10
     UPLOAD_PATH_PAGE = basedir / 'app/static/uploads/page'
     UPLOAD_PATH_THUMB_PAGE = basedir / 'app/static/uploads/page/thumbnails'
 
-    # Sendgrid settings
-    SENDGRID_KEY = os.environ.get('SENDGRID_KEY')
-    MAIL_FROM = os.environ.get('MAIL_FROM')
-    MAIL_ADMINS = os.environ.get('MAIL_ADMINS').split(' ')
-
-    ### USER SETTINGS ###
-    USER_POSTS_PER_PAGE = 5
-    GOOGLE_MAP_KEY = os.environ.get('GOOGLE_MAP_KEY')
-    RECAPTCHA_KEY = os.environ.get('RECAPTCHA_KEY')

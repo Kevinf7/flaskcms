@@ -1,6 +1,6 @@
 {% extends "shared/base_main.html" %}
 {% from 'shared/macros/_form_image.html' import form_image with context %}
-{% block title %}Blog{% endblock %}
+{% block title %}Blog Post{% endblock %}
 
 {% block app_content %}
 <div id="this-block">
@@ -24,6 +24,7 @@
         <label class="label">Title</label>
         <div class="control">
           <input 
+          autofocus
           name="title"
           class="input"
           type="text"
@@ -45,7 +46,8 @@
         <label class="label">Tags</label>
         <div class="control">
           <p v-if="tags.length==0" class="help is-info">
-            Hint: You need to press Enter
+            <i class="fas fa-exclamation-circle"></i>
+            Remember to press Enter to add the tag 
           </p>
           <div v-for='(tag, index) in tags' :key='tag' class="tags has-addons mr-2 tag-tags">
             <span class="tag is-info is-light">[[ tag ]]</span>

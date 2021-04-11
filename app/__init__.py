@@ -57,4 +57,10 @@ def create_app(config_class=Config):
 
         breadcrumb.init_app(app)
 
+        # Set rest of config from db
+        set_settings()
+
     return app
+
+
+from app.admin_main.settings import set_settings

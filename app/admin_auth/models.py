@@ -23,6 +23,7 @@ class User(db.Model, UserMixin):
     page_home_splash = db.relationship('PageHomeSplash', backref='author', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='user', lazy='dynamic')
+    site_setting = db.relationship('SiteSetting', backref='user', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     prev_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
     last_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)

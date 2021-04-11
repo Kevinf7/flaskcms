@@ -1,7 +1,7 @@
 {% extends "shared/base_main.html" %}
 {% from 'shared/macros/_version.html' import version with context %}
 {% from 'shared/macros/_form_image.html' import form_image with context %}
-{% block title %}Page Home Main{% endblock %}
+{% block title %}Page Home Splash{% endblock %}
 
 {% block app_content %}
 <div id="this-block">
@@ -18,7 +18,8 @@
       <div class="field">
         <label class="label">Title 1*</label>
         <div class="control">
-          <textarea id="title1" class="simpletiny" name="title1" rows="3" v-model="title1">
+          <textarea id="title1" class="simpletiny"
+            name="title1" rows="3" v-model="title1">
           </textarea>
         </div>
         <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>

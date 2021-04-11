@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, g
+from flask import render_template, flash, g, request, url_for, redirect
 from sqlalchemy import desc
 from flask_login import current_user, login_required
 from app import db
@@ -7,8 +7,11 @@ from app.admin_blog.models import Post, Tag, Tagged, Comment
 from app.admin_page.models import Page
 from app.admin_media.models import Images, ImageType
 from app.admin_message.models import Message
+from app.admin_main.models import SiteSetting
 from app.breadcrumb import set_breadcrumb
+from .settings import set_settings
 from datetime import datetime
+
 
 # ADMIN MAIN routes
 
@@ -52,6 +55,35 @@ def index():
 @set_breadcrumb('home about')
 def about():
     return render_template('admin_main/about.html')
+
+
+@bp.route('/site_setting', methods=['GET','POST'])
+@login_required
+@set_breadcrumb('home site-setting')
+def site_setting():
+    setting = SiteSetting.query.first()
+    if request.method=='POST':
+        setting.google_map_key = request.form.get('google_map_key')
+        setting.recaptcha_key = request.form.get('recaptcha_key')
+        setting.sendgrid_key = request.form.get('sendgrid_key')
+        setting.mail_from = request.form.get('mail_from')
+        setting.mail_admins = request.form.get('mail_admins')
+        setting.comment_banned = request.form.get('comment_banned')
+        setting.user=current_user
+        setting.update_date = datetime.utcnow()
+        if request.form.get('posts_per_page'):
+            try:
+                setting.posts_per_page = int(request.form.get('posts_per_page'))
+            except ValueError:
+                flash('Posts per page is not an integer')
+                return redirect(url_for('admin_main.site_setting'))
+        db.session.add(setting)
+        db.session.commit()
+        set_settings()
+        
+        flash('Site settings updated','success')
+
+    return render_template('admin_main/site_setting.html', setting=setting)
 
 
 # Used by breadcrumbs
