@@ -75,7 +75,7 @@ def site_setting():
             try:
                 setting.posts_per_page = int(request.form.get('posts_per_page'))
             except ValueError:
-                flash('Posts per page is not an integer')
+                flash('Posts per page is not an integer','danger')
                 return redirect(url_for('admin_main.site_setting'))
         db.session.add(setting)
         db.session.commit()

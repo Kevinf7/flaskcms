@@ -8,7 +8,7 @@
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
     <div class="field">
-      <label class="label">Google Map Key</label>
+      <label class="label">Google Maps Key</label>
       <p class="help is-info">
         <i class="fas fa-exclamation-circle"></i>
         Google Maps API key. Hidden for security
@@ -177,7 +177,7 @@ new Vue({
       if (this.mail_admins.length > 500) {
         Vue.set(this.errorMsg, 4, 'Maximum 500 characters')
       }
-      if (Number.isInteger(this.posts_per_page)) {
+      if (!Number.isInteger(this.posts_per_page)) {
         Vue.set(this.errorMsg, 5, 'Must be an integer')
       }
       if (this.comment_banned.length > 1000) {
