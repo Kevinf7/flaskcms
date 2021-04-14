@@ -51,7 +51,7 @@
         </li>
         <li>
           <a href="{{ url_for('admin_media.media',show='blog') }}">
-            <span class="menu-spacing"><i class="far fa-file-image"></i></span>
+            <span class="menu-spacing"><i class="far fa-image"></i></span>
             Media
           </a>
         </li>
@@ -76,12 +76,31 @@
         </li>
         <li>
           <a href="{{ url_for('admin_media.media',show='page') }}">
-            <span class="menu-spacing"><i class="far fa-file-image"></i></span>
+            <span class="menu-spacing"><i class="far fa-image"></i></span>
             Media
           </a>
         </li>
       </ul>
       <!--END PAGE-->
+
+      <!--STORE-->
+      <p class="menu-label">
+        <a href="#" class="app-menu-link" 
+          @click.prevent="showStore = !showStore; setLocal('show_store',showStore)">
+          <span class="pr-3" v-show="showStore"><i class="far fa-minus-square"></i></span>
+          <span class="pr-3" v-show="!showStore"><i class="far fa-plus-square"></i></span>
+          Store
+        </a>
+      </p>
+      <ul v-if="showStore" class="menu-list">
+        <li>
+          <a href="{{ url_for('admin_store.store') }}">
+            <span class="menu-spacing"><i class="fas fa-shopping-cart"></i></span>
+            Store
+          </a>
+        </li>
+      </ul>
+      <!--END STORE-->
 
       <!--MESSAGE-->
       <div class="menu-label app-menu-link">
@@ -95,7 +114,7 @@
       <ul v-if="showContact" class="menu-list">
         <li>
           <a href="{{ url_for('admin_message.message') }}">
-            <span class="menu-spacing"><i class="far fa-id-badge"></i></span>
+            <span class="menu-spacing"><i class="far fa-envelope"></i></span>
             Messages
           </a>
         </li>
@@ -179,7 +198,8 @@
         return {
           showBlog: true,
           showPage: true,
-          showContact: true
+          showContact: true,
+          showStore: true
         }
       },
       methods: {
@@ -190,8 +210,15 @@
       mounted() {
         if (localStorage.show_blog) {
           this.showBlog = localStorage.show_blog === 'true'
+        }
+        if (localStorage.show_page) {
           this.showPage = localStorage.show_page === 'true'
+        }
+        if (localStorage.show_contact) {
           this.showContact = localStorage.show_contact === 'true'
+        }
+        if (localStorage.show_store) {
+          this.showStore = localStorage.show_store === 'true'
         }
       }
     })

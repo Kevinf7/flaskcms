@@ -46,6 +46,9 @@ def create_app(config_class=Config):
         from app.admin_media import bp as admin_media_bp
         app.register_blueprint(admin_media_bp, url_prefix='/admin')
 
+        from app.admin_store import bp as admin_store_bp
+        app.register_blueprint(admin_store_bp, url_prefix='/admin')
+
         from app.admin_errors import bp as errors_bp
         app.register_blueprint(errors_bp)
         
