@@ -16,6 +16,10 @@ class User(db.Model, UserMixin):
     firstname = db.Column(db.String(20), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
     password_hash = db.Column(db.String(100))
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
+    prev_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
+    last_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
+    create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
     pages = db.relationship('Page', backref='last_publish_by', lazy='dynamic')
     page_contact = db.relationship('PageContact', backref='author', lazy='dynamic')
     page_home_main = db.relationship('PageHomeMain', backref='author', lazy='dynamic')
@@ -24,10 +28,6 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='user', lazy='dynamic')
     site_setting = db.relationship('SiteSetting', backref='user', lazy='dynamic')
-    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
-    prev_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
-    last_login = db.Column(db.DateTime,default=datetime.utcnow, nullable=True)
-    create_date = db.Column(db.DateTime,default=datetime.utcnow, nullable=False)
 
     # generate hash of given password
     def set_password(self, password):

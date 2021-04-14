@@ -90,7 +90,7 @@ new Vue({
   delimiters: ['[[', ']]'],
   data() {
     return {
-      title: '{{ post.title }}',
+      title: '{{ post.title or "" }}',
       tags: [],
       errorMsg: ['','','',''],
       filename1: 'No file selected',

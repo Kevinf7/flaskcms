@@ -6,7 +6,7 @@
     <div class="hero is-small is-primary">
       <div class="hero-body">
         <div class="title is-4 has-text-centered has-text-white">
-          <img src="{{ url_for('static', filename='images/crown.svg') }}" width="60"/><br/>
+          <img src="{{ url_for('static', filename='images/crown.svg') }}" width="50"/><br/>
           Flask CMS
         </div>
       </div>
@@ -14,7 +14,7 @@
     <aside class="menu p-5">
       <ul class="menu-list">
         <li>
-          <a href="{{ url_for('admin_main.index') }}">
+          <a href="{{ url_for('admin_main.index') }}" style="margin-left:-16px;">
             <span class="menu-spacing"><i class="fas fa-home"></i></span>
             Home
           </a>
@@ -97,6 +97,12 @@
           <a href="{{ url_for('admin_store.store') }}">
             <span class="menu-spacing"><i class="fas fa-shopping-cart"></i></span>
             Store
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('admin_store.store') }}">
+            <span class="menu-spacing"><i class="fas fa-shopping-cart"></i></span>
+            Ref Tables
           </a>
         </li>
       </ul>

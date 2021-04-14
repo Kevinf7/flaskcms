@@ -25,7 +25,7 @@
     </div>
     <div class="level-right">
       <span class="mr-2">Show</span>
-      <div class="select mr-2">
+      <div class="select mr-4">
         <select v-model="showType" @change="getShow">
           <option value="all">All</option>
           <option value="published">Published</option>
@@ -37,51 +37,50 @@
       </button>
     </div>
   </div>
-  <div class="table-container">
-    <table class="table is-narrow is-striped is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Post</th>
-          <th>First publish</th>
-          <th>Last update</th>
-          <th>Last update by</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for p in posts.items %}
+
+  <table class="table is-narrow is-striped is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Post</th>
+        <th>First publish</th>
+        <th>Last update</th>
+        <th>Last update by</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in posts.items %}
+      {% if p.active %}
+      <tr>
+      {% else %}
+      <tr class="has-text-grey-light">
+      {% endif %}
+        <td>{{ p.title }}</td>
+        <td>{{ p.post|truncate(100,true,'...')|striptags }}</td>
+        <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
+        <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
+        <td>{{ p.author.email }}</td>
         {% if p.active %}
-        <tr>
+        <td class="has-text-right">
+          <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}"><i class="far fa-edit" title="edit"></i></a>
+        </td>
+        <td class="has-text-right">
+          <a href="#" @click="showDraftConfirm({{ p.id }})"><i class="fas fa-eraser" title="unpublish"></i></a>
+        </td>
         {% else %}
-        <tr class="has-text-grey-light">
+        <td class="has-text-right">
+          <a href="#" @click="showRestoreConfirm({{ p.id }})"><i class="fas fa-undo-alt" title="restore"></i></a>
+        </td>
+        <td class="has-text-right">
+          <a href="#" @click="showDeleteConfirm({{ p.id }})"><i class="far fa-trash-alt" title="delete"></i></a>
+        </td>
         {% endif %}
-          <td>{{ p.title }}</td>
-          <td>{{ p.post|truncate(100,true,'...')|striptags }}</td>
-          <td>{{ moment(p.create_date).format('D MMM YYYY hh:mm') }}</td>
-          <td>{{ moment(p.update_date).format('D MMM YYYY hh:mm') }}</td>
-          <td>{{ p.author.email }}</td>
-          {% if p.active %}
-          <td class="has-text-right">
-            <a href="{{ url_for('admin_blog.edit_post',id=p.id) }}"><i class="far fa-edit" title="edit"></i></a>
-          </td>
-          <td class="has-text-right">
-            <a href="#" @click="showDraftConfirm({{ p.id }})"><i class="fas fa-eraser" title="unpublish"></i></a>
-          </td>
-          {% else %}
-          <td class="has-text-right">
-            <a href="#" @click="showRestoreConfirm({{ p.id }})"><i class="fas fa-undo-alt" title="restore"></i></a>
-          </td>
-          <td class="has-text-right">
-            <a href="#" @click="showDeleteConfirm({{ p.id }})"><i class="far fa-trash-alt" title="delete"></i></a>
-          </td>
-          {% endif %}
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 
   {% if posts.pages > 1 %}
   {{ pagination(posts,'admin_blog.blog') }}
@@ -97,7 +96,7 @@
     delimiters: ['[[', ']]'],
     data() {
       return {
-        showType: '{{ show_type }}',
+        showType: '{{ show_type or "all" }}',
         id: 0,
         del_type: '',
         showDraftModal: false,
@@ -109,7 +108,7 @@
       getShow() {
         this.$nextTick(() => {
           this.$refs.showForm.submit()
-        });
+        })
       },
       showDraftConfirm(id) {
         this.id = id

@@ -20,13 +20,13 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable=False)
     post = db.Column(db.String(15000), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     update_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     create_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     #joined means all rows returned
     #dynamic means return query objects instead of items so you can use filter
     #cascade delete-orphan means if student object is deleted then association table row is also deleted
-    tags = db.relationship('Tagged',foreign_keys=[Tagged.post_id], \
+    tags = db.relationship('Tagged',foreign_keys=[Tagged.post_id],
                                     backref=db.backref('posts',lazy='joined'),
                                     lazy='joined',
                                     cascade='all, delete-orphan')

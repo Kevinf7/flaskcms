@@ -58,6 +58,9 @@ def create_app(config_class=Config):
         from app.main import bp as main_bp
         app.register_blueprint(main_bp)
 
+        from app.store import bp as store_bp
+        app.register_blueprint(store_bp, url_prefix='/store')
+
         breadcrumb.init_app(app)
 
         # Set rest of config from db
