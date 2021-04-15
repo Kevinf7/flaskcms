@@ -33,6 +33,8 @@ class Breadcrumb(object):
                 'url': url_for('admin_page.page'), 'icon': ''})
             Breadcrumb.map.append({'key': 'store', 'name': 'Store', 
                 'url': url_for('admin_store.store'), 'icon': ''})
+            Breadcrumb.map.append({'key': 'product', 'name': 'Product', 
+                'url': url_for('admin_store.product'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-contact', 'name': 'Contact', 
                 'url': url_for('admin_page.page_contact'), 'icon': ''})
             Breadcrumb.map.append({'key': 'page-home-main', 'name': 'Home-Main', 

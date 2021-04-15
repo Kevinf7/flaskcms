@@ -39,7 +39,7 @@
         <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
       </div>
 
-      <div class="field">
+      <div class="field pt-4">
         <label class="label">Current image*</label>
         <div class="control">
           {% if edit_ver.image1.filename %}
@@ -93,7 +93,7 @@
           <p v-if="errorMsg[4]" class="help is-danger">[[ errorMsg[4] ]]</p>
         </div>
 
-        <div class="field">
+        <div class="field pt-4">
           <label class="label">Current image - 2</label>
           <div class="control">
             {% if edit_ver.image2.filename %}
@@ -155,23 +155,23 @@ new Vue({
     doValidate(evt) {
       if (evt.target.value != "Delete") {
         this.clearErrors()
-        let text= tinyMCE.get('text').getContent().length
-        let text2 = tinyMCE.get('text2').getContent().length
+        let text= tinyMCE.get('text').getContent()
+        let text2 = tinyMCE.get('text2').getContent()
         if (this.heading.length == 0) {
           Vue.set(this.errorMsg, 0, 'This is a mandatory field')
         } else if (this.heading.length > 50) {
           Vue.set(this.errorMsg, 0, 'Maximum 50 characters')
         }
-        if (text == 0) {
+        if (text.length == 0) {
           Vue.set(this.errorMsg, 1, 'This is a mandatory field')
-        } else if (text > 1000) {
+        } else if (text.length > 1000) {
           Vue.set(this.errorMsg, 1, 'Maximum 1000 characters')
         }
         if (this.secondSlider) {
           if (this.heading2.length > 50) {
             Vue.set(this.errorMsg, 3, 'Maximum 50 characters')
           }
-          if (text2 > 1000) {
+          if (text2.length > 1000) {
             Vue.set(this.errorMsg, 4, 'Maximum 1000 characters')
           }
         }

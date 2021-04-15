@@ -1,0 +1,210 @@
+{% extends "shared/base_main.html" %}
+{% from 'shared/macros/_form_image.html' import form_image with context %}
+{% block title %}Product{% endblock %}
+
+{% block app_content %}
+<div id="this-block">
+  <div class="content mb-6">
+    <form ref="form" action="{{ url_for('admin_store.store') }}" 
+      method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+      <div class="level">
+        <div class="level-left">
+        </div>
+        <div class="level-right">
+          <input type="submit" @click.prevent="doValidate" 
+            name="submit_btn" value="Submit" class="button is-link"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Category*</label>
+        <div class="select">
+          <select name="category" v-model="category" autofocus>
+            <option value="select">-- Select Category --</option>
+            {% for c in category %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
+      </div>
+      
+      <div class="field">
+        <label class="label">Title*</label>
+        <div class="control">
+          <input
+            name="title"
+            class="input"
+            type="text"
+            v-model="title">
+        </div>
+        <p v-if="errorMsg[1]" class="help is-danger">[[ errorMsg[1] ]]</p>
+      </div>
+
+      <div class="field">
+        <label class="label">Description*</label>
+        <div class="control">
+          <textarea id="description" name="description" class="storetiny textarea">
+          </textarea>
+        </div>
+        <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="field-body">
+          <div class="field">
+            <label class="label">Size</label>
+            <div class="select">
+              <select name="size" v-model="size">
+                <option value="select">-- Select Size --</option>
+                {% for s in size %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Color</label>
+            <div class="select">
+              <select name="color" v-model="color">
+                <option value="select">-- Select Color --</option>
+                {% for c in color %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Quantity</label>
+            <div class="control">
+              <input
+                name="quantity"
+                class="input"
+                type="text"
+                v-model="quantity">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
+
+      <div class="field pt-4">
+        <label class="label">Current image</label>
+        <div class="control">
+          <p>Empty</p>
+        </div>
+      </div>
+      {{ form_image(1,4) }}
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  new Vue({
+    el: '#this-block',
+    delimiters: ['[[', ']]'],
+    data() {
+      return {
+        category: 'select',
+        title: '',
+        description: '',
+        size: 'select',
+        color: 'select',
+        quantity: 0,
+        errorMsg: ['','','','',''],
+        filename1: 'No file selected',
+        newimage1: 'upload'
+      }
+    },
+    methods: {
+      clearErrors() {
+        for (let i=0; i<this.errorMsg.length;i++) {
+          this.errorMsg[i] = ''
+        }
+      },
+      hasError() {
+        err = false
+        for(let i=0; i<this.errorMsg.length; i++) {
+          if(this.errorMsg[i] != '') err = true
+        }
+        return err
+      },
+      doValidate() {
+        this.clearErrors()
+        let description = tinyMCE.get('description').getContent()
+        if (this.category == 'select') {
+          Vue.set(this.errorMsg, 0, 'This field is mandatory')
+        }
+        if (this.title.length == 0) {
+          Vue.set(this.errorMsg, 1, 'This field is mandatory')
+        } else if (this.title.length > 100) {
+          Vue.set(this.errorMsg, 1, 'Maximum 100 characters')
+        }
+        if (description.length == 0) {
+          Vue.set(this.errorMsg, 2, 'This field is mandatory')
+        } else if (description.length > 1000) {
+          Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
+        }
+        if (this.size != 'select') {
+          if (!this.color || !this.quantity) {
+            Vue.set(this.errorMsg, 3, 'Size, color and quantity must either all be empty or all be mandatory')
+          }
+        }
+        if (this.color != 'select') {
+          if (!this.size || !this.quantity) {
+            Vue.set(this.errorMsg, 3, 'Size, color and quantity must either all be empty or all be mandatory')
+          }
+        }
+        if (this.quantity != 'select') {
+          if (!this.size || !this.color) {
+            Vue.set(this.errorMsg, 3, 'Size, color and quantity must either all be empty or all be mandatory')
+          }
+        }
+        if (this['newimage1']=='upload') {
+          let fs = this.$refs['imgupload1'].files[0]
+          if (fs) {
+            if((fs.size/1024) > 1024) {
+              Vue.set(this.errorMsg, 4, 'Image cannot be larger than 1MB')
+            }
+          }
+        }
+        let upl = this.$refs['imgupload1'] ? this.$refs['imgupload1'].value: ''
+        let sel = this.$refs['imgselect1'] ? this.$refs['imgselect1'].value: ''
+        if (!upl && !sel) {
+          Vue.set(this.errorMsg, 4, 'Image is mandatory')
+        }
+        if (!this.hasError()) {
+          this.$nextTick(() => {
+            //this.$refs.form.submit()
+          })
+        }
+      },
+      fileSelected(evt,img_num) {
+        if (evt.target.files.length > 0) {
+          this['filename'+img_num] = evt.target.files[0].name
+        }
+      },
+      clearSelection(ref,img_num,err_num) {
+        this.$refs[ref].value = ''
+        Vue.set(this.errorMsg, err_num, '')
+        this['filename'+img_num] = 'No file selected'
+      }
+    },
+    filters: {
+      truncate: function (text, length, suffix) {
+        if (text.length > length) {
+            return text.substring(0, length) + suffix;
+        } else {
+            return text;
+        }
+      }
+    }
+  })
+</script>
+{% include 'shared/tinymce/_tinymce_store.html' %}
+{% endblock %}

@@ -110,3 +110,16 @@ VALUES('Under Armour Long sleeve','Prepare for battle with the Under Armour Heat
 
 INSERT INTO image_type(name)
 VALUES('store');
+
+INSERT INTO size(name,create_date,update_date,user_id)
+VALUES
+('S',now(),now(),1),
+('M',now(),now(),1),
+('L',now(),now(),1),
+('XL',now(),now(),1);
+
+INSERT INTO color(name,create_date,update_date,user_id)
+VALUES
+('Red',now(),now(),1),
+('Blue',now(),now(),1),
+('Green',now(),now(),1);

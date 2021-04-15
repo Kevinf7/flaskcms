@@ -25,7 +25,7 @@
         <p v-if="errorMsg[0]" class="help is-danger">[[ errorMsg[0] ]]</p>
       </div>
 
-      <div class="field">
+      <div class="field pt-4">
         <label class="label">Current image*</label>
         <div class="control">
           {% if edit_ver.image1.filename %}
@@ -40,7 +40,7 @@
       {{ form_image(1,1) }}
       {% endif %}
 
-      <div class="field">
+      <div class="field pt-4">
         <label class="label">Title 2</label>
         <div class="control">
           <textarea id="title2" class="simpletiny" name="title2" rows="3" v-model="title2">
@@ -99,18 +99,18 @@ new Vue({
     doValidate(evt) {
       if (evt.target.value != "Delete") {
         this.clearErrors()
-        let title1= tinyMCE.get('title1').getContent().length
-        let title2 = tinyMCE.get('title2').getContent().length
-        let title3 = tinyMCE.get('title3').getContent().length
-        if (title1 == 0) {
+        let title1= tinyMCE.get('title1').getContent()
+        let title2 = tinyMCE.get('title2').getContent()
+        let title3 = tinyMCE.get('title3').getContent()
+        if (title1.length == 0) {
           Vue.set(this.errorMsg, 0, 'This is a mandatory field')
-        } else if (title1 > 400) {
+        } else if (title1.length > 400) {
           Vue.set(this.errorMsg, 0, 'Maximum 400 characters')
         }
-        if (title2 > 400) {
+        if (title2.length > 400) {
           Vue.set(this.errorMsg, 2, 'Maximum 400 characters')
         }
-        if (title3 > 400) {
+        if (title3.length > 400) {
           Vue.set(this.errorMsg, 3, 'Maximum 400 characters')
         }
         if (evt.target.value != 'Save as draft') {

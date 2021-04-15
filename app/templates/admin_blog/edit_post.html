@@ -21,7 +21,7 @@
       </div>
 
       <div class="field">
-        <label class="label">Title</label>
+        <label class="label">Title*</label>
         <div class="control">
           <input 
           autofocus
@@ -34,7 +34,7 @@
       </div>
 
       <div class="field">
-        <label class="label">Write something</label>
+        <label class="label">Write something*</label>
         <div class="control">
           <textarea id="post" name="post" class="textarea">
           {{ post.post }}
@@ -65,8 +65,8 @@
         <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
       </div>
 
-      <div class="field">
-        <label class="label">Current image</label>
+      <div class="field pt-4">
+        <label class="label">Current image*</label>
         <div class="control">
           {% if post.image1.filename %}
           <p class="is-size-7">{{ post.image1.filename }}</p>
@@ -100,17 +100,17 @@ new Vue({
   },
   methods: {
     addTag(event) {
-      this.errorMsg[3] = ''
+      this.errorMsg[2] = ''
       event.preventDefault()
       var val = event.target.value.trim().toLowerCase()
       if (val.length >= 12) {
-        this.errorMsg[3] = "Too many characters"
+        Vue.set(this.errorMsg, 2, 'Too many characters')
         event.target.value = ''
       } else if (this.tags.length >= 6) {
-        this.errorMsg[3] = "Too many tags"
+        Vue.set(this.errorMsg, 2, 'Too many tags')
         event.target.value = ''
       } else if (this.tags.includes(val)) {
-        this.errorMsg[3] = "Duplicate entry"
+        Vue.set(this.errorMsg, 2, 'Duplicate entry')
         event.target.value = ''
       } else if (val.length > 0) {
         this.tags.push(val)
@@ -118,8 +118,13 @@ new Vue({
       }
     },
     removeTag (index) {
-      this.errorMsg[3] = ''
+      this.errorMsg[2] = ''
       this.tags.splice(index, 1)
+    },
+    clearErrors() {
+      for (let i=0; i<this.errorMsg.length;i++) {
+        this.errorMsg[i] = ''
+      }
     },
     hasError() {
       err = false
@@ -129,14 +134,23 @@ new Vue({
       return err
     },
     doValidate(evt) {
-      if (this.title.length > 100) {
+      this.clearErrors()
+      let post = tinyMCE.get('post').getContent()
+      if (this.title.length == 0) {
+        Vue.set(this.errorMsg, 0, 'This field is mandatory')
+      } else if (this.title.length > 100) {
         Vue.set(this.errorMsg, 0, 'Maximum 100 characters')
+      }
+      if (post.length == 0) {
+        Vue.set(this.errorMsg, 1, 'This field is mandatory')
+      } else if (post.length > 15000) {
+        Vue.set(this.errorMsg, 1, 'Maximum 15000 characters')
       }
       if (this['newimage1']=='upload') {
         let fs = this.$refs['imgupload1'].files[0]
         if (fs) {
-          if((fs.size/1024) > 500) {
-            Vue.set(this.errorMsg, 3, 'Image cannot be larger than 500KB')
+          if((fs.size/1024) > 1024) {
+            Vue.set(this.errorMsg, 3, 'Image cannot be larger than 1MB')
           }
         }
       }
