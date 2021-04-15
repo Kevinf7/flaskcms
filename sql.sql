@@ -100,10 +100,13 @@ INSERT INTO category(name,display,create_date)
 VALUES('women-bottoms','Women - Bottoms',now());
 
 INSERT INTO category_general(title,description,category_id,user_id,update_date,create_date)
-VALUES('RDX shorts','Cool and sleek MMA shorts',5,1,now(),now())
+VALUES('RDX shorts','Cool and sleek MMA shorts',3,2,now(),now());
 
 INSERT INTO category_general(title,description,category_id,user_id,update_date,create_date)
-VALUES('Adidas running shorts','Cheetah print looks even better when viewed in a blur. So wear these adidas two-in-one running shorts as you race across the finish line. They stay in place on the move thanks to a high-rise back and drawcord. Slip your phone into the pocket on the supportive inner tights. This product is made with Primeblue, a high-performance recycled material made in part with Parley Ocean Plastic.',5,1,now(),now())
+VALUES('Adidas running shorts','Cheetah print looks even better when viewed in a blur. So wear these adidas two-in-one running shorts as you race across the finish line. They stay in place on the move thanks to a high-rise back and drawcord. Slip your phone into the pocket on the supportive inner tights. This product is made with Primeblue, a high-performance recycled material made in part with Parley Ocean Plastic.',3,2,now(),now());
 
 INSERT INTO category_general(title,description,category_id,user_id,update_date,create_date)
-VALUES('Under Armour Long sleeve','Prepare for battle with the Under Armour HeatGear Armour Compression Top. With HeatGear technology combining with Under Armours signature Moisture Transport System whisking away sweat to keep you feeling dry, cool and comfortable, this is the ultimate warm weather workout top. Reach your potential with Under Armour',3,1,now(),now())
+VALUES('Under Armour Long sleeve','Prepare for battle with the Under Armour HeatGear Armour Compression Top. With HeatGear technology combining with Under Armours signature Moisture Transport System whisking away sweat to keep you feeling dry, cool and comfortable, this is the ultimate warm weather workout top. Reach your potential with Under Armour',1,2,now(),now());
+
+INSERT INTO image_type(name)
+VALUES('store');

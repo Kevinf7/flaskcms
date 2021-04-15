@@ -30,22 +30,20 @@
     {% endfor %}
   </div>
 
-  <div class="field">
+  <div class="field is-grouped pt-3">
     <div class="control">
       <label class="checkbox">
         {{ form.remember_me }}
         Remember me
       </label>
     </div>
-  </div>
-
-  <div class="field">
-    <div class="control is-expanded">
+    <div class="control is-expanded has-text-right">
       {{ form.submit(class_="button is-link") }}
     </div>
   </div>
 </form>
-<div class="container is-size-7" style="text-align: center;">
-    <a href="{{ url_for('admin_auth.forgot_password') }}">Forgot Password</a>
+<div class="content is-size-7 has-text-centered">
+  <p><a href="{{ url_for('admin_auth.forgot_password') }}">Forgot Password</a></p>
+  <p><a href="{{ url_for('main.index') }}">&larr; Go to main site</a></p>
 </div>
 {% endblock %}

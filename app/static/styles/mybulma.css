@@ -1580,7 +1580,7 @@ div.icon-text {
   background-color: whitesmoke;
   border-radius: 4px;
   position: relative;
-  padding: 1.25rem 2.5rem 1.25rem 1.5rem; }
+  padding: 0.6rem 1.6rem 0.6rem 0.8rem; }
   .notification a:not(.button):not(.dropdown-item) {
     color: currentColor;
     text-decoration: underline; }
