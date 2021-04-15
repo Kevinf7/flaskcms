@@ -49,7 +49,12 @@ def store():
 @set_breadcrumb('home store product')
 def product():
     if request.method == 'POST':
-        pass
+        category = request.form.get('category')
+        title = request.form.get('title')
+        description = request.form.get('description')
+        size = request.form.get('size')
+        color = request.form.get('color')
+        quantity = request.form.get('quantity')
     category = Category.query.order_by(asc(Category.display)).all()
     size = Size.query.order_by(asc(Size.name)).all()
     color = Color.query.order_by(asc(Color.name)).all()

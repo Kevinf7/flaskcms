@@ -113,13 +113,13 @@ VALUES('store');
 
 INSERT INTO size(name,create_date,update_date,user_id)
 VALUES
-('S',now(),now(),1),
-('M',now(),now(),1),
-('L',now(),now(),1),
-('XL',now(),now(),1);
+('S',now(),now(),2),
+('M',now(),now(),2),
+('L',now(),now(),2),
+('XL',now(),now(),2);
 
 INSERT INTO color(name,create_date,update_date,user_id)
 VALUES
-('Red',now(),now(),1),
-('Blue',now(),now(),1),
-('Green',now(),now(),1);
+('Red',now(),now(),2),
+('Blue',now(),now(),2),
+('Green',now(),now(),2);

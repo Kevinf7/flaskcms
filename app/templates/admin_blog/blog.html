@@ -22,8 +22,6 @@
 
   <div class="level">
     <div class="level-left">
-    </div>
-    <div class="level-right">
       <span class="mr-2">Show</span>
       <div class="select mr-4">
         <select v-model="showType" @change="getShow">
@@ -32,6 +30,8 @@
           <option value="draft">Draft</option>
         </select>
       </div>
+    </div>
+    <div class="level-right">
       <button class="button is-link" @click="gotoURL('{{ url_for('admin_blog.post') }}')">
           Create Post
       </button>
