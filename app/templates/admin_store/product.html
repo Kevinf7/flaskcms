@@ -5,9 +5,10 @@
 {% block app_content %}
 <div id="this-block">
   <div class="content mb-6">
-    <form ref="form" action="{{ url_for('admin_store.store') }}" 
+    <form ref="form" action="{{ url_for('admin_store.product') }}" 
       method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="form_variants" :value="formVariants"/>
 
       <div class="level">
         <div class="level-left">
@@ -51,52 +52,115 @@
         </div>
         <p v-if="errorMsg[2]" class="help is-danger">[[ errorMsg[2] ]]</p>
       </div>
+      <hr/>
 
+      <p><label class="label">Variants</label></p>
       <div class="field is-grouped">
         <div class="field-body">
-          <div class="field">
+          <div class="field is-narrow">
             <label class="label">Size</label>
             <div class="select">
-              <select name="size" v-model="size">
+              <select v-model="size_index">
                 <option value="select">-- Select Size --</option>
                 {% for s in size %}
-                <option value="{{ s.id }}">{{ s.name }}</option>
+                <option value="{{ loop.index0 }}">{{ s.name }}</option>
                 {% endfor %}
               </select>
             </div>
           </div>
-          <div class="field">
+          <div class="field is-narrow">
             <label class="label">Color</label>
             <div class="select">
-              <select name="color" v-model="color">
+              <select v-model="color_index">
                 <option value="select">-- Select Color --</option>
                 {% for c in color %}
-                <option value="{{ c.id }}">{{ c.name }}</option>
+                <option value="{{ loop.index0 }}">{{ c.name }}</option>
                 {% endfor %}
               </select>
             </div>
           </div>
           <div class="field">
-            <label class="label">Quantity</label>
-            <div class="control">
-              <input
-                name="quantity"
-                class="input"
-                type="text"
-                v-model="quantity">
-            </div>
+            <label class="label">&nbsp;</label>
+            <input type="submit" @click.prevent="addVariant" 
+            name="submit_btn" value="Add Variant" class="button is-link"/>
           </div>
         </div>
       </div>
       <p v-if="errorMsg[3]" class="help is-danger">[[ errorMsg[3] ]]</p>
 
+      <div v-if="variants.length>0" class="table-container">
+        <table class="table is-narrow is-hoverable">
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>Quantity</th>
+              <th>SKU</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(v, index) in variants">
+              <td>[[ sizeTable[v.size_index].name ]]</td>
+              <td>[[ colorTable[v.color_index].name ]]</td>
+              <td class="is-narrow">
+                <input :name="'quantity'+index" v-model="formVariants[[index]].quantity"
+                  class="input" type="text">
+              </td>
+              <td>
+                <input :name="'sku'+index" class="input" v-model="formVariants[[index]].sku"
+                  type="text">
+              </td>
+              <td>
+                <a @click.prevent="removeVariant([[index]])">
+                  <i class="fas fa-times-circle"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr/>
+
       <div class="field pt-4">
-        <label class="label">Current image</label>
+        <label class="label">Current image*</label>
         <div class="control">
           <p>Empty</p>
         </div>
       </div>
       {{ form_image(1,4) }}
+
+      <div class="field pt-4">
+        <div class="select">
+          <select v-model="numImg">
+            <option value="1">More images?</option>
+            <option value="2">Upload one more</option>
+            <option value="3">Upload two more</option>
+          </select>
+        </div>
+      </div>
+
+      <div v-show="numImg==2||numImg==3">
+        <div class="field pt-4">
+          <label class="label">Image 2</label>
+          <div class="control">
+            <p>Empty</p>
+          </div>
+        </div>
+        {{ form_image(2,5) }}
+      </div>
+
+      <div v-show="numImg==3">
+        <div class="field pt-4">
+          <label class="label">Image 3</label>
+          <div class="control">
+            <p>Empty</p>
+          </div>
+        </div>
+        {{ form_image(3,6) }}
+      </div>
+
     </form>
   </div>
 </div>
@@ -113,15 +177,32 @@
         category: 'select',
         title: '',
         description: '',
-        size: 'select',
-        color: 'select',
+        size_index: 'select',
+        color_index: 'select',
         quantity: 0,
-        errorMsg: ['','','','',''],
+        errorMsg: ['','','','','','',''],
         filename1: 'No file selected',
-        newimage1: 'upload'
+        newimage1: 'upload',
+        numImg: '1',
+        filename2: 'No file selected',
+        newimage2: 'upload',
+        filename3: 'No file selected',
+        newimage3: 'upload',
+        variants: [],
+        sizeTable: [],
+        colorTable: [],
+        formVariants: []
       }
     },
     methods: {
+      chkFileSize(imgNum,errNum) {
+        let fs = this.$refs['imgupload'+imgNum].files[0]
+        if (fs) {
+          if((fs.size/1024) > 1024) {
+            Vue.set(this.errorMsg, errNum, 'Image cannot be larger than 1MB')
+          }
+        }
+      },
       clearErrors() {
         for (let i=0; i<this.errorMsg.length;i++) {
           this.errorMsg[i] = ''
@@ -150,37 +231,27 @@
         } else if (description.length > 1000) {
           Vue.set(this.errorMsg, 2, 'Maximum 1000 characters')
         }
-        if (this.size != 'select') {
-          if (!this.color || !this.quantity) {
-            Vue.set(this.errorMsg, 3, 'Size, color and quantity must either all be empty or all be mandatory')
-          }
-        }
-        if (this.color != 'select') {
-          if (!this.size || !this.quantity) {
-            Vue.set(this.errorMsg, 3, 'Size, color and quantity must either all be empty or all be mandatory')
-          }
-        }
-        if (this.quantity != 'select') {
-          if (!this.size || !this.color) {
-            Vue.set(this.errorMsg, 3, 'Size, color and quantity must either all be empty or all be mandatory')
-          }
-        }
         if (this['newimage1']=='upload') {
-          let fs = this.$refs['imgupload1'].files[0]
-          if (fs) {
-            if((fs.size/1024) > 1024) {
-              Vue.set(this.errorMsg, 4, 'Image cannot be larger than 1MB')
-            }
-          }
+          this.chkFileSize(1,4)
         }
         let upl = this.$refs['imgupload1'] ? this.$refs['imgupload1'].value: ''
         let sel = this.$refs['imgselect1'] ? this.$refs['imgselect1'].value: ''
         if (!upl && !sel) {
           Vue.set(this.errorMsg, 4, 'Image is mandatory')
         }
+        if (this.numImg=='2'||this.numImg=='3') {
+          for(i=2;i<Number(this.numImg)+1;i++) {
+            if (this['newimage'+i]=='upload') {
+              this.chkFileSize(i,i+3)
+            }
+          }
+        }
         if (!this.hasError()) {
+          this.formVariants.forEach((fv, index) => {
+            Vue.set(this.formVariants, index, JSON.stringify(fv))
+          })
           this.$nextTick(() => {
-            //this.$refs.form.submit()
+            this.$refs.form.submit()
           })
         }
       },
@@ -193,6 +264,39 @@
         this.$refs[ref].value = ''
         Vue.set(this.errorMsg, err_num, '')
         this['filename'+img_num] = 'No file selected'
+      },
+      checkVariantSelected(size_id,color_id) {
+        let found = false
+        this.formVariants.forEach(function (fv) {
+          if (fv.size_id == size_id && fv.color_id == color_id) found = true
+        })
+        return found
+      },
+      removeVariant(index) {
+        this.variants.splice(index,1)
+        this.formVariants.splice(index,1)
+      },
+      addVariant() {
+        Vue.set(this.errorMsg, 3, '')
+        if (this.size_index=='select' || this.color_index=='select') {
+          Vue.set(this.errorMsg, 3, 'Both size and color must be selected')
+        } else if (this.checkVariantSelected(
+            this.sizeTable[this.size_index].id, this.colorTable[this.color_index].id)) {
+          Vue.set(this.errorMsg, 3, 'Variant already selected')
+        } else {
+          let v = {
+            'size_index' : this.size_index,
+            'color_index' : this.color_index
+          }
+          this.variants.push(v)
+          let fv = {
+            'size_id' : this.sizeTable[this.size_index].id,
+            'color_id' : this.colorTable[this.color_index].id,
+            'quantity' : '0',
+            'sku' : ''
+          }
+          this.formVariants.push(fv)
+        }
       }
     },
     filters: {
@@ -203,6 +307,24 @@
             return text;
         }
       }
+    },
+    mounted() {
+      let itemSize = {}
+      let itemColor = {}
+      {% for s in size %}
+        itemSize = {
+          'id' : {{ s.id }},
+          'name' : '{{ s.name }}'
+        }
+        this.sizeTable.push(itemSize)
+      {% endfor %}
+      {% for c in color %}
+        itemColor = {
+          'id' : {{ c.id }},
+          'name' : '{{ c.name }}'
+        }
+        this.colorTable.push(itemColor)
+      {% endfor %}
     }
   })
 </script>
