@@ -18,6 +18,8 @@ class Config(object):
     else:
         SERVER_NAME = 'flaskcms.pythonanywhere.com'
 
+    SERVER_NAME = 'flaskcms.pythonanywhere.com'
+
     # Database settings
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     # recommended by Pythonanywhere otherwise you get mysql timeout

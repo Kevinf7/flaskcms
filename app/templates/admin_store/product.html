@@ -312,18 +312,18 @@
       let itemSize = {}
       let itemColor = {}
       {% for s in size %}
-        itemSize = {
-          'id' : {{ s.id }},
-          'name' : '{{ s.name }}'
-        }
-        this.sizeTable.push(itemSize)
+      itemSize = {
+        'id' : {{ s.id }},
+        'name' : '{{ s.name }}'
+      }
+      this.sizeTable.push(itemSize)
       {% endfor %}
       {% for c in color %}
-        itemColor = {
-          'id' : {{ c.id }},
-          'name' : '{{ c.name }}'
-        }
-        this.colorTable.push(itemColor)
+      itemColor = {
+        'id' : {{ c.id }},
+        'name' : '{{ c.name }}'
+      }
+      this.colorTable.push(itemColor)
       {% endfor %}
     }
   })
