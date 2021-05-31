@@ -6,6 +6,8 @@ from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from config import Config
 from app.breadcrumb import Breadcrumb
+import logging
+from logging.handlers import RotatingFileHandler
 
 
 db = SQLAlchemy()
@@ -62,6 +64,20 @@ def create_app(config_class=Config):
         app.register_blueprint(store_bp, url_prefix='/store')
 
         breadcrumb.init_app(app)
+
+        # if not app.debug:
+        folder = app.config['BASEDIR'] / 'logs'
+        if not folder.is_dir():
+            folder.mkdir()
+        file_handler = RotatingFileHandler(folder / 'flask_cms.log', maxBytes=10240,
+            backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s'))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('Flask CMS startup')
 
         # Set rest of config from db
         set_settings()

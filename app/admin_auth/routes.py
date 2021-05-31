@@ -7,6 +7,7 @@ from app.admin_auth.email import send_password_reset_email
 from app.admin_auth.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
+from app.admin_main.shared import log
 
 
 # ADMIN AUTH routes
@@ -18,6 +19,7 @@ def login():
     next_page = request.args.get('next')
     form=LoginForm()
     if form.validate_on_submit():
+        log(request.form)
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password','danger')

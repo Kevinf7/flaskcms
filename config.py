@@ -8,6 +8,8 @@ load_dotenv(basedir / '.env')
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'random string'
+
+    BASEDIR = basedir
     
     if (os.environ.get('FLASK_ENV') == 'development'):
         # Dev only so browser doesnt cache for CSS
@@ -17,8 +19,6 @@ class Config(object):
         SERVER_NAME = 'localhost:5000'
     else:
         SERVER_NAME = 'flaskcms.pythonanywhere.com'
-
-    SERVER_NAME = 'flaskcms.pythonanywhere.com'
 
     # Database settings
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
