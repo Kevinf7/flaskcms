@@ -17,15 +17,21 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('admin_main.index'))
     next_page = request.args.get('next')
-    form=LoginForm()
-    if form.validate_on_submit():
-        log(request.form)
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is None or not user.check_password(form.password.data):
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember_me = request.form.get('remember_me')
+
+        user = User.query.filter_by(email=email).first()
+        if user is None or not user.check_password(password):
             flash('Invalid username or password','danger')
             return redirect(url_for('admin_auth.login',next=next_page))
 
-        login_user(user, remember=form.remember_me.data)
+        if remember_me == 'y':
+            rem = True
+        else:
+            rem = False
+        login_user(user, remember=rem)
         user.prev_login = user.last_login
         user.last_login = datetime.utcnow()
         db.session.add(user)
@@ -39,7 +45,7 @@ def login():
             return redirect(url_for('admin_main.index'))
         return redirect(url_for(next_page))
 
-    return render_template('admin_auth/login.html',form=form)
+    return render_template('admin_auth/login.html')
 
 
 @bp.route('/logout')
@@ -55,30 +61,33 @@ def logout():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('admin_auth.login'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(email=form.email.data, firstname=form.firstname.data, \
-                    lastname=form.lastname.data, )
-        user.set_password(form.password.data)
+    if request.method == 'POST':
+        email = request.form.get('email')
+        firstname = request.form.get('firstname')
+        lastname = request.form.get('lastname')
+        password = request.form.get('password')
+        user = User(email=email, firstname=firstname, \
+                    lastname=lastname, )
+        user.set_password(password)
         db.session.add(user)
         db.session.commit()
         flash('Registration successful!','success')
         return redirect(url_for('admin_auth.login'))
-    return render_template('admin_auth/register.html', form=form)
+    return render_template('admin_auth/register.html')
 
 
 @bp.route('/forgot_password',methods=['GET','POST'])
 def forgot_password():
     if current_user.is_authenticated:
         return redirect(url_for('admin_auth.login'))
-    form = ForgotPasswordForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
         if user:
             if not send_password_reset_email(user):
                 flash('Sorry system error','danger')
         flash('Check your email for instructions to reset your password','success')
-    return render_template('admin_auth/forgot_password.html',form=form)
+    return render_template('admin_auth/forgot_password.html')
 
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -89,13 +98,13 @@ def reset_password(token):
     if not user:
         flash('Token has expired or is no longer valid','danger')
         return redirect(url_for('admin_auth.login'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        user.set_password(form.password.data)
+    if request.method == 'POST':
+        password = request.form.get('password')
+        user.set_password(password)
         db.session.commit()
         flash('Your password has been reset','success')
         return redirect(url_for('admin_auth.login'))
-    return render_template('admin_auth/reset_password.html', form=form)
+    return render_template('admin_auth/reset_password.html')
 
 
 # handler when you are trying to access a page but you are not logged in
@@ -103,4 +112,3 @@ def reset_password(token):
 def unauthorized():
     #flash('You must be logged in to view this page.','danger')
     return redirect(url_for('admin_auth.login',next=request.endpoint))
-

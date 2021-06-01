@@ -191,11 +191,7 @@
 {% endblock %}
 
 {% block scripts %}
-  <!--Vue dev version-->
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-  <!--Vue prod version
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-  -->
+  {{ super() }}
   <script>
     new Vue({
       el: '#main-app-1',
@@ -229,6 +225,7 @@
       }
     })
   </script>
+  
   <script>
     new Vue({
       el: '#main-app-2',
@@ -239,6 +236,6 @@
         }
       }
     })
-    </script>
+  </script>
 {% endblock %}
 
