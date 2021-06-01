@@ -4,3 +4,4 @@ migrations
 __pycache__
 secret.txt
 app/static/uploads/
+logs/
