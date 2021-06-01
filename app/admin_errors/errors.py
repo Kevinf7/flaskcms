@@ -5,7 +5,7 @@ from app.admin_main.shared import log
 
 @bp.app_errorhandler(400)
 def bad_request(e):
-    log ('400 error', e)
+    log ('400 error: ' + e)
     return render_template('admin_errors/400.html'), 400
 
 @bp.app_errorhandler(404)
