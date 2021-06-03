@@ -19,7 +19,6 @@ class Config(object):
         SERVER_NAME = 'localhost:5000'
     else:
         SERVER_NAME = 'flaskcms.pythonanywhere.com'
-        SESSION_COOKIE_SECURE = True
 
     # Database settings
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
