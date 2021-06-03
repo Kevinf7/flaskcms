@@ -15,9 +15,8 @@ db = SQLAlchemy()
 migrate = Migrate(compare_type=True)
 moment = Moment()
 login_manager = LoginManager()
-csrf = CSRFProtect()
-
 breadcrumb = Breadcrumb()
+csrf = CSRFProtect()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
